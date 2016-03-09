@@ -1,4 +1,4 @@
-# Questionable Content Extensions for Greasemonkey [![Build Status](https://travis-ci.org/Questionable-Content-Extensions/client.svg?branch=master)](https://travis-ci.org/Questionable-Content-Extensions/client) [![Dependency Status](https://www.versioneye.com/user/projects/56e06979df573d004c95f841/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56e06979df573d004c95f841) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.svg)](http://gruntjs.com/)
+# Questionable Content Extensions for Tampermonkey [![Build Status](https://travis-ci.org/Questionable-Content-Extensions/client.svg?branch=master)](https://travis-ci.org/Questionable-Content-Extensions/client) [![Dependency Status](https://www.versioneye.com/user/projects/56e06979df573d004c95f841/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56e06979df573d004c95f841) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.svg)](http://gruntjs.com/)
 
 ## Getting Started
 
@@ -13,3 +13,7 @@ grunt build # To build our script
 After having ran the commands above, you should have files created at `dist\qc-ext.user.js` and `dist\qc-ext.min.user.js`. These files can be opened in Greasemonkey or Tampermonkey directly.
 
 Whenever you've made changes and want to incorporate them into the user script, simply run `grunt build` again.
+
+##### Known issues
+
+* Does not work in Greasemonkey in Firefox. This is a serious problem, but the error message and stack trace given is rather cryptic, and I could not get the native JS debugger nor Firebug to help me with finding the problem. Since I don't use Firefox personally, it's not something I'm going to devote a lot of energy to. Hopefully, some Firefox wiz comes along and figures out what the issue is.
