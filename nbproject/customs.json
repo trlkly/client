@@ -1,0 +1,16 @@
+{
+    "elements": {
+        "qc-news": {},
+        "qc-nav": {
+            "attributes": {
+                "random-comic": {}
+            }
+        },
+        "qc-add-item": {},
+        "qc-set-title": {},
+        "fb": {}
+    },
+    "attributes": {
+        "aria-expanded": {}
+    }
+}

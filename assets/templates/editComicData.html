@@ -1,0 +1,103 @@
+<!--
+    Copyright (C) 2016 Alexander Krivács Schrøder <alexschrod@gmail.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div class="modal fade" tabindex="-1" role="dialog" id="editComicDataDialog" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Comic Data for #{{ecdvm.editData.comicData.comic}}</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Cast</h3>
+                            </div>
+                            <div class="panel-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item clearfix" ng-repeat="castMember in ecdvm.editData.cast">
+                                        {{castMember.shortName}}
+                                        <span class="pull-right button-group btn-group-xs">
+                                            <button ng-click="ecdvm.remove(castMember)" type="button" class="btn btn-danger"><i class="fa fa-minus"></i> Remove</button>
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Storylines</h3>
+                            </div>
+                            <div class="panel-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item clearfix" ng-repeat="location in ecdvm.editData.storyline">
+                                        {{location.shortName}}
+                                        <span class="pull-right button-group btn-group-xs">
+                                            <button ng-click="ecdvm.remove(location)" type="button" class="btn btn-danger"><i class="fa fa-minus"></i> Remove</button>
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Locations</h3>
+                            </div>
+                            <div class="panel-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item clearfix" ng-repeat="location in ecdvm.editData.location">
+                                        {{location.shortName}}
+                                        <span class="pull-right button-group btn-group-xs">
+                                            <button ng-click="ecdvm.remove(location)" type="button" class="btn btn-danger"><i class="fa fa-minus"></i> Remove</button>
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Flags</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label><input type="checkbox" ng-model="ecdvm.editData.comicData.isGuestComic" ng-change="ecdvm.changeGuestComic()"> Guest comic</label>
+                                </div>
+                                <div class="form-group">
+                                    <label><input type="checkbox" ng-model="ecdvm.editData.comicData.isNonCanon" ng-change="ecdvm.changeNonCanon()"> Non-canon</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <qc-add-item></qc-add-item>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" ng-click="ecdvm.close()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

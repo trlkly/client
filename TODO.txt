@@ -1,0 +1,11 @@
+* Make use of angular-translate to offer the website with translations
+    - Translate the text on the page, sure, but also consider the more awesome
+      possibility: Translating the comics themselves:
+        o Make use of image tagging/overlays, kind of like a mix between YouTube's
+          annotations and Flickr's photo-tagging. Code for inspiration here:
+          http://www.bennadel.com/blog/1839-jquery-photo-tagger-plugin-for-flickr-style-photo-tagging.htm
+* Cast Member (+possibly location/storyline) information dialog:
+    - Click on a cast member in the navigation, get information about them, like
+      how many comics they've appeared in, who they appear most often with,
+      how long ago it's been since they've been seen + other interesting
+      statistics that I'm sure I'll think of someday.

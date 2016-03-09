@@ -1,0 +1,111 @@
+/* 
+ * Copyright (C) 2016 Alexander Krivács Schrøder <alexschrod@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#qcnav_navbox {
+    width: calc(100% - 10px);
+    text-align: center;
+    margin: 5px;
+
+    td {
+        //padding: 3px 1px;
+    }
+    a.qc {
+        cursor: pointer;
+    
+        // START Style bits borrowed from/based on QC's own styles
+        background: transparent;
+        padding: 0px 4px;
+        text-decoration: none;
+        
+        &, &:link
+        {
+            color: #2b5869;
+        }
+
+        &:visited
+        {
+            color: #2b5869;
+        }
+
+        &:hover
+        {
+            color: #907a76;
+        }
+        // END Style bits borrowed from/based on QC's own styles
+    }
+    
+    h1 {
+        font-size: 15px;
+        margin-top: 10px;
+        
+        &.first-header {
+            margin-top: 0px;
+        }
+    }
+}
+
+.qcnav_space {
+    padding: 3px;
+}
+.qcnav_centered {
+    text-align: center;
+}
+.qcnav_vcentered {
+    vertical-align: middle;
+}
+.qcnav_navelement {
+    width: 100%;
+    font-weight: bold;
+    margin: 0;
+    a {
+        text-decoration: none;
+    }
+    td {
+        padding: 3px 1px;
+    }
+    .no-nav {
+        visibility: hidden;
+    }
+}
+
+.qcnav_arrows {
+    font-weight: bold;
+}
+.qcnav_name {
+    width: 100%;
+    text-align: center;
+}
+
+a.qcnav_settings {
+    font-size: x-small;
+    text-decoration: none;
+}
+
+.nav, .pagination, .carousel, .panel-title a {
+    cursor: pointer;
+}
+
+.modal {
+    color: #ebebeb;
+    text-align: left;
+
+    input { width: auto; }
+    
+    label.disabled, p.disabled {
+        color: #999;
+    }
+}

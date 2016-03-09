@@ -1,0 +1,89 @@
+<!--
+    Copyright (C) 2016 Alexander Krivács Schrøder <alexschrod@gmail.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<table id="qcnav_navbox">
+    <thead>
+        <!--<tr>
+            <th class="qcnav_centered">Navigation</th>
+        </tr>-->
+        <tr>
+            <td id="qcnav_status">
+                <i ng-show="e.isLoading" class="fa fa-refresh fa-spin"></i>
+                <i ng-show="e.hasWarning && !e.hasError" class="fa fa-exclamation-triangle"></i>
+                <i ng-show="e.hasError" class="fa fa-exclamation-circle"></i>
+            </td>
+        </tr>
+    </thead>
+    <tbody id="qcnav_navbody">
+        <tr ng-repeat="message in e.messages">
+            <td>{{ message}}</td>
+        </tr>
+        <tr ng-repeat="(type, typeItems) in e.items">
+            <td>
+                <h1 ng-class="{'first-header': $first}">{{e.getTypeDescription(type)}}</h1>
+                <table ng-repeat="item in typeItems" class="qcnav_navelement" id="{{'qcnav_item_' + item.id}}" ng-class="{'with_color': $root.settings.useColors}">
+                    <tr>
+                        <td class="qcnav_arrows" title="{{item.first ? 'First strip with ' + item.shortName : ''}}" ng-switch="item.first">
+                            <i ng-switch-when="null" class="fa fa-fast-backward no-nav"></i>
+                            <a class="qc" ng-switch-default ng-href="view.php?comic={{item.first}}"><i class="fa fa-fast-backward"></i></a>
+                        </td>
+                        <td class="qcnav_arrows" title="{{item.previous ? 'Previous strip with ' + item.shortName : ''}}" ng-switch="item.previous">
+                            <i ng-switch-when="null" class="fa fa-backward no-nav"></i>
+                            <a class="qc" ng-switch-default ng-href="view.php?comic={{item.previous}}"><i class="fa fa-backward"></i></a>
+                        </td>
+                        <td class="qcnav_name" title="{{item.name}}">
+                            {{item.shortName}}
+                        </td>
+                        <td class="qcnav_arrows" title="{{item.next ? 'Next strip with ' + item.shortName : ''}}" ng-switch="item.next">
+                            <i ng-switch-when="null" class="fa fa-forward no-nav"></i>
+                            <a class="qc" ng-switch-default ng-href="view.php?comic={{item.next}}"><i class="fa fa-forward"></i></a>
+                        </td>
+                        <td class="qcnav_arrows" title="{{item.last ? 'Last strip with ' + item.shortName :''}}" ng-switch="item.last">
+                            <i ng-switch-when="null" class="fa fa-fast-forward no-nav"></i>
+                            <a class="qc" ng-switch-default ng-href="view.php?comic={{item.last}}"><i class="fa fa-fast-forward"></i></a>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr ng-if="e.settings.editMode && e.missingDataInfo.length > 0">
+            <td>
+                <p style="color: red;">This comic is missing <span ng-repeat="mdi in e.missingDataInfo">{{mdi}}<span ng-if="!$last">,&nbsp;</span></span></p>
+            </td>
+        </tr>
+        <tr ng-if="e.settings.editMode">
+            <td class="qcnav_name">
+                <a class="qc" ng-click="e.editComicData()" ng-class="{'disabled': e.isLoading}"><i class="fa fa-pencil-square"></i> Edit comic data</a>
+            </td>
+        </tr>
+        <tr>
+            <td class="qcnav_space">
+                <button type="button" class="btn btn-default" ng-disabled="e.isLoading" ng-click="e.comicService.refreshComicData();">Refresh</button>
+                <button type="button" class="btn btn-default" ng-click="e.openSettings()">Settings</button>
+            </td>
+        </tr>
+        <tr ng-if="e.settings.editMode">
+            <td>
+                <qc-add-item></qc-add-item>
+            </td>
+        </tr>
+        <tr ng-show="e.settings.editMode">
+            <td>
+                <qc-set-title></qc-set-title>
+            </td>
+        </tr>
+    </tbody>
+</table>
