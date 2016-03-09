@@ -1,6 +1,9 @@
 language: node_js
 node_js:
   - "0.10"
-before_install: npm install -g grunt-cli
+before_install: 
+  - npm install -g grunt-cli
+  - gem install sass --version "=3.4.21"
+  - gem install compass --version "=1.0.3"
 install: npm install
-before_script: grunt build
+script: grunt build
