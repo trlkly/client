@@ -23,24 +23,24 @@ var qcExt;
 	'use strict';
 
 	qcExt.app.controller('bodyController', ['$log', '$scope', 'comicService',
-        function($log, $scope, comicService) {
-	$log.debug('START bodyController()');
+		function($log, $scope, comicService) {
+			$log.debug('START bodyController()');
 
-	unsafeWindow.shortcut.remove('Left');
-	unsafeWindow.shortcut.remove('Right');
+			unsafeWindow.shortcut.remove('Left');
+			unsafeWindow.shortcut.remove('Right');
 
-	unsafeWindow.shortcut.add('Left', function() {
-		$scope.$apply(function() {
-			comicService.previous();
-		});
-	});
+			unsafeWindow.shortcut.add('Left', function() {
+				$scope.$apply(function() {
+					comicService.previous();
+				});
+			});
 
-	unsafeWindow.shortcut.add('Right', function() {
-		$scope.$apply(function() {
-			comicService.next();
-		});
-	});
+			unsafeWindow.shortcut.add('Right', function() {
+				$scope.$apply(function() {
+					comicService.next();
+				});
+			});
 
-	$log.debug('END bodyController()');
-        }]);
+			$log.debug('END bodyController()');
+		}]);
 })(qcExt || (qcExt = {}));

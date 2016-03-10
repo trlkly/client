@@ -24,7 +24,7 @@ var constants;
 
 	constants.baseUrl =
 		// 'http://localhost/questionablecontentextensions/web/app_dev.php/';
-		'http://questionablextensions.net/';
+		'https://questionablextensions.net/';
 	
 	constants.comicDataUrl = constants.baseUrl + 'comicdata/';
 	constants.itemDataUrl = constants.baseUrl + 'itemdata/';
