@@ -22,12 +22,20 @@ var constants;
 
 	constants.settingsKey = 'settings';
 
-	constants.baseUrl =
-		// 'http://localhost/questionablecontentextensions/web/app_dev.php/';
-		'https://questionablextensions.net/';
-	
-	constants.comicDataUrl = constants.baseUrl + 'comicdata/';
-	constants.itemDataUrl = constants.baseUrl + 'itemdata/';
+	// Set this to true when working against your local test server.
+	// NEVER CHECK THIS FILE IN WITH developmentMode = true!
+	var developmentMode = false;
+	if (developmentMode) {
+		constants.baseUrl =
+			'http://localhost/questionablecontentextensions/web/';
+		constants.webServiceBaseUrl = constants.baseUrl + 'app_dev.php/';
+	} else {
+		constants.baseUrl = 'https://questionablextensions.net/';
+		constants.webServiceBaseUrl = constants.baseUrl;
+	}
+
+	constants.comicDataUrl = constants.webServiceBaseUrl + 'comicdata/';
+	constants.itemDataUrl = constants.webServiceBaseUrl + 'itemdata/';
 	constants.addItemToComicUrl = constants.comicDataUrl + 'additem';
 	constants.removeItemFromComicUrl = constants.comicDataUrl + 'removeitem';
 	constants.setComicTitleUrl = constants.comicDataUrl + 'settitle';

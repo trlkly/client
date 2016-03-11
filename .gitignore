@@ -2,4 +2,4 @@
 /assets/generated
 /dist
 /nbproject/private
-
+/node_modules

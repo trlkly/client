@@ -9,4 +9,5 @@
       how many comics they've appeared in, who they appear most often with,
       how long ago it's been since they've been seen + other interesting
       statistics that I'm sure I'll think of someday.
-* Fix for Firefox (weird bug; I don't personally use Firefox, so I know I won't put much energy into this...)
+* Comic bookmarks (keep your place/make a favorite list/etc.)
+* The "show all members" setting should not affect the "Edit comic data" dialog
