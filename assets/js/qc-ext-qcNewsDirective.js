@@ -29,6 +29,8 @@ var qcExt;
 			scope: {},
 			controller: ['$scope', '$sce', '$compile', 'eventFactory',
 				function($scope, $sce, $compile, Event) {
+					var comicDataLoadingEvent =
+						new Event(constants.comicdataLoadingEvent);
 					var comicDataLoadedEvent =
 						new Event(constants.comicdataLoadedEvent);
 
@@ -64,6 +66,12 @@ var qcExt;
 					var self = this;
 
 					this.news = $sce.trustAsHtml('Loading...');
+					comicDataLoadingEvent.subscribe($scope,
+						function() {
+							$scope.safeApply(function() {
+								self.news = $sce.trustAsHtml('Loading...');
+							});
+						});
 					comicDataLoadedEvent.subscribe($scope,
 						function(event, comicData) {
 							$scope.safeApply(function() {
