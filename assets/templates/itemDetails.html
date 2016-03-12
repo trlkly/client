@@ -42,7 +42,7 @@
                         <b>Full name:</b> {{idvm.itemData.name}}<br>
                         <b>Short name:</b> {{idvm.itemData.shortName}}<br>
                         <b>First appearance:</b> <a ng-click="idvm.goToComic(idvm.itemData.first)">Comic {{idvm.itemData.first}}</a><br>
-                        <b>Last appearance:</b> <a ng-click="idvm.goToComic(idvm.itemData.last)">Comic {{idvm.itemData.last}}</a><br>
+                        <b>Latest appearance:</b> <a ng-click="idvm.goToComic(idvm.itemData.last)">Comic {{idvm.itemData.last}}</a><br>
                         <b>Number of appearances:</b> {{idvm.itemData.appearances}} ({{idvm.itemData.presence|number:2}}%)<br>
                         <b>Identifying color:</b> <span ng-if="idvm.settings.useColors" ng-style="{'color': idvm.itemData.color, 'background-color': idvm.itemData.highlightColor}">#{{idvm.itemData.color}}</span><span ng-if="!idvm.settings.useColors" >#{{idvm.itemData.color}}</span>
                     </p>
