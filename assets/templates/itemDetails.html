@@ -29,8 +29,8 @@
             <div class="modal-body" ng-if="!idvm.isLoading">
                 <div class="clearfix">
                     <div style="width: 128px; height: 128px; text-align: center; position: relative; border: 1px solid #485563; box-sizing: content-box; float: left; margin-right: 15px; margin-bottom: 15px;">
-                        <i ng-if="!idvm.itemData.hasImage" class="fa fa-camera" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); color: #485563; font-size: 64px;"></i>
-                        <div ng-if="!idvm.itemData.hasImage" style="position: absolute; top: 82%; transform: translateY(-50%); width: 100%; font-size: 20px; color: #485563; font-weight: bold;">No image</div>
+                        <i ng-if="!idvm.itemData.hasImage" class="fa fa-camera" style="position: absolute; left: 50%; top: 42%; transform: translate(-50%,-50%); color: #485563; font-size: 64px;"></i>
+                        <div ng-if="!idvm.itemData.hasImage" style="position: absolute; top: 76%; transform: translateY(-50%); width: 100%; font-size: 20px; color: #485563; font-weight: bold;">No image</div>
                         <img ng-if="idvm.itemData.hasImage"  ng-src="{{idvm.itemData.imagePath}}" style="position: absolute; top: 50%; transform: translate(-50%,-50%); left: 50%;" alt="{{idvm.itemData.shortName}}">
                     </div>
                     <div style="float: right; margin-left: 15px; margin-bottom: 15px; position: relative;">
