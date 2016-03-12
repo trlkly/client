@@ -196,6 +196,16 @@ var qcExt;
 					.then(onSuccessRefreshElseErrorLog, onErrorLog);
 			};
 
+			this.setTagline = function(tagline) {
+				var data = {
+					token: qcExt.settings.editModeToken,
+					comic: self.comic,
+					tagline: tagline
+				};
+				return $http.post(constants.setComicTaglineUrl, data)
+					.then(onSuccessRefreshElseErrorLog, onErrorLog);
+			};
+
 			this.setGuestComic = function(value) {
 				var data = {
 					token: qcExt.settings.editModeToken,
