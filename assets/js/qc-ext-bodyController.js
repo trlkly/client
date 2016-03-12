@@ -29,17 +29,19 @@ var qcExt;
 			unsafeWindow.shortcut.remove('Left');
 			unsafeWindow.shortcut.remove('Right');
 
+			// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 			unsafeWindow.shortcut.add('Left', function() {
 				$scope.$apply(function() {
 					comicService.previous();
 				});
-			});
+			}, {disable_in_input: true});
 
 			unsafeWindow.shortcut.add('Right', function() {
 				$scope.$apply(function() {
 					comicService.next();
 				});
-			});
+			}, {disable_in_input: true});
+			// jscs:enable requireCamelCaseOrUpperCaseIdentifiers
 
 			$log.debug('END bodyController()');
 		}]);

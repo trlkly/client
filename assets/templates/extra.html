@@ -45,7 +45,7 @@
                             <a class="qc" ng-switch-default ng-href="view.php?comic={{item.previous}}"><i class="fa fa-backward"></i></a>
                         </td>
                         <td class="qcnav_name" title="{{item.name}}">
-                            {{item.shortName}}
+                            <a class="qcnav_name_link" ng-click="e.showDetailsFor(item)">{{item.shortName}}</a>
                         </td>
                         <td class="qcnav_arrows" title="{{item.next ? 'Next strip with ' + item.shortName : ''}}" ng-switch="item.next">
                             <i ng-switch-when="null" class="fa fa-forward no-nav"></i>

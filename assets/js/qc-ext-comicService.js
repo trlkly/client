@@ -98,74 +98,42 @@ var qcExt;
 									}
 									/* jshint eqeqeq:true */
 
-									var qcNavItem = '#qcnav_item_' + value.id +
+									var qcNavItem = '#qcnav_item_' +
+										value.id;
+									var qcNavItemWithColor = qcNavItem +
 										'.with_color';
 
-									if (!styleService.hasStyle(qcNavItem)) {
+									if (!styleService
+										.hasStyle(qcNavItemWithColor)) {
 										var backgroundColor = value.color;
-
-										// Pick foreground-color suitable to the
-										// background color
-										var rgb = colorService
-											.hexColorToRgb(value.color);
-										var hsl = colorService
-											.rgbToHsl(rgb[0], rgb[1],
-												rgb[2]);
-
-										// If it's a dark color, make it lighter
-										// and vice versa.
-										if (hsl[2] < 0.50) {
-											// Increase the lightness by
-											// 50% (tint)
-											hsl[2] = (hsl[2] + 1) / 2;
-										} else {
-											// Decrease the lightness by
-											// 50% (shade)
-											hsl[2] /= 2;
-										}
-
-										rgb = colorService.hslToRgb(hsl[0],
-											hsl[1], hsl[2]);
 										var foregroundColor = colorService
-											.rgbToHexColor(rgb[0], rgb[1],
-												rgb[2]);
-
-										// Pick hover-color
-										if (hsl[2] < 0.50) {
-											// Increase the lightness by
-											// 50% (tint)
-											hsl[2] = (hsl[2] + 1) / 2;
-										} else {
-											// Decrease the lightness by
-											// 50% (shade)
-											hsl[2] /= 2;
-										}
-
-										rgb = colorService.hslToRgb(hsl[0],
-											hsl[1], hsl[2]);
+											.createTintOrShade(value.color);
 										var hoverFocusColor = colorService
-											.rgbToHexColor(rgb[0], rgb[1],
-												rgb[2]);
+											.createTintOrShade(value.color, 2);
 
+										// jscs:disable maximumLineLength
 										var itemStyle =
-											qcNavItem + ' {' +
-											'    background-color: ' +
-											backgroundColor + ';' +
+											qcNavItemWithColor + '{' +
+											    'background-color:' + backgroundColor + ';' +
 											'}' +
-											qcNavItem + ', ' + qcNavItem +
-											' a:link, ' + qcNavItem +
-											' a:visited {' +
-											'    color: ' + foregroundColor +
-											';' +
+											qcNavItemWithColor + ',' +
+											qcNavItemWithColor + ' a.qcnav_name_link,' +
+											qcNavItemWithColor + ' a:link,' +
+											qcNavItemWithColor + ' a:visited{' +
+											    'color:' + foregroundColor + ';' +
 											'}' +
-											qcNavItem + ' a:hover, ' +
-											qcNavItem + ' a:focus {' +
-											'    color: ' + hoverFocusColor +
-											';' +
+											qcNavItem + ' a.qcnav_name_link{' +
+											    'cursor: pointer;' +
+											    'text-decoration: none;' +
+											'}' +
+											qcNavItemWithColor + ' a:hover,' +
+											qcNavItemWithColor + ' a:focus{' +
+											    'color: ' + hoverFocusColor + ';' +
 											'}';
+										// jscs:enable maximumLineLength
 
-										styleService.addCustomStyle(qcNavItem,
-											itemStyle);
+										styleService.addCustomStyle(
+											qcNavItemWithColor, itemStyle);
 									}
 								});
 						}

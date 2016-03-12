@@ -154,6 +154,11 @@ var qcExt;
 					this.editComicData = function() {
 						$('#editComicDataDialog').modal('show');
 					};
+					
+					this.showDetailsFor = function(item) {
+						$('#itemDetailsDialog').data('itemId', item.id);
+						$('#itemDetailsDialog').modal('show');
+					};
 
 				}],
 			controllerAs: 'e',

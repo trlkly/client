@@ -149,7 +149,9 @@ module.exports = function (grunt) {
                     'assets/generated/settings.html': 'assets/templates/settings.html',
                     'assets/generated/editComicData.html': 'assets/templates/editComicData.html',
                     'assets/generated/addItem.html': 'assets/templates/addItem.html',
-                    'assets/generated/setTitle.html': 'assets/templates/setTitle.html'
+                    'assets/generated/setTitle.html': 'assets/templates/setTitle.html',
+                    'assets/generated/donut.html': 'assets/templates/donut.html',
+                    'assets/generated/itemDetails.html': 'assets/templates/itemDetails.html'
                 }
             }
         }
@@ -159,7 +161,7 @@ module.exports = function (grunt) {
     require('load-grunt-tasks')(grunt);
 
     // Register the tasks.
-    grunt.registerTask('default', ['watch']);
+    grunt.registerTask('default', ['build']);
     grunt.registerTask('build', [
         'jshint',             // Check for lint
         'jscs',               // Check code style

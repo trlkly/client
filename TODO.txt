@@ -9,4 +9,12 @@
       how many comics they've appeared in, who they appear most often with,
       how long ago it's been since they've been seen + other interesting
       statistics that I'm sure I'll think of someday.
-* Fix for Firefox (weird bug; I don't personally use Firefox, so I know I won't put much energy into this...)
+* Comic bookmarks (keep your place/make a favorite list/etc.)
+* The "show all members" setting should not affect the "Edit comic data" dialog
+* Show proper error message dialog instead of just logging to console when web service calls fail
+* Clean up the use of $scope.safeApply -- can probably be mostly solved by doing the $apply in the replaced $http service, like I assume is the case in the real $http.
+* Show more details in item detail dialog. Some ideas:
+    - Which other cast members are most often seen with this one?
+    - Which location(s) are they most often seen in?
+    - Frequency of apperance (common or rare, i.e. seen often or only sporadically?)
+* The custom styles for coloring an item in the navigation menu should be reset on each reload so that changes made to the color doesn't require a full page refresh to take effect.
