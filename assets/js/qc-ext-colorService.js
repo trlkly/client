@@ -247,7 +247,9 @@ var qcExt;
 			};
 
 			this.hexColorToRgb = function(hexColor) {
-				hexColor = hexColor.substring(1); // Strip #
+				if (hexColor.charAt(0) === '#') {
+					hexColor = hexColor.substring(1); // Strip #
+				}
 				var rgb = parseInt(hexColor, 16); // Convert rrggbb to decimal
 				/* jshint bitwise:false */
 				var r = rgb >> 16 & 0xff;         // Extract red
@@ -266,6 +268,34 @@ var qcExt;
 
 			this.getRgbRelativeLuminance = function(r, g, b) {
 				return 0.2126 * r + 0.7152 * g + 0.0722 * b; // Per ITU-R BT.709
+			};
+			
+			this.createTintOrShade = function(hexColor, iterations) {
+				if (typeof iterations === 'undefined') {
+					iterations = 1;
+				}
+				
+				var rgb = this.hexColorToRgb(hexColor);
+				var hsl = this.rgbToHsl(rgb[0], rgb[1], rgb[2]);
+				
+				var tint = hsl[2] < 0.5;
+
+				for (var i = iterations; i > 0; i--) {
+					// If it's a dark color, make it lighter
+					// and vice versa.
+					if (tint) {
+						// Increase the lightness by
+						// 50% (tint)
+						hsl[2] = (hsl[2] + 1) / 2;
+					} else {
+						// Decrease the lightness by
+						// 50% (shade)
+						hsl[2] /= 2;
+					}
+				}
+
+				rgb = this.hslToRgb(hsl[0], hsl[1], hsl[2]);
+				return this.rgbToHexColor(rgb[0], rgb[1], rgb[2]);
 			};
 
 			$log.debug('END colorService()');

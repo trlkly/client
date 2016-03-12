@@ -25,33 +25,30 @@
     }
     a.qc {
         cursor: pointer;
-    
+
         // START Style bits borrowed from/based on QC's own styles
         background: transparent;
         padding: 0px 4px;
         text-decoration: none;
-        
-        &, &:link
-        {
+
+        &, &:link {
             color: #2b5869;
         }
 
-        &:visited
-        {
+        &:visited {
             color: #2b5869;
         }
 
-        &:hover
-        {
+        &:hover {
             color: #907a76;
         }
         // END Style bits borrowed from/based on QC's own styles
     }
-    
+
     h1 {
         font-size: 15px;
         margin-top: 10px;
-        
+
         &.first-header {
             margin-top: 0px;
         }
@@ -104,8 +101,33 @@ a.qcnav_settings {
     text-align: left;
 
     input { width: auto; }
-    
+
     label.disabled, p.disabled {
         color: #999;
+    }
+}
+
+input {
+    margin: 0 !important;
+}
+
+a {
+    cursor: pointer;
+}
+
+.radial-progress {
+    border-radius: 50%;
+    .circle {
+        .mask, .fill, .inset {
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .mask, .fill {
+            -webkit-backface-visibility: hidden;
+            transition: -webkit-transform 1s;
+            transition: -ms-transform 1s;
+            transition: transform 1s;
+        }
     }
 }

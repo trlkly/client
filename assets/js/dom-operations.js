@@ -24,6 +24,7 @@ var qcExt;
 
 	$('body').prepend('<qc-settings></qc-settings>');
 	$('body').prepend('<qc-edit-comic-data></qc-edit-comic-data>');
+	$('body').prepend('<qc-item-details></qc-item-details>');
 
 	/**
 	 * Adds a CSS <link> element to the <head> of the document.

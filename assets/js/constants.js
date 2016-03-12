@@ -35,12 +35,17 @@ var constants;
 	}
 
 	constants.comicDataUrl = constants.webServiceBaseUrl + 'comicdata/';
-	constants.itemDataUrl = constants.webServiceBaseUrl + 'itemdata/';
 	constants.addItemToComicUrl = constants.comicDataUrl + 'additem';
 	constants.removeItemFromComicUrl = constants.comicDataUrl + 'removeitem';
 	constants.setComicTitleUrl = constants.comicDataUrl + 'settitle';
 	constants.setGuestComicUrl = constants.comicDataUrl + 'setguest';
 	constants.setNonCanonUrl = constants.comicDataUrl + 'setnoncanon';
+	
+	constants.itemDataUrl = constants.webServiceBaseUrl + 'itemdata/';
+	constants.setItemDataPropertyUrl = constants.itemDataUrl + 'setproperty';
+	
+	constants.characterImageBaseUrl = constants.baseUrl + 'images/characters/';
+	constants.characterImageExtension = 'png';
 
 	constants.comicExtensions = ['png', 'gif', 'jpg'];
 
