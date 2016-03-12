@@ -27,12 +27,15 @@ var qcExt;
 			restrict: 'E',
 			replace: true,
 			scope: {},
-			controller: [
-				function() {
+			controller: ['$scope', 'comicService',
+				function($scope, comicService) {
 					var self = this;
-
-					$('#settingsDialog').on('show.bs.modal', function() {
-						self.settings = qcExt.settings;
+					this.settings = qcExt.settings;
+					
+					$scope.$watch(function() {
+						return self.settings.showAllMembers;
+					}, function() {
+						comicService.refreshComicData();
 					});
 
 					this.close = function() {

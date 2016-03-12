@@ -56,6 +56,10 @@ var qcExt;
 				comicExtensionIndex = 0;
 				self.comicExtension =
 					constants.comicExtensions[comicExtensionIndex];
+
+				if (qcExt.settings.scrollToTop) {
+					$(unsafeWindow).scrollTop(0);
+				}
 			}
 
 			$scope.$on('$stateChangeSuccess', function() {
@@ -64,6 +68,13 @@ var qcExt;
 			});
 
 			this.refreshComicData = function() {
+				if (typeof self.comic === 'undefined') {
+					$log.debug('comicService::refreshComicData() called ' +
+						'before the comicService was properly initialized. ' +
+						'Ignored.');
+					return;
+				}
+				
 				comicDataLoadingEvent.notify();
 				var comicDataUrl = constants.comicDataUrl + self.comic;
 
@@ -83,6 +94,11 @@ var qcExt;
 
 				$http.get(comicDataUrl)
 					.then(function(response) {
+						if (response.status !== 200) {
+							onErrorLog(response);
+							return;
+						}
+						
 						var comicData = response.data;
 
 						if (comicData.hasData) {
@@ -141,10 +157,6 @@ var qcExt;
 						comicData.comic = self.comic;
 						self.comicData = comicData;
 						comicDataLoadedEvent.notify(self.comicData);
-
-						if (qcExt.settings.scrollToTop) {
-							$(unsafeWindow).scrollTop(0);
-						}
 					}, function(errorResponse) {
 
 						// TODO: ERROR HANDLING
