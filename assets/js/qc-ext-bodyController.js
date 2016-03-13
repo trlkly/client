@@ -15,8 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global unsafeWindow */
-
 var qcExt;
 
 (function(qcExt) {
@@ -26,8 +24,8 @@ var qcExt;
 		function($log, $scope, comicService) {
 			$log.debug('START bodyController()');
 
-			unsafeWindow.shortcut.remove('Left');
-			unsafeWindow.shortcut.remove('Right');
+			var isStupidFox =
+				navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
 			function previous() {
 				$scope.$apply(function() {
@@ -41,21 +39,56 @@ var qcExt;
 				});
 			}
 
-			// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-			unsafeWindow.shortcut.add('Left', previous,
-				{disable_in_input: true});
-			unsafeWindow.shortcut.add('Ctrl+Left', previous);
+			var shortcut =
+			/* jshint evil:true */
+				window.eval('window.shortcut');
+			/* jshint evil:false */
+			
+			// Firefox balks at me trying to use the "shortcut" object from
+			// my user script. Works just fine in Chrome. I can't be bothered
+			// to cater to one browser's stupidity.
+			if (isStupidFox) {
+				var shortcutRemove =
+				/* jshint evil:true */
+					window.eval('window.shortcut.remove').bind(shortcut);
+				/* jshint evil:false */
+				shortcutRemove('Left');
+				shortcutRemove('Right');
+				
+				// This is a sort of replacement for "shortcut". Only supports
+				// simple Left/Right navigation. Is missing the editor mode
+				// shortcuts because Firefox is shit.
+				window.addEventListener('keydown', function(event) {
+					if (event.keyCode === 37) {
+						// LEFT
+						previous();
+					} else if (event.keyCode === 39) {
+						// RIGHT
+						next();
+					}
+				}, false);
+			} else {
+				// See how nice it can be done when your browser doesn't
+				// actively try to sabotage you?
+				shortcut.remove('Left');
+				shortcut.remove('Right');
+				
+				// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+				shortcut.add('Left', previous,
+					{disable_in_input: true});
+				shortcut.add('Ctrl+Left', previous);
 
-			unsafeWindow.shortcut.add('Right', next, {disable_in_input: true});
-			unsafeWindow.shortcut.add('Ctrl+Right', next);
+				shortcut.add('Right', next,
+					{disable_in_input: true});
+				shortcut.add('Ctrl+Right', next);
 
-			unsafeWindow.shortcut.add('Q', function() {
-				if (qcExt.settings.editMode) {
-					$('input[id^="addItem"]').focus();
-				}
-			}, {disable_in_input: true});
-			// jscs:enable requireCamelCaseOrUpperCaseIdentifiers
-
+				shortcut.add('Q', function() {
+					if (qcExt.settings.editMode) {
+						$('input[id^="addItem"]').focus();
+					}
+				}, {disable_in_input: true});
+				// jscs:enable requireCamelCaseOrUpperCaseIdentifiers
+			}
 			$log.debug('END bodyController()');
 		}]);
 })(qcExt || (qcExt = {}));
