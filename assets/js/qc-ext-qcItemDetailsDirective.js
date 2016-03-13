@@ -28,9 +28,9 @@ var qcExt;
 			replace: true,
 			scope: {},
 			controller: ['$log', '$http', '$scope', 'colorService',
-				'comicService',
+				'comicService', 'messageReportingService',
 				function($log, $http, $scope, colorService,
-					comicService) {
+					comicService, messageReportingService) {
 					var self = this;
 
 					this.isLoading = true;
@@ -88,7 +88,8 @@ var qcExt;
 										});
 									});
 								} else {
-									$log.error(response.data);
+									messageReportingService.reportError(
+										response.data);
 								}
 							});
 					});
@@ -101,7 +102,7 @@ var qcExt;
 					};
 
 					function onErrorLog(response) {
-						$log.error(response.data);
+						messageReportingService.reportError(response.data);
 						return response;
 					}
 

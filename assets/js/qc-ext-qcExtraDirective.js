@@ -113,14 +113,17 @@ var qcExt;
 								if (!hasCast) {
 									self.missingDataInfo.push('cast members');
 								}
-								if (!hasLocation) {
+								/* #if (!hasLocation) {
 									self.missingDataInfo.push('a location');
 								}
 								if (!hasStoryline) {
 									self.missingDataInfo.push('a storyline');
-								}
+								}*/
 								if (!comicData.title) {
 									self.missingDataInfo.push('a title');
+								}
+								if (!comicData.tagline) {
+									self.missingDataInfo.push('a tagline');
 								}
 							});
 						});

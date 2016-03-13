@@ -29,8 +29,8 @@
             <div class="modal-body" ng-if="!idvm.isLoading">
                 <div class="clearfix">
                     <div style="width: 128px; height: 128px; text-align: center; position: relative; border: 1px solid #485563; box-sizing: content-box; float: left; margin-right: 15px; margin-bottom: 15px;">
-                        <i ng-if="!idvm.itemData.hasImage" class="fa fa-camera" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); color: #485563; font-size: 64px;"></i>
-                        <div ng-if="!idvm.itemData.hasImage" style="position: absolute; top: 82%; transform: translateY(-50%); width: 100%; font-size: 20px; color: #485563; font-weight: bold;">No image</div>
+                        <i ng-if="!idvm.itemData.hasImage" class="fa fa-camera" style="position: absolute; left: 50%; top: 42%; transform: translate(-50%,-50%); color: #485563; font-size: 64px;"></i>
+                        <div ng-if="!idvm.itemData.hasImage" style="position: absolute; top: 76%; transform: translateY(-50%); width: 100%; font-size: 20px; color: #485563; font-weight: bold;">No image</div>
                         <img ng-if="idvm.itemData.hasImage"  ng-src="{{idvm.itemData.imagePath}}" style="position: absolute; top: 50%; transform: translate(-50%,-50%); left: 50%;" alt="{{idvm.itemData.shortName}}">
                     </div>
                     <div style="float: right; margin-left: 15px; margin-bottom: 15px; position: relative;">
@@ -42,7 +42,7 @@
                         <b>Full name:</b> {{idvm.itemData.name}}<br>
                         <b>Short name:</b> {{idvm.itemData.shortName}}<br>
                         <b>First appearance:</b> <a ng-click="idvm.goToComic(idvm.itemData.first)">Comic {{idvm.itemData.first}}</a><br>
-                        <b>Last appearance:</b> <a ng-click="idvm.goToComic(idvm.itemData.last)">Comic {{idvm.itemData.last}}</a><br>
+                        <b>Latest appearance:</b> <a ng-click="idvm.goToComic(idvm.itemData.last)">Comic {{idvm.itemData.last}}</a><br>
                         <b>Number of appearances:</b> {{idvm.itemData.appearances}} ({{idvm.itemData.presence|number:2}}%)<br>
                         <b>Identifying color:</b> <span ng-if="idvm.settings.useColors" ng-style="{'color': idvm.itemData.color, 'background-color': idvm.itemData.highlightColor}">#{{idvm.itemData.color}}</span><span ng-if="!idvm.settings.useColors" >#{{idvm.itemData.color}}</span>
                     </p>

@@ -51,7 +51,7 @@
                             <i ng-switch-when="null" class="fa fa-forward no-nav"></i>
                             <a class="qc" ng-switch-default ng-href="view.php?comic={{item.next}}"><i class="fa fa-forward"></i></a>
                         </td>
-                        <td class="qcnav_arrows" title="{{item.last ? 'Last strip with ' + item.shortName :''}}" ng-switch="item.last">
+                        <td class="qcnav_arrows" title="{{item.last ? 'Latest strip with ' + item.shortName :''}}" ng-switch="item.last">
                             <i ng-switch-when="null" class="fa fa-fast-forward no-nav"></i>
                             <a class="qc" ng-switch-default ng-href="view.php?comic={{item.last}}"><i class="fa fa-fast-forward"></i></a>
                         </td>
@@ -83,6 +83,11 @@
         <tr ng-show="e.settings.editMode">
             <td>
                 <qc-set-title></qc-set-title>
+            </td>
+        </tr>
+        <tr ng-show="e.settings.editMode">
+            <td>
+                <qc-set-tagline></qc-set-tagline>
             </td>
         </tr>
     </tbody>

@@ -38,6 +38,7 @@ var constants;
 	constants.addItemToComicUrl = constants.comicDataUrl + 'additem';
 	constants.removeItemFromComicUrl = constants.comicDataUrl + 'removeitem';
 	constants.setComicTitleUrl = constants.comicDataUrl + 'settitle';
+	constants.setComicTaglineUrl = constants.comicDataUrl + 'settagline';
 	constants.setGuestComicUrl = constants.comicDataUrl + 'setguest';
 	constants.setNonCanonUrl = constants.comicDataUrl + 'setnoncanon';
 	

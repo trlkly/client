@@ -24,10 +24,10 @@ var qcExt;
 
 	qcExt.app.service('comicService', ['$log', '$stateParams', '$location',
 		'$rootScope', '$http', 'latestComic', 'eventFactory', 'colorService',
-		'styleService',
+		'styleService', 'messageReportingService',
 		function($log, $stateParams, $location,
 			$scope, $http, latestComic, Event, colorService,
-			styleService) {
+			styleService, messageReportingService) {
 			$log.debug('START comicService()');
 			var comicDataLoadingEvent =
 				new Event(constants.comicdataLoadingEvent);
@@ -56,6 +56,10 @@ var qcExt;
 				comicExtensionIndex = 0;
 				self.comicExtension =
 					constants.comicExtensions[comicExtensionIndex];
+
+				if (qcExt.settings.scrollToTop) {
+					$(unsafeWindow).scrollTop(0);
+				}
 			}
 
 			$scope.$on('$stateChangeSuccess', function() {
@@ -63,7 +67,19 @@ var qcExt;
 				self.refreshComicData();
 			});
 
+			function onErrorLog(response) {
+				messageReportingService.reportError(response.data);
+				return response;
+			}
+
 			this.refreshComicData = function() {
+				if (typeof self.comic === 'undefined') {
+					$log.debug('comicService::refreshComicData() called ' +
+						'before the comicService was properly initialized. ' +
+						'Ignored.');
+					return;
+				}
+				
 				comicDataLoadingEvent.notify();
 				var comicDataUrl = constants.comicDataUrl + self.comic;
 
@@ -83,6 +99,11 @@ var qcExt;
 
 				$http.get(comicDataUrl)
 					.then(function(response) {
+						if (response.status !== 200) {
+							onErrorLog(response);
+							return;
+						}
+						
 						var comicData = response.data;
 
 						if (comicData.hasData) {
@@ -141,21 +162,11 @@ var qcExt;
 						comicData.comic = self.comic;
 						self.comicData = comicData;
 						comicDataLoadedEvent.notify(self.comicData);
-
-						if (qcExt.settings.scrollToTop) {
-							$(unsafeWindow).scrollTop(0);
-						}
 					}, function(errorResponse) {
-
-						// TODO: ERROR HANDLING
+						onErrorLog(errorResponse);
 						comicDataErrorEvent.notify(errorResponse.data);
 					});
 			};
-
-			function onErrorLog(response) {
-				$log.error(response.data);
-				return response;
-			}
 
 			function onSuccessRefreshElseErrorLog(response) {
 				if (response.status === 200) {
@@ -193,6 +204,16 @@ var qcExt;
 					title: title
 				};
 				return $http.post(constants.setComicTitleUrl, data)
+					.then(onSuccessRefreshElseErrorLog, onErrorLog);
+			};
+
+			this.setTagline = function(tagline) {
+				var data = {
+					token: qcExt.settings.editModeToken,
+					comic: self.comic,
+					tagline: tagline
+				};
+				return $http.post(constants.setComicTaglineUrl, data)
 					.then(onSuccessRefreshElseErrorLog, onErrorLog);
 			};
 

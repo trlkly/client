@@ -11,7 +11,7 @@
       statistics that I'm sure I'll think of someday.
 * Comic bookmarks (keep your place/make a favorite list/etc.)
 * The "show all members" setting should not affect the "Edit comic data" dialog
-* Show proper error message dialog instead of just logging to console when web service calls fail
+    - Conversely, a comic without comic data should not prevent "show all members" from working
 * Clean up the use of $scope.safeApply -- can probably be mostly solved by doing the $apply in the replaced $http service, like I assume is the case in the real $http.
 * Show more details in item detail dialog. Some ideas:
     - Which other cast members are most often seen with this one?

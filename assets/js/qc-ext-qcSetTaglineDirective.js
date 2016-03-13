@@ -22,14 +22,14 @@ var qcExt;
 (function(qcExt) {
 	'use strict';
 
-	qcExt.app.directive('qcSetTitle', function() {
+	qcExt.app.directive('qcSetTagline', function() {
 		return {
 			restrict: 'E',
 			replace: true,
 			scope: {},
 			controller: ['$scope', '$log', 'comicService', 'eventFactory',
 				function($scope, $log, comicService, Event) {
-					$log.debug('START qcSetTitle()');
+					$log.debug('START qcSetTagline()');
 
 					var self = this;
 
@@ -52,26 +52,26 @@ var qcExt;
 					this.keyPress = function(event) {
 						if (event.keyCode === 13) {
 							// ENTER key
-							self.setTitle();
+							self.setTagline();
 						}
 					};
 
-					this.setTitle = function() {
-						comicService.setTitle(self.title);
+					this.setTagline = function() {
+						comicService.setTagline(self.tagline);
 					};
 
-					this.title = '';
+					this.tagline = '';
 					comicDataLoadedEvent.subscribe($scope,
 						function(event, comicData) {
 							$scope.safeApply(function() {
-								self.title = comicData.title;
+								self.tagline = comicData.tagline;
 							});
 						});
 
-					$log.debug('END qcSetTitle()');
+					$log.debug('END qcSetTagline()');
 				}],
 			controllerAs: 's',
-			template: qcExt.variables.angularTemplates.setTitle
+			template: qcExt.variables.angularTemplates.setTagline
 		};
 	});
 })(qcExt || (qcExt = {}));
