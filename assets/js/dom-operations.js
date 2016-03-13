@@ -99,4 +99,8 @@ var qcExt;
 
 	// Set up ng-controller for <body>
 	$('body').attr('ng-controller', 'bodyController as b');
+	
+	// Fixed positioned element covering the whole page used to show messages
+	// See the messageReportingService for details.
+	$('body').append('<div id="messageSeat"></div>');
 })(qcExt || (qcExt = {}));

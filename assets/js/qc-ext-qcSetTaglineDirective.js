@@ -27,9 +27,8 @@ var qcExt;
 			restrict: 'E',
 			replace: true,
 			scope: {},
-			controller: ['$http', '$scope', '$log', '$timeout', 'comicService',
-				'eventFactory',
-				function($http, $scope, $log, $timeout, comicService, Event) {
+			controller: ['$scope', '$log', 'comicService', 'eventFactory',
+				function($scope, $log, comicService, Event) {
 					$log.debug('START qcSetTagline()');
 
 					var self = this;

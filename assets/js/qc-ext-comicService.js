@@ -24,10 +24,10 @@ var qcExt;
 
 	qcExt.app.service('comicService', ['$log', '$stateParams', '$location',
 		'$rootScope', '$http', 'latestComic', 'eventFactory', 'colorService',
-		'styleService',
+		'styleService', 'messageReportingService',
 		function($log, $stateParams, $location,
 			$scope, $http, latestComic, Event, colorService,
-			styleService) {
+			styleService, messageReportingService) {
 			$log.debug('START comicService()');
 			var comicDataLoadingEvent =
 				new Event(constants.comicdataLoadingEvent);
@@ -66,6 +66,11 @@ var qcExt;
 				updateComic();
 				self.refreshComicData();
 			});
+
+			function onErrorLog(response) {
+				messageReportingService.reportError(response.data);
+				return response;
+			}
 
 			this.refreshComicData = function() {
 				if (typeof self.comic === 'undefined') {
@@ -158,16 +163,10 @@ var qcExt;
 						self.comicData = comicData;
 						comicDataLoadedEvent.notify(self.comicData);
 					}, function(errorResponse) {
-
-						// TODO: ERROR HANDLING
+						onErrorLog(errorResponse);
 						comicDataErrorEvent.notify(errorResponse.data);
 					});
 			};
-
-			function onErrorLog(response) {
-				$log.error(response.data);
-				return response;
-			}
 
 			function onSuccessRefreshElseErrorLog(response) {
 				if (response.status === 200) {
