@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global constants, unsafeWindow */
+/* global constants */
 
 var qcExt;
 
@@ -58,7 +58,7 @@ var qcExt;
 					constants.comicExtensions[comicExtensionIndex];
 
 				if (qcExt.settings.scrollToTop) {
-					$(unsafeWindow).scrollTop(0);
+					$(window).scrollTop(0);
 				}
 			}
 
