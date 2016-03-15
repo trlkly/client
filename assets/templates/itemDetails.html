@@ -47,6 +47,15 @@
                         <b>Identifying color:</b> <span ng-if="idvm.settings.useColors" ng-style="{'color': idvm.itemData.color, 'background-color': idvm.itemData.highlightColor}">#{{idvm.itemData.color}}</span><span ng-if="!idvm.settings.useColors" >#{{idvm.itemData.color}}</span>
                     </p>
                 </div>
+                <div class="row">
+                    <hr style="margin-top: 0; margin-bottom: 10px;">
+                    <div class="col-xs-6" ng-show="idvm.itemData.friends">
+                        <p>Most often spotted with:</p>
+                        <ul>
+                            <li ng-repeat="friend in idvm.itemData.friends"><a ng-click="idvm.showInfoFor(friend.id)">{{friend.shortName}}</a> in {{friend.count}} comics ({{friend.percentage|number:2}}%)</li>
+                        </ul>
+                    </div>
+                </div>
                 <div ng-if="idvm.settings.editMode" class="row form-horizontal">
                     <hr style="margin-top: 0">
                     <div class="form-group">

@@ -43,6 +43,7 @@ var constants;
 	constants.setNonCanonUrl = constants.comicDataUrl + 'setnoncanon';
 	
 	constants.itemDataUrl = constants.webServiceBaseUrl + 'itemdata/';
+	constants.itemFriendDataUrl = constants.itemDataUrl + 'friends/';
 	constants.setItemDataPropertyUrl = constants.itemDataUrl + 'setproperty';
 	
 	constants.characterImageBaseUrl = constants.baseUrl + 'images/characters/';

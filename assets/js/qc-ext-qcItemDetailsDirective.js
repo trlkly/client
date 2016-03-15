@@ -46,53 +46,80 @@ var qcExt;
 							this.$apply(fn);
 						}
 					};
-
-					$('#itemDetailsDialog').on('show.bs.modal', function() {
+					
+					function getItemDetails() {
 						var itemId = $('#itemDetailsDialog').data('itemId');
 						$log.debug('qcItemDetails::showModal() - item id:',
 							itemId);
+							
+						function handleItemFriendsData(response) {
+							if (response.status === 200) {
+								var friendData = response.data;
+								
+								$.each(friendData, function(_, friend) {
+									friend.percentage = friend.count /
+										self.itemData.appearances * 100;
+								});
+								
+								$scope.safeApply(function() {
+									self.itemData.friends = friendData;
+								});
+							}
+						}
+
+						function handleItemData(response) {
+							if (response.status === 200) {
+								var itemData = response.data;
+
+								itemData.highlightColor = colorService
+									.createTintOrShade(itemData.color);
+
+								if (itemData.hasImage) {
+									itemData.imagePath =
+										constants.characterImageBaseUrl +
+										itemData.id + '.' +
+										constants.characterImageExtension;
+								}
+
+								$log.debug('qcItemDetails::showModal() - ' +
+									'item data:', itemData);
+
+								// If the color changes, also update the
+								// highlight color
+								$scope.safeApply(function() {
+									self.itemData = itemData;
+									self.isLoading = false;
+
+									$scope.$watch(function() {
+										return self.itemData.color;
+									}, function() {
+										itemData.highlightColor =
+											colorService
+											.createTintOrShade(
+												itemData.color);
+									});
+								});
+
+								$http.get(constants.itemFriendDataUrl + itemId)
+									.then(handleItemFriendsData);
+							} else {
+								messageReportingService.reportError(
+									response.data);
+							}
+						}
 
 						self.itemData = {};
 						self.isLoading = true;
-						$http.get(constants.itemDataUrl + itemId).then(
-							function(response) {
-								if (response.status === 200) {
-									var itemData = response.data;
+						$http.get(constants.itemDataUrl + itemId)
+							.then(handleItemData);
+					}
 
-									itemData.highlightColor = colorService
-										.createTintOrShade(itemData.color);
-
-									if (itemData.hasImage) {
-										itemData.imagePath =
-											constants.characterImageBaseUrl +
-											itemData.id + '.' +
-											constants.characterImageExtension;
-									}
-
-									$log.debug('qcItemDetails::showModal() - ' +
-										'item data:', itemData);
-
-									// If the color changes, also update the
-									// highlight color
-									$scope.safeApply(function() {
-										self.itemData = itemData;
-										self.isLoading = false;
-
-										$scope.$watch(function() {
-											return self.itemData.color;
-										}, function() {
-											itemData.highlightColor =
-												colorService
-												.createTintOrShade(
-													itemData.color);
-										});
-									});
-								} else {
-									messageReportingService.reportError(
-										response.data);
-								}
-							});
-					});
+					$('#itemDetailsDialog').on('show.bs.modal', getItemDetails);
+					
+					this.showInfoFor = function(id) {
+						$('#itemDetailsDialog').data('itemId', id);
+						getItemDetails();
+					};
 
 					this.keypress = function(event, property) {
 						if (event.keyCode === 13) {
