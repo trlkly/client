@@ -104,8 +104,16 @@ var qcExt;
 						var comicData = response.data;
 
 						if (comicData.hasData) {
-							self.nextComic = comicData.next;
-							self.previousComic = comicData.previous;
+							if (comicData.next !== null) {
+								self.nextComic = comicData.next;
+							} else {
+								self.nextComic = latestComic;
+							}
+							if (comicData.previous !== null) {
+								self.previousComic = comicData.previous;
+							} else {
+								self.previousComic = 1;
+							}
 							
 							angular.forEach(comicData.items,
 								function(value) {
