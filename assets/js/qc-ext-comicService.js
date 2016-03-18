@@ -49,9 +49,6 @@ var qcExt;
 				}
 
 				self.comic = comic;
-				self.nextComic = comic + 1 > latestComic ?
-					latestComic : comic + 1;
-				self.previousComic = comic - 1 < 1 ? 1 : comic - 1;
 				self.latestComic = latestComic;
 				comicExtensionIndex = 0;
 				self.comicExtension =
@@ -107,6 +104,17 @@ var qcExt;
 						var comicData = response.data;
 
 						if (comicData.hasData) {
+							if (comicData.next !== null) {
+								self.nextComic = comicData.next;
+							} else {
+								self.nextComic = latestComic;
+							}
+							if (comicData.previous !== null) {
+								self.previousComic = comicData.previous;
+							} else {
+								self.previousComic = 1;
+							}
+							
 							angular.forEach(comicData.items,
 								function(value) {
 									/* jshint eqeqeq:false */
@@ -157,6 +165,11 @@ var qcExt;
 											qcNavItemWithColor, itemStyle);
 									}
 								});
+						} else {
+							self.nextComic = self.comic + 1 > latestComic ?
+								latestComic : self.comic + 1;
+							self.previousComic = self.comic - 1 < 1 ? 1 :
+								self.comic - 1;
 						}
 
 						comicData.comic = self.comic;
@@ -257,23 +270,11 @@ var qcExt;
 			};
 
 			this.previous = function() {
-				var previousComic = Number($stateParams.comic) - 1;
-
-				if (previousComic < 1) {
-					previousComic = 1;
-				}
-
-				self.gotoComic(previousComic);
+				self.gotoComic(self.previousComic);
 			};
 
 			this.next = function() {
-				var nextComic = Number($stateParams.comic) + 1;
-
-				if (nextComic > latestComic) {
-					nextComic = latestComic;
-				}
-
-				self.gotoComic(nextComic);
+				self.gotoComic(self.nextComic);
 			};
 
 			this.last = function() {

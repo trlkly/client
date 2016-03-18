@@ -57,8 +57,14 @@ var qcExt;
 				
 				// This is a sort of replacement for "shortcut". Only supports
 				// simple Left/Right navigation. Is missing the editor mode
-				// shortcuts because Firefox is shit.
+				// shortcuts because Firefox is behaving like shit.
 				window.addEventListener('keydown', function(event) {
+					// Only if no special keys are held down
+					if (event.altKey || event.ctrlKey || event.metaKey ||
+						event.shiftKey) {
+						return;
+					}
+					
 					if (event.keyCode === 37) {
 						// LEFT
 						previous();
