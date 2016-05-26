@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global constants */
+/* global constants, console */
 
 var qcExt;
 
@@ -73,13 +73,6 @@ var qcExt;
 	// ComicAnchor.replaceWith('<div ui-view="comic"></div>');
 	comicAnchor.replaceWith('<qc-comic></qc-comic>');
 
-	// Figure out what the latest comic # is based on the URL in the
-	// "Latest/Last" navigation button.
-	var latestUrl = $('#comicnav a').get(3).href;
-	var latestComic = parseInt(latestUrl.split('=')[1]);
-
-	qcExt.app.constant('latestComic', latestComic);
-
 	var comicImage = comicImg.get(0);
 	var comicLinkUrl = comicImage.src;
 
@@ -87,6 +80,20 @@ var qcExt;
 	var comic = parseInt(comicLinkUrl[comicLinkUrl.length - 1].split('.')[0]);
 
 	qcExt.app.constant('startComic', comic);
+
+	// Figure out what the latest comic # is based on the URL in the
+	// "Latest/Last" navigation button.
+	var latestUrl = $('#comicnav a').get(3).href;
+	var latestComic = parseInt(latestUrl.split('=')[1]);
+	if (isNaN(latestComic)) {
+		latestComic = comic;
+	}
+	
+	if (qcExt.settings.showDebugLogs) {
+		console.debug('Latest URL:', latestUrl, 'Latest Comic:', latestComic);
+	}
+
+	qcExt.app.constant('latestComic', latestComic);
 
 	$('body #comicnav')
 		.replaceWith('<qc-nav random-comic="randomComic"></qc-nav>');
