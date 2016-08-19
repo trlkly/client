@@ -97,7 +97,7 @@ var qcExt;
 
 	$('body #comicnav')
 		.replaceWith('<qc-nav random-comic="randomComic"></qc-nav>');
-	$('#news').replaceWith('<qc-news></qc-news>');
+	$('#news, #newspost').replaceWith('<qc-news></qc-news>');
 
 	// $('#side').prepend('<qc-extra></qc-extra>');
 	$('#container .small-2').prepend('<qc-extra></qc-extra>');
