@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global constants */
+/* global constants, console */
 
 var qcExt;
 
@@ -60,7 +60,7 @@ var qcExt;
 	// For some reason, Jeph didn't use id="strip" on the comic <img> on
 	// the front page. Whyyy????
 	// (In other words, we have to use this method instead of just '#strip'.)
-	var comicImg = $('#comic img');
+	var comicImg = $('img[src*="/comics/"]');
 	var comicAnchor = comicImg.parent('a');
 
 	if (comicAnchor.length !== 1) {
@@ -73,13 +73,6 @@ var qcExt;
 	// ComicAnchor.replaceWith('<div ui-view="comic"></div>');
 	comicAnchor.replaceWith('<qc-comic></qc-comic>');
 
-	// Figure out what the latest comic # is based on the URL in the
-	// "Latest/Last" navigation button.
-	var latestUrl = $('#comicnav a').get(3).href;
-	var latestComic = parseInt(latestUrl.split('=')[1]);
-
-	qcExt.app.constant('latestComic', latestComic);
-
 	var comicImage = comicImg.get(0);
 	var comicLinkUrl = comicImage.src;
 
@@ -88,11 +81,26 @@ var qcExt;
 
 	qcExt.app.constant('startComic', comic);
 
+	// Figure out what the latest comic # is based on the URL in the
+	// "Latest/Last" navigation button.
+	var latestUrl = $('#comicnav a').get(3).href;
+	var latestComic = parseInt(latestUrl.split('=')[1]);
+	if (isNaN(latestComic)) {
+		latestComic = comic;
+	}
+	
+	if (qcExt.settings.showDebugLogs) {
+		console.debug('Latest URL:', latestUrl, 'Latest Comic:', latestComic);
+	}
+
+	qcExt.app.constant('latestComic', latestComic);
+
 	$('body #comicnav')
 		.replaceWith('<qc-nav random-comic="randomComic"></qc-nav>');
 	$('#news').replaceWith('<qc-news></qc-news>');
 
-	$('#side').prepend('<qc-extra></qc-extra>');
+	// $('#side').prepend('<qc-extra></qc-extra>');
+	$('#container .small-2').prepend('<qc-extra></qc-extra>');
 
 	// Set a base (required by Angular's html5Mode)
 	$('head').append('<base href="' + window.location.origin + '/">');

@@ -94,24 +94,61 @@ var qcExt;
 							});
 					}
 					loadItemData();
+					
+					function escapeRegExp(s) {
+						return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+					}
 
 					this.searchChanged = function() {
+						var filterText = self.itemFilterText;
+						
+						if (filterText.charAt(0) === '!') {
+							filterText = filterText.substr(1);
+						} else if (filterText.charAt(0) === '@') {
+							filterText = filterText.substr(1);
+						} else if (filterText.charAt(0) === '#') {
+							filterText = filterText.substr(1);
+						}
+						
 						addCastItem.shortName = addCastTemplate +
-							'\'' + self.itemFilter.shortName + '\'';
-						addCastItem.name = self.itemFilter.shortName;
+							'\'' + filterText + '\'';
+						addCastItem.name = filterText;
 						addStorylineItem.shortName = addStorylineTemplate +
-							'\'' + self.itemFilter.shortName + '\'';
-						addStorylineItem.name = self.itemFilter.shortName;
+							'\'' + filterText + '\'';
+						addStorylineItem.name = filterText;
 						addLocationItem.shortName = addLocationTemplate +
-							'\'' + self.itemFilter.shortName + '\'';
-						addLocationItem.name = self.itemFilter.shortName;
+							'\'' + filterText + '\'';
+						addLocationItem.name = filterText;
 					};
 
 					var triggeredFocus = false;
 					var dropdownOpen = false;
 					var firstRun = true;
 
-					this.itemFilter = {shortName: ''};
+					this.itemFilterText = '';
+					this.itemFilter = function(value) {
+						var filterText = self.itemFilterText;
+						
+						var result = true;
+						if (filterText.charAt(0) === '!') {
+							result = value.type === 'cast';
+							filterText = filterText.substr(1);
+						} else if (filterText.charAt(0) === '@') {
+							result = value.type === 'location';
+							filterText = filterText.substr(1);
+						} else if (filterText.charAt(0) === '#') {
+							result = value.type === 'storyline';
+							filterText = filterText.substr(1);
+						}
+						
+						var searchRegex = new RegExp(
+							escapeRegExp(filterText), 'i');
+						result = result &&
+							value.shortName.match(searchRegex) !== null;
+						
+						return result;
+					};
+					// {shortName: ''};
 					this.focusSearch = function() {
 						$log.debug('qcAdditem(): #1 Search focused');
 						if (firstRun) {
@@ -172,7 +209,7 @@ var qcExt;
 							if (response.status === 200) {
 								itemsChangedEvent.notify();
 								$scope.safeApply(function() {
-									self.itemFilter.shortName = '';
+									self.itemFilterText = '';
 								});
 							}
 						});
