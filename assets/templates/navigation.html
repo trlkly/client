@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ul class="inline-list" id="comicnav">
+<ul class="menu" id="comicnav">
     <li><a href="view.php?comic=1" ng-click="n.first($event)">First</a></li>
     <li><a ng-href="view.php?comic={{n.comicService.previousComic}}" ng-click="n.previous($event)">Previous</a></li>
     <li><a ng-href="view.php?comic={{n.comicService.nextComic}}" ng-click="n.next($event)">Next</a></li>
