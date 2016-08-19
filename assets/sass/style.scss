@@ -16,12 +16,19 @@
  */
 
 #qcnav_navbox {
-    width: calc(100% - 10px);
+    margin: 40px 5px 5px 5px;
     text-align: center;
-    margin: 5px;
+    
+    * {
+        border: none;
+    }
+    
+    > tbody > tr, > thead > tr {
+        background-color: #ffffff !important;
+    }
 
-    td {
-        //padding: 3px 1px;
+    thead td, thead th {
+        text-align: center;
     }
     a.qc {
         cursor: pointer;
@@ -55,6 +62,22 @@
     }
 }
 
+@media screen and (min-width: 1015px) {
+    // Large screens (wider than the automatically resizing comics)
+    img[src*="/comics/"] {
+        margin-left: -15px;
+    }
+    
+    #qcnav_navbox {
+        margin-left: -48px;
+        width: 200px;
+    }
+}
+
+@media screen and (max-width: 639px) {
+    // Small screens (mobile)
+}
+
 .qcnav_space {
     padding: 3px;
 }
@@ -68,6 +91,9 @@
     width: 100%;
     font-weight: bold;
     margin: 0;
+    * {
+        background-color: transparent;
+    }
     a {
         text-decoration: none;
     }
