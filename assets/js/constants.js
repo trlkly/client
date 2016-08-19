@@ -24,7 +24,7 @@ var constants;
 
 	// Set this to true when working against your local test server.
 	// NEVER CHECK THIS FILE IN WITH developmentMode = true!
-	var developmentMode = false;
+	var developmentMode = true;
 	if (developmentMode) {
 		constants.baseUrl =
 			'http://localhost/questionablecontentextensions/web/';

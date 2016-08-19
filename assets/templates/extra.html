@@ -29,11 +29,39 @@
     </thead>
     <tbody id="qcnav_navbody">
         <tr ng-repeat="message in e.messages">
-            <td>{{ message}}</td>
+            <td>{{ message }}</td>
+        </tr>
+        <tr ng-if="e.settings.editMode && e.editorData.missing.any">
+            <td>
+                <h1 class="first-header">Comics with missing items</h1>
+                <table ng-if="e.editorData.missing.cast.first !== null " class="qcnav_navelement" id="qcnav_item_missing_cast" ng-class="{'with_color': $root.settings.useColors}">
+                    <tr>
+                        <td class="qcnav_arrows" title="{{e.editorData.missing.cast.previous ? 'First strip missing cast' : ''}}" ng-switch="e.editorData.missing.cast.first">
+                            <i ng-switch-when="null" class="fa fa-fast-backward no-nav"></i>
+                            <a class="qc" ng-switch-default ng-href="view.php?comic={{e.editorData.missing.cast.first}}"><i class="fa fa-fast-backward"></i></a>
+                        </td>
+                        <td class="qcnav_arrows" title="{{e.editorData.missing.cast.previous ? 'Previous strip missing cast' : ''}}" ng-switch="e.editorData.missing.cast.previous">
+                            <i ng-switch-when="null" class="fa fa-backward no-nav"></i>
+                            <a class="qc" ng-switch-default ng-href="view.php?comic={{e.editorData.missing.cast.previous}}"><i class="fa fa-backward"></i></a>
+                        </td>
+                        <td class="qcnav_name" title="Comics missing cast">
+                            <a class="qcnav_name_link">Comics missing cast</a>
+                        </td>
+                        <td class="qcnav_arrows" title="{{e.editorData.missing.cast.next ? 'Next strip with missing cast' : ''}}" ng-switch="e.editorData.missing.cast.next">
+                            <i ng-switch-when="null" class="fa fa-forward no-nav"></i>
+                            <a class="qc" ng-switch-default ng-href="view.php?comic={{e.editorData.missing.cast.next}}"><i class="fa fa-forward"></i></a>
+                        </td>
+                        <td class="qcnav_arrows" title="{{e.editorData.missing.cast.next ? 'Last strip with missing cast' : ''}}" ng-switch="e.editorData.missing.cast.last">
+                            <i ng-switch-when="null" class="fa fa-fast-forward no-nav"></i>
+                            <a class="qc" ng-switch-default ng-href="view.php?comic={{e.editorData.missing.cast.last}}"><i class="fa fa-fast-forward"></i></a>
+                        </td>
+                    </tr>
+                </table>
+            </td>
         </tr>
         <tr ng-repeat="(type, typeItems) in e.items">
             <td>
-                <h1 ng-class="{'first-header': $first}">{{e.getTypeDescription(type)}}</h1>
+                <h1 ng-class="{'first-header': $first && !(e.settings.editMode && e.editorData.missing.any)}">{{e.getTypeDescription(type)}}</h1>
                 <table ng-repeat="item in typeItems" class="qcnav_navelement" id="{{'qcnav_item_' + item.id}}" ng-class="{'with_color': $root.settings.useColors}">
                     <tr>
                         <td class="qcnav_arrows" title="{{item.first ? 'First strip with ' + item.shortName : ''}}" ng-switch="item.first">
