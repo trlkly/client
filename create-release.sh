@@ -9,7 +9,7 @@ grunt build
 # Copy to release
 cp dist/qc-ext.min.user.js /var/www/html/questionablecontentextensions/web/releases/qc-ext.$1.user.js
 cp dist/qc-ext.min.user.js /var/www/html/questionablecontentextensions/web/releases/qc-ext.latest.user.js
-printf "<?php\n\$p=json_decode(file_get_contents('package.json'));echo(\$p->userscriptBanner);" | php > /var/www/html/questionablecontentextensions/web/releases/qc-ext.latest.meta.js
+printf "<?php\n\$p=json_decode(file_get_contents('package.json'));echo(str_replace('<%%= pkg.version %%>', '$1', \$p->userscriptBanner));" | php > /var/www/html/questionablecontentextensions/web/releases/qc-ext.latest.meta.js
 
 # Don't forget to publish!
 echo
