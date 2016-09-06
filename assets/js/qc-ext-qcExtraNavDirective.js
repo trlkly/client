@@ -34,7 +34,9 @@ var qcExt;
 				lastTitle: '@',
 				name: '@',
 				nameTitle: '@',
-				clickAction: '&'
+				clickAction: '&',
+				tagMode: '=',
+				tagAction: '&'
 			},
 			template: qcExt.variables.angularTemplates.extraNav
 		};

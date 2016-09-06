@@ -116,7 +116,9 @@
                               last-value="item.last"
                               name="{{item.shortName}}"
                               name-title="{{item.name}}"
-                              click-action="e.showDetailsFor(item)">
+                              click-action="e.showDetailsFor(item)"
+                              tag-mode="e.settings.editMode && item.type == 'cast'"
+                              tag-action="e.enableTagModeFor(item)">
                 </qc-extra-nav>
             </td>
         </tr>

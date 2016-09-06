@@ -26,6 +26,7 @@
         </td>
         <td class="qcnav_name" title="{{nameTitle}}">
             <a class="qcnav_name_link" ng-click="clickAction()">{{name}}</a>
+            <a class="qcnav_name_link" ng-click="tagAction()" ng-if="tagMode" title="Tag {{name}}"><i class="fa fa-tag" aria-hidden="true"></i></a>
         </td>
         <td class="qcnav_arrows" title="{{nextTitle}}" ng-switch="nextValue">
             <i ng-switch-when="null" class="fa fa-forward no-nav"></i>

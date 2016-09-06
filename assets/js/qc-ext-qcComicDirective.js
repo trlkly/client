@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global console */
+
 var qcExt;
 
 (function(qcExt) {
@@ -28,6 +30,13 @@ var qcExt;
 			controller: ['comicService',
 				function(comicService) {
 					this.comicService = comicService;
+					
+					this.next = function($event) {
+						console.log($event);
+						$event.preventDefault();
+						$event.stopPropagation();
+						return false;
+					};
 				}],
 			controllerAs: 'c',
 			template: qcExt.variables.angularTemplates.comic

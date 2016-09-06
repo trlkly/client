@@ -14,6 +14,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<a ng-href="view.php?comic={{c.comicService.nextComic}}">
-    <img id="strip" ng-src="http://questionablecontent.net/comics/{{c.comicService.comic}}.{{c.comicService.comicExtension}}" ng-click="c.next($event)" on-error="c.comicService.canFallback() && c.comicService.tryFallback()">
+<a ng-href="view.php?comic={{c.comicService.nextComic}}" ng-click="c.next($event)">
+    <img id="strip" ng-src="http://questionablecontent.net/comics/{{c.comicService.comic}}.{{c.comicService.comicExtension}}" on-error="c.comicService.canFallback() && c.comicService.tryFallback()">
 </a>

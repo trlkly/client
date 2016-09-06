@@ -4,15 +4,17 @@
             "attributes": {
                 "last-value": {},
                 "previous-value": {},
+                "previous-title": {},
+                "last-title": {},
+                "tag-mode": {},
+                "name-title": {},
+                "first-title": {},
                 "click-action": {},
                 "next-title": {},
-                "previous-title": {},
                 "next-value": {},
-                "last-title": {},
-                "name-title": {},
                 "name": {},
-                "first-title": {},
-                "first-value": {}
+                "first-value": {},
+                "tag-action": {}
             }
         },
         "qc-news": {},
