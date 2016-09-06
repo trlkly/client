@@ -81,6 +81,9 @@ var qcExt;
 				var comicDataUrl = constants.comicDataUrl + self.comic;
 
 				var urlParameters = {};
+				if (qcExt.settings.editMode) {
+					urlParameters.token = qcExt.settings.editModeToken;
+				}
 				if (qcExt.settings.skipGuest) {
 					urlParameters.exclude = 'guest';
 				} else if (qcExt.settings.skipNonCanon) {
