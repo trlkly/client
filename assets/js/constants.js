@@ -21,6 +21,9 @@ var constants;
 	'use strict';
 
 	constants.settingsKey = 'settings';
+	
+	// Comics after 3132 should have a tagline
+	constants.taglineThreshold = 3132;
 
 	// Set this to true when working against your local test server.
 	// NEVER CHECK THIS FILE IN WITH developmentMode = true!

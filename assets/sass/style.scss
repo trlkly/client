@@ -176,3 +176,24 @@ a {
         font-size: 15px;
     }
 }
+
+#qcnav_item_missing_cast, #qcnav_item_missing_location, #qcnav_item_missing_storyline
+, #qcnav_item_missing_title, #qcnav_item_missing_tagline {
+    
+    a.qcnav_name_link {
+        cursor: pointer;
+        text-decoration: none;
+    }
+    
+    > table.with_color {
+        background-color: #5f0000;
+
+        a.qcnav_name_link, a:link, a:visited {
+            color: #ff3030;
+        }
+
+        a:hover, a:focus {
+            color: #ff9797;
+        }
+    }
+}
