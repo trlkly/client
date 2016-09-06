@@ -130,7 +130,7 @@ var qcExt;
 									/* jshint eqeqeq:true */
 
 									var qcNavItem = '#qcnav_item_' +
-										value.id;
+										value.id + ' > table';
 									var qcNavItemWithColor = qcNavItem +
 										'.with_color';
 

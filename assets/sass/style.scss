@@ -184,7 +184,7 @@ a {
         text-decoration: none;
     }
     
-    &.with_color {
+    > table.with_color {
         background-color: #5f0000;
 
         a.qcnav_name_link, a:link, a:visited {

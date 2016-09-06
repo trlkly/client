@@ -75,10 +75,16 @@ var qcExt;
 					reset();
 
 					self.editorData = comicData.editorData;
-					self.editorData.missing.any =
-						self.editorData.missing.cast.first !== null ||
-						self.editorData.missing.location.first !== null ||
+					self.editorData.missing.cast.any =
+						self.editorData.missing.cast.first !== null;
+					self.editorData.missing.location.any =
+						self.editorData.missing.location.first !== null;
+					self.editorData.missing.storyline.any =
 						self.editorData.missing.storyline.first !== null;
+					self.editorData.missing.any =
+						self.editorData.missing.cast.any ||
+						self.editorData.missing.location.any ||
+						self.editorData.missing.storyline.any;
 
 					/* jshint eqeqeq:false */
 					/* jscs:disable maximumLineLength */
