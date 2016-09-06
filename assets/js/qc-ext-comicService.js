@@ -148,21 +148,21 @@ var qcExt;
 										// jscs:disable maximumLineLength
 										var itemStyle =
 											qcNavItemWithColor + '{' +
-											    'background-color:' + backgroundColor + ';' +
+												'background-color:' + backgroundColor + ';' +
 											'}' +
 											qcNavItemWithColor + ',' +
 											qcNavItemWithColor + ' a.qcnav_name_link,' +
 											qcNavItemWithColor + ' a:link,' +
 											qcNavItemWithColor + ' a:visited{' +
-											    'color:' + foregroundColor + ';' +
+												'color:' + foregroundColor + ';' +
 											'}' +
 											qcNavItem + ' a.qcnav_name_link{' +
-											    'cursor: pointer;' +
-											    'text-decoration: none;' +
+												'cursor: pointer;' +
+												'text-decoration: none;' +
 											'}' +
 											qcNavItemWithColor + ' a:hover,' +
 											qcNavItemWithColor + ' a:focus{' +
-											    'color: ' + hoverFocusColor + ';' +
+												'color: ' + hoverFocusColor + ';' +
 											'}';
 										// jscs:enable maximumLineLength
 

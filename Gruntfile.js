@@ -65,8 +65,6 @@ module.exports = function (grunt) {
             src: 'assets/js/*.js',
             options: {
                 config: '.jscsrc',
-                esnext: false,
-                verbose: true,
                 fix: false
             }
         },
