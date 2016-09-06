@@ -60,7 +60,7 @@ var qcExt;
 	// For some reason, Jeph didn't use id="strip" on the comic <img> on
 	// the front page. Whyyy????
 	// (In other words, we have to use this method instead of just '#strip'.)
-	var comicImg = $('#comic img');
+	var comicImg = $('img[src*="/comics/"]');
 	var comicAnchor = comicImg.parent('a');
 
 	if (comicAnchor.length !== 1) {
@@ -97,9 +97,10 @@ var qcExt;
 
 	$('body #comicnav')
 		.replaceWith('<qc-nav random-comic="randomComic"></qc-nav>');
-	$('#news').replaceWith('<qc-news></qc-news>');
+	$('#news, #newspost').replaceWith('<qc-news></qc-news>');
 
-	$('#side').prepend('<qc-extra></qc-extra>');
+	// $('#side').prepend('<qc-extra></qc-extra>');
+	$('#container .small-2').prepend('<qc-extra></qc-extra>');
 
 	// Set a base (required by Angular's html5Mode)
 	$('head').append('<base href="' + window.location.origin + '/">');
