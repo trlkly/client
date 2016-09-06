@@ -27,8 +27,8 @@ var qcExt;
 			restrict: 'E',
 			replace: true,
 			scope: {},
-			controller: ['$scope', 'comicService',
-				function($scope, comicService) {
+			controller: ['$scope', 'comicService', '$log',
+				function($scope, comicService, $log) {
 					var self = this;
 					this.settings = qcExt.settings;
 					
@@ -37,11 +37,15 @@ var qcExt;
 					}, function() {
 						comicService.refreshComicData();
 					});
+					
+					$('#settingsDialog').on('hide.bs.modal', function() {
+						$log.debug('Saving settings...');
+						GM_setValue(constants.settingsKey,
+							JSON.stringify(self.settings));
+					});
 
 					this.close = function() {
 						$('#settingsDialog').modal('hide');
-						GM_setValue(constants.settingsKey,
-							JSON.stringify(self.settings));
 					};
 				}],
 			controllerAs: 'svm',
