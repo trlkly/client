@@ -151,7 +151,7 @@ var qcExt;
 						self.missingDataInfo.push('a title');
 					}
 					if (!comicData.tagline &&
-						comicService.comic >= 3133) {
+						comicService.comic > constants.taglineThreshold) {
 						self.missingDataInfo.push('a tagline');
 					}
 				});
