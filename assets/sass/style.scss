@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$link-color: #2ba6cb;
+
 #qcnav_navbox {
     margin: 40px 5px 5px 5px;
     text-align: center;
@@ -39,15 +41,15 @@
         text-decoration: none;
 
         &, &:link {
-            color: #2b5869;
+            color: $link-color;
         }
 
         &:visited {
-            color: #2b5869;
+            color: #258faf;
         }
 
         &:hover {
-            color: #907a76;
+            color: #258faf;
         }
         // END Style bits borrowed from/based on QC's own styles
     }
@@ -177,14 +179,14 @@ a {
     }
 }
 
+.qcnav_navelement a.qcnav_name_link {
+    cursor: pointer;
+    text-decoration: none;
+    color: $link-color;
+}
+
 #qcnav_item_missing_cast, #qcnav_item_missing_location, #qcnav_item_missing_storyline
 , #qcnav_item_missing_title, #qcnav_item_missing_tagline {
-    
-    a.qcnav_name_link {
-        cursor: pointer;
-        text-decoration: none;
-    }
-    
     > table.with_color {
         background-color: #5f0000;
 
