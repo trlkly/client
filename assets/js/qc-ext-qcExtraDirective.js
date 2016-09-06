@@ -81,10 +81,16 @@ var qcExt;
 						self.editorData.missing.location.first !== null;
 					self.editorData.missing.storyline.any =
 						self.editorData.missing.storyline.first !== null;
+					self.editorData.missing.title.any =
+						self.editorData.missing.title.first !== null;
+					self.editorData.missing.tagline.any =
+						self.editorData.missing.tagline.first !== null;
 					self.editorData.missing.any =
 						self.editorData.missing.cast.any ||
 						self.editorData.missing.location.any ||
-						self.editorData.missing.storyline.any;
+						self.editorData.missing.storyline.any ||
+						self.editorData.missing.title.any ||
+						self.editorData.missing.tagline.any;
 
 					/* jshint eqeqeq:false */
 					/* jscs:disable maximumLineLength */

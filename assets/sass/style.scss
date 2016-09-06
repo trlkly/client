@@ -177,7 +177,8 @@ a {
     }
 }
 
-#qcnav_item_missing_cast {
+#qcnav_item_missing_cast, #qcnav_item_missing_location, #qcnav_item_missing_storyline
+, #qcnav_item_missing_title, #qcnav_item_missing_tagline {
     
     a.qcnav_name_link {
         cursor: pointer;

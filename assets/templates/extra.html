@@ -47,6 +47,58 @@
                               name="Comics missing cast"
                               name-title="Comics missing cast">
                 </qc-extra-nav>
+                <qc-extra-nav ng-if="e.editorData.missing.location.any"
+                              id="qcnav_item_missing_location"
+                              first-title="First strip missing locations"
+                              first-value="e.editorData.missing.location.first"
+                              previous-title="Previous strip missing locations"
+                              previous-value="e.editorData.missing.location.previous"
+                              next-title="Next strip missing locations"
+                              next-value="e.editorData.missing.location.next"
+                              last-title="Last strip missing locations"
+                              last-value="e.editorData.missing.location.last"
+                              name="Comics missing locations"
+                              name-title="Comics missing locations">
+                </qc-extra-nav>
+                <qc-extra-nav ng-if="e.editorData.missing.storyline.any"
+                              id="qcnav_item_missing_storyline"
+                              first-title="First strip missing storylines"
+                              first-value="e.editorData.missing.storyline.first"
+                              previous-title="Previous strip missing storylines"
+                              previous-value="e.editorData.missing.storyline.previous"
+                              next-title="Next strip missing storylines"
+                              next-value="e.editorData.missing.storyline.next"
+                              last-title="Last strip missing storylines"
+                              last-value="e.editorData.missing.storyline.last"
+                              name="Comics missing storylines"
+                              name-title="Comics missing storylines">
+                </qc-extra-nav>
+                <qc-extra-nav ng-if="e.editorData.missing.title.any"
+                              id="qcnav_item_missing_title"
+                              first-title="First strip missing title"
+                              first-value="e.editorData.missing.title.first"
+                              previous-title="Previous strip missing title"
+                              previous-value="e.editorData.missing.title.previous"
+                              next-title="Next strip missing title"
+                              next-value="e.editorData.missing.title.next"
+                              last-title="Last strip missing title"
+                              last-value="e.editorData.missing.title.last"
+                              name="Comics missing title"
+                              name-title="Comics missing title">
+                </qc-extra-nav>
+                <qc-extra-nav ng-if="e.editorData.missing.tagline.any"
+                              id="qcnav_item_missing_tagline"
+                              first-title="First strip missing tagline"
+                              first-value="e.editorData.missing.tagline.first"
+                              previous-title="Previous strip missing tagline"
+                              previous-value="e.editorData.missing.tagline.previous"
+                              next-title="Next strip missing tagline"
+                              next-value="e.editorData.missing.tagline.next"
+                              last-title="Last strip missing tagline"
+                              last-value="e.editorData.missing.tagline.last"
+                              name="Comics missing tagline"
+                              name-title="Comics missing tagline">
+                </qc-extra-nav>
             </td>
         </tr>
         <tr ng-repeat="(type, typeItems) in e.items">
