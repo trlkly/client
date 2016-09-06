@@ -25,6 +25,9 @@ var qcExt;
 	$('body').prepend('<qc-settings></qc-settings>');
 	$('body').prepend('<qc-edit-comic-data></qc-edit-comic-data>');
 	$('body').prepend('<qc-item-details></qc-item-details>');
+	
+	$('title').replaceWith('<title ng-controller="titleController as t">' +
+		'{{t.title}}</title>');
 
 	/**
 	 * Adds a CSS <link> element to the <head> of the document.

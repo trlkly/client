@@ -77,7 +77,7 @@ var qcExt;
 					return;
 				}
 				
-				comicDataLoadingEvent.notify();
+				comicDataLoadingEvent.notify(self.comic);
 				var comicDataUrl = constants.comicDataUrl + self.comic;
 
 				var urlParameters = {};
