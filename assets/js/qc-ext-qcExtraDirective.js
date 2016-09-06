@@ -74,48 +74,50 @@ var qcExt;
 				$scope.safeApply(function() {
 					reset();
 
-					self.editorData = comicData.editorData;
-					self.editorData.missing.cast.any =
-						self.editorData.missing.cast.first !== null;
-					self.editorData.missing.location.any =
-						self.editorData.missing.location.first !== null;
-					self.editorData.missing.storyline.any =
-						self.editorData.missing.storyline.first !== null;
-					self.editorData.missing.title.any =
-						self.editorData.missing.title.first !== null;
-					self.editorData.missing.tagline.any =
-						self.editorData.missing.tagline.first !== null;
-					self.editorData.missing.any =
-						self.editorData.missing.cast.any ||
-						self.editorData.missing.location.any ||
-						self.editorData.missing.storyline.any ||
-						self.editorData.missing.title.any ||
-						self.editorData.missing.tagline.any;
+					if (self.settings.editMode) {
+						self.editorData = comicData.editorData;
+						self.editorData.missing.cast.any =
+							self.editorData.missing.cast.first !== null;
+						self.editorData.missing.location.any =
+							self.editorData.missing.location.first !== null;
+						self.editorData.missing.storyline.any =
+							self.editorData.missing.storyline.first !== null;
+						self.editorData.missing.title.any =
+							self.editorData.missing.title.first !== null;
+						self.editorData.missing.tagline.any =
+							self.editorData.missing.tagline.first !== null;
+						self.editorData.missing.any =
+							self.editorData.missing.cast.any ||
+							self.editorData.missing.location.any ||
+							self.editorData.missing.storyline.any ||
+							self.editorData.missing.title.any ||
+							self.editorData.missing.tagline.any;
 
-					/* jshint eqeqeq:false */
-					/* jscs:disable maximumLineLength */
-					if (self.editorData.missing.cast.first == comicService.comic) {
-						self.editorData.missing.cast.first = null;
+						/* jshint eqeqeq:false */
+						/* jscs:disable maximumLineLength */
+						if (self.editorData.missing.cast.first == comicService.comic) {
+							self.editorData.missing.cast.first = null;
+						}
+						if (self.editorData.missing.cast.last == comicService.comic) {
+							self.editorData.missing.cast.last = null;
+						}
+
+						if (self.editorData.missing.location.first == comicService.comic) {
+							self.editorData.missing.location.first = null;
+						}
+						if (self.editorData.missing.location.last == comicService.comic) {
+							self.editorData.missing.location.last = null;
+						}
+
+						if (self.editorData.missing.storyline.first == comicService.comic) {
+							self.editorData.missing.storyline.first = null;
+						}
+						if (self.editorData.missing.storyline.last == comicService.comic) {
+							self.editorData.missing.storyline.last = null;
+						}
+						/* jscs:enable maximumLineLength */
+						/* jshint eqeqeq:true */
 					}
-					if (self.editorData.missing.cast.last == comicService.comic) {
-						self.editorData.missing.cast.last = null;
-					}
-					
-					if (self.editorData.missing.location.first == comicService.comic) {
-						self.editorData.missing.location.first = null;
-					}
-					if (self.editorData.missing.location.last == comicService.comic) {
-						self.editorData.missing.location.last = null;
-					}
-					
-					if (self.editorData.missing.storyline.first == comicService.comic) {
-						self.editorData.missing.storyline.first = null;
-					}
-					if (self.editorData.missing.storyline.last == comicService.comic) {
-						self.editorData.missing.storyline.last = null;
-					}
-					/* jscs:enable maximumLineLength */
-					/* jshint eqeqeq:true */
 
 					if (!comicData.hasData) {
 						self.messages.push(
@@ -195,6 +197,10 @@ var qcExt;
 		this.showDetailsFor = function(item) {
 			$('#itemDetailsDialog').data('itemId', item.id);
 			$('#itemDetailsDialog').modal('show');
+		};
+		
+		this.enableTagModeFor = function(item) {
+			$log.debug(item);
 		};
 
 	}
