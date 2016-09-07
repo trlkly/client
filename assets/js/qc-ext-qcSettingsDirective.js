@@ -38,6 +38,12 @@ var qcExt;
 						comicService.refreshComicData();
 					});
 					
+					$scope.$watch(function() {
+						return self.settings.editMode;
+					}, function() {
+						comicService.refreshComicData();
+					});
+					
 					$('#settingsDialog').on('hide.bs.modal', function() {
 						$log.debug('Saving settings...');
 						GM_setValue(constants.settingsKey,
