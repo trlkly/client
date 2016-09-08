@@ -1,0 +1,32 @@
+<!--
+    Copyright (C) 2016 Alexander Krivács Schrøder <alexschrod@gmail.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div>
+    <h4 class="h5" ng-if="type === 'cast'">Character:</h4>
+    <h4 class="h5" ng-if="type === 'location'">Location:</h4>
+    <div ng-show="scvm.isEmpty" class="input-group" id="searchItem_{{scvm.unique}}_dropdown">
+        <input id="searchItem_{{scvm.unique}}_search" type="text" ng-keypress="scvm.keyPress($event)" ng-focus="scvm.focusSearch()" ng-blur="scvm.blurSearch()" ng-model="scvm.itemFilter.name" class="form-control" aria-label="Search for {{scvm.itemType}}" placeholder="Search for {{scvm.itemType}}">
+        <div class="input-group-btn">
+            <button id="searchItem_{{scvm.unique}}_dropdownButton" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">&nbsp;<span class="caret"></span></button>
+            <ul class="dropdown-menu dropdown-menu-right" style="max-height: 250px; overflow-y: auto; word-break: break-all; word-wrap: break-word;">
+                <li ng-repeat="item in scvm.items | filter:scvm.itemFilter"><a ng-click="scvm.selectItem(item)">{{item.name}}</a></li>
+            </ul>
+        </div><!-- /btn-group -->
+    </div><!-- /input-group -->
+    <div ng-if="!scvm.isEmpty">
+        <a ng-click="scvm.resetItem()"><i class="fa fa-times-circle" aria-hidden="true"></i></a> {{scvm.searchElement.name}}
+    </div>
+</div>

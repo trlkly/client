@@ -23,6 +23,7 @@ var qcExt;
 	'use strict';
 
 	$('body').prepend('<qc-settings></qc-settings>');
+	$('body').prepend('<qc-search></qc-search>');
 	$('body').prepend('<qc-edit-comic-data></qc-edit-comic-data>');
 	$('body').prepend('<qc-item-details></qc-item-details>');
 	

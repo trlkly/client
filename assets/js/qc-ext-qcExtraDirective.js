@@ -190,6 +190,10 @@ var qcExt;
 			$('#settingsDialog').modal('show');
 		};
 
+		this.openSearch = function() {
+			$('#searchDialog').modal('show');
+		};
+
 		this.editComicData = function() {
 			$('#editComicDataDialog').modal('show');
 		};

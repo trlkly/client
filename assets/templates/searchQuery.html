@@ -1,0 +1,42 @@
+<!--
+    Copyright (C) 2016 Alexander Krivács Schrøder <alexschrod@gmail.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div ng-switch="type">
+    <div ng-switch-when="root">
+        <div ng-if="sqvm.isEmpty" class="search-panel" qc-drop-target accept-types="searchElement,searchOperator" dropped="sqvm.onDropped(dropData)">
+            <div class="empty-message">Drag search feature here</div>
+        </div>
+        <div ng-if="!sqvm.isEmpty">
+            <qc-search-query type="{{sqvm.searchElements[0]}}" query="query[sqvm.searchElements[0]]"></qc-search-query>
+        </div>
+    </div>
+    <div ng-switch-when="cast">
+        <qc-search-item query="query" type="cast"></qc-search-item>
+    </div>
+    <div ng-switch-when="location">
+        <qc-search-item query="query" type="location"></qc-search-item>
+    </div>
+    
+    <div ng-switch-when="or">
+        <qc-search-logic query="query" type="or"></qc-search-logic>
+    </div>
+    <div ng-switch-when="and">
+        <qc-search-logic query="query" type="and"></qc-search-logic>
+    </div>
+    <div ng-switch-default>
+        ERROR: Unknown type '{{type}}'
+    </div>
+</div>

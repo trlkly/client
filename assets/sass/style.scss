@@ -210,3 +210,35 @@ a {
 .qc-dragging {
     opacity: 0.4;
 }
+
+$search-panel-background: #485563;
+$search-panel-border: #2b3e50;
+
+.search-panel {
+    border: 5px dashed $search-panel-border;
+    height: 100px;
+    background-color: $search-panel-background;
+    position: relative;
+    
+    > .empty-message {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: center;
+        pointer-events: none;
+    }
+    
+    &.qc-drop-target {
+        background-color: lighten($search-panel-background, 10%);
+        border-color: lighten($search-panel-border, 10%);
+        
+        &.qc-drag-over {
+            background-color: lighten($search-panel-background, 15%);
+            border-color: lighten($search-panel-border, 15%);
+        }
+    }
+    
+    
+}
