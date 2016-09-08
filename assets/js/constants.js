@@ -58,4 +58,7 @@ var constants;
 	constants.comicdataLoadedEvent = 'comicdata-loaded';
 	constants.comicdataErrorEvent = 'comicdata-error';
 	constants.itemsChangedEvent = 'items-changed';
+	
+	constants.dragStartEvent = 'drag-start';
+	constants.dragEndEvent = 'drag-end';
 })(constants || (constants = {}));
