@@ -74,7 +74,8 @@ var qcExt;
 				$scope.safeApply(function() {
 					reset();
 
-					if (self.settings.editMode) {
+					if (self.settings.editMode &&
+						comicData.editorData) {
 						self.editorData = comicData.editorData;
 						self.editorData.missing.cast.any =
 							self.editorData.missing.cast.first !== null;
