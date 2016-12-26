@@ -1,6 +1,6 @@
 {
   "name": "questionable-content-spa",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "author": "Alexander Krivács Schrøder",
   "devDependencies": {
     "grunt": "~0.4.1",
