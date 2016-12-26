@@ -72,9 +72,19 @@ var qcExt;
 	}
 
 	$('body').append($('<div ui-view></div>'));
-
-	// ComicAnchor.replaceWith('<div ui-view="comic"></div>');
-	comicAnchor.replaceWith('<qc-comic></qc-comic>');
+	
+	// To avoid triggering a flash of the comic "reloading", do in-place DOM
+	// manipulation instead of replacing the whole thing with a template.
+	// Fixes issue #13
+	var comicDirective = $('<qc-comic></qc-comic>');
+	comicAnchor.before(comicDirective);
+	comicAnchor.detach().appendTo(comicDirective);
+	comicAnchor.attr('ng-href', 'view.php?comic={{c.comicService.nextComic}}');
+	comicImg.attr('ng-src', 'http://questionablecontent.net/comics/' +
+		'{{c.comicService.comic}}.{{c.comicService.comicExtension}}');
+	comicImg.attr('ng-click', 'c.next($event)');
+	comicImg.attr('on-error', 'c.comicService.canFallback() ' +
+		'&& c.comicService.tryFallback()');
 
 	var comicImage = comicImg.get(0);
 	var comicLinkUrl = comicImage.src;

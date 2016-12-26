@@ -40,6 +40,7 @@ var qcExt;
 			var comicExtensionIndex = 0;
 
 			function updateComic() {
+				$log.debug('comicService:updateComic()');
 				var comic;
 
 				if (typeof $stateParams.comic === 'string') {
@@ -49,6 +50,9 @@ var qcExt;
 				}
 
 				self.comic = comic;
+				self.nextComic = self.comic + 1 > latestComic ?
+					latestComic : self.comic + 1;
+				self.previousComic = self.comic - 1 < 1 ? 1 : self.comic - 1;
 				self.latestComic = latestComic;
 				comicExtensionIndex = 0;
 				self.comicExtension =

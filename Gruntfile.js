@@ -140,7 +140,6 @@ module.exports = function (grunt) {
                     collapseWhitespace: true
                 },
                 files: {
-                    'assets/generated/comic.html': 'assets/templates/comic.html',
                     'assets/generated/navigation.html': 'assets/templates/navigation.html',
                     'assets/generated/extra.html': 'assets/templates/extra.html',
                     'assets/generated/extraNav.html': 'assets/templates/extraNav.html',
