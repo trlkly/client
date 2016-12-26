@@ -15,9 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Parts based on code from:
-// http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
-
 var qcExt;
 
 (function(qcExt) {

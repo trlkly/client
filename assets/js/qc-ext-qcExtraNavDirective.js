@@ -19,22 +19,24 @@ var qcExt;
 
 (function(qcExt) {
 	'use strict';
-
-	qcExt.app.directive('qcComic', function() {
+	
+	qcExt.app.directive('qcExtraNav', function() {
 		return {
 			restrict: 'E',
-			transclude: true,
-			scope: {},
-			link: function(scope, element, attrs, ctrl, transclude) {
-				transclude(scope, function(clone) {
-					element.append(clone);
-				});
+			scope: {
+				firstValue: '=',
+				firstTitle: '@',
+				previousValue: '=',
+				previousTitle: '@',
+				nextValue: '=',
+				nextTitle: '@',
+				lastValue: '=',
+				lastTitle: '@',
+				name: '@',
+				nameTitle: '@',
+				clickAction: '&'
 			},
-			controller: ['comicService',
-				function(comicService) {
-					this.comicService = comicService;
-				}],
-			controllerAs: 'c'
+			template: qcExt.variables.angularTemplates.extraNav
 		};
 	});
 })(qcExt || (qcExt = {}));

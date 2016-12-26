@@ -40,6 +40,7 @@ var qcExt;
 			var comicExtensionIndex = 0;
 
 			function updateComic() {
+				$log.debug('comicService:updateComic()');
 				var comic;
 
 				if (typeof $stateParams.comic === 'string') {
@@ -49,6 +50,9 @@ var qcExt;
 				}
 
 				self.comic = comic;
+				self.nextComic = self.comic + 1 > latestComic ?
+					latestComic : self.comic + 1;
+				self.previousComic = self.comic - 1 < 1 ? 1 : self.comic - 1;
 				self.latestComic = latestComic;
 				comicExtensionIndex = 0;
 				self.comicExtension =
@@ -77,10 +81,13 @@ var qcExt;
 					return;
 				}
 				
-				comicDataLoadingEvent.notify();
+				comicDataLoadingEvent.notify(self.comic);
 				var comicDataUrl = constants.comicDataUrl + self.comic;
 
 				var urlParameters = {};
+				if (qcExt.settings.editMode) {
+					urlParameters.token = qcExt.settings.editModeToken;
+				}
 				if (qcExt.settings.skipGuest) {
 					urlParameters.exclude = 'guest';
 				} else if (qcExt.settings.skipNonCanon) {
@@ -129,43 +136,8 @@ var qcExt;
 									}
 									/* jshint eqeqeq:true */
 
-									var qcNavItem = '#qcnav_item_' +
-										value.id;
-									var qcNavItemWithColor = qcNavItem +
-										'.with_color';
-
-									if (!styleService
-										.hasStyle(qcNavItemWithColor)) {
-										var backgroundColor = value.color;
-										var foregroundColor = colorService
-											.createTintOrShade(value.color);
-										var hoverFocusColor = colorService
-											.createTintOrShade(value.color, 2);
-
-										// jscs:disable maximumLineLength
-										var itemStyle =
-											qcNavItemWithColor + '{' +
-											    'background-color:' + backgroundColor + ';' +
-											'}' +
-											qcNavItemWithColor + ',' +
-											qcNavItemWithColor + ' a.qcnav_name_link,' +
-											qcNavItemWithColor + ' a:link,' +
-											qcNavItemWithColor + ' a:visited{' +
-											    'color:' + foregroundColor + ';' +
-											'}' +
-											qcNavItem + ' a.qcnav_name_link{' +
-											    'cursor: pointer;' +
-											    'text-decoration: none;' +
-											'}' +
-											qcNavItemWithColor + ' a:hover,' +
-											qcNavItemWithColor + ' a:focus{' +
-											    'color: ' + hoverFocusColor + ';' +
-											'}';
-										// jscs:enable maximumLineLength
-
-										styleService.addCustomStyle(
-											qcNavItemWithColor, itemStyle);
-									}
+									styleService.addItemStyle(value.id,
+										value.color);
 								});
 						} else {
 							self.nextComic = self.comic + 1 > latestComic ?

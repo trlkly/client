@@ -1,5 +1,20 @@
 {
     "elements": {
+        "qc-extra-nav": {
+            "attributes": {
+                "last-value": {},
+                "previous-value": {},
+                "click-action": {},
+                "next-title": {},
+                "previous-title": {},
+                "next-value": {},
+                "last-title": {},
+                "name-title": {},
+                "name": {},
+                "first-title": {},
+                "first-value": {}
+            }
+        },
         "qc-news": {},
         "qc-nav": {
             "attributes": {
@@ -12,6 +27,9 @@
         "fb": {}
     },
     "attributes": {
-        "aria-expanded": {}
+        "aria-expanded": {},
+        "ng-repeat": {},
+        "id": {},
+        "ng-if": {}
     }
 }
