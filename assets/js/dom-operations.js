@@ -53,7 +53,7 @@ var qcExt;
 	addCss(constants.baseUrl + 'style/bootstrap.min.css');
 
 	// Font Awesome
-	addCss('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/' +
+	addCss('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/' +
 		'font-awesome.min.css');
 
 	// Style adder function
