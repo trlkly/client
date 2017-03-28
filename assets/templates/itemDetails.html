@@ -40,7 +40,7 @@
                     </div>
                     <div ng-switch="idvm.itemData.type">
                         <p ng-switch-default>
-                            <span ng-if="idvm.settings.editMode"><b><i class="fa fa-id-card" aria-hidden="true"></i></b> {{idvm.itemData.id}}<br></span>
+                            <span ng-if="idvm.settings.editMode"><b><i class="fa fa-id-card" aria-hidden="true" title="Item ID"></i></b> {{idvm.itemData.id}}<br></span>
                             <b>Full name:</b> {{idvm.itemData.name}}<br>
                             <b>Short name:</b> {{idvm.itemData.shortName}}<br>
                             <b>First appearance:</b> <a ng-click="idvm.goToComic(idvm.itemData.first)">Comic {{idvm.itemData.first}}</a><br>
@@ -55,13 +55,13 @@
                     <div class="col-xs-6" ng-show="idvm.itemData.locations">
                         <p ng-switch="idvm.itemData.type">Most often <span ng-switch-when="cast">spotted at</span><span ng-switch-when="location">visited simultaneously with</span><span ng-switch-default>involves</span>:</p>
                         <ul>
-                            <li ng-repeat="location in idvm.itemData.locations"><a ng-click="idvm.showInfoFor(location.id)">{{location.shortName}}</a><span ng-if="idvm.settings.editMode"> (<i class="fa fa-id-card" aria-hidden="true"></i> {{location.id}})</span> in {{location.count}} comics ({{location.percentage|number:2}}%)</li>
+                            <li ng-repeat="location in idvm.itemData.locations"><a ng-click="idvm.showInfoFor(location.id)">{{location.shortName}}</a><span ng-if="idvm.settings.editMode"> (<i class="fa fa-id-card" aria-hidden="true" title="Item ID"></i> {{location.id}})</span> in {{location.count}} comics ({{location.percentage|number:2}}%)</li>
                         </ul>
                     </div>
                     <div class="col-xs-6" ng-show="idvm.itemData.friends">
                         <p ng-switch="idvm.itemData.type">Most often <span ng-switch-when="cast">spotted with</span><span ng-switch-when="location">visited by</span><span ng-switch-default>involves</span>:</p>
                         <ul>
-                            <li ng-repeat="friend in idvm.itemData.friends"><a ng-click="idvm.showInfoFor(friend.id)">{{friend.shortName}}</a><span ng-if="idvm.settings.editMode"> (<i class="fa fa-id-card" aria-hidden="true"></i> {{friend.id}})</span> in {{friend.count}} comics ({{friend.percentage|number:2}}%)</li>
+                            <li ng-repeat="friend in idvm.itemData.friends"><a ng-click="idvm.showInfoFor(friend.id)">{{friend.shortName}}</a><span ng-if="idvm.settings.editMode"> (<i class="fa fa-id-card" aria-hidden="true" title="Item ID"></i> {{friend.id}})</span> in {{friend.count}} comics ({{friend.percentage|number:2}}%)</li>
                         </ul>
                     </div>
                 </div>

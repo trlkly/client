@@ -108,8 +108,22 @@ var qcExt;
 							return;
 						}
 						
-						var comicData = response.data;
+						function fixItem(item) {
+							/* jshint eqeqeq:false */
+							if (item.first == self.comic) {
+								item.first = null;
+							}
 
+							if (item.last == self.comic) {
+								item.last = null;
+							}
+							/* jshint eqeqeq:true */
+
+							styleService.addItemStyle(item.id,
+								item.color);
+						}
+
+						var comicData = response.data;
 						if (comicData.hasData) {
 							if (comicData.next !== null) {
 								self.nextComic = comicData.next;
@@ -124,26 +138,16 @@ var qcExt;
 									self.comic - 1;
 							}
 							
-							angular.forEach(comicData.items,
-								function(value) {
-									/* jshint eqeqeq:false */
-									if (value.first == self.comic) {
-										value.first = null;
-									}
-
-									if (value.last == self.comic) {
-										value.last = null;
-									}
-									/* jshint eqeqeq:true */
-
-									styleService.addItemStyle(value.id,
-										value.color);
-								});
+							angular.forEach(comicData.items, fixItem);
 						} else {
 							self.nextComic = self.comic + 1 > latestComic ?
 								latestComic : self.comic + 1;
 							self.previousComic = self.comic - 1 < 1 ? 1 :
 								self.comic - 1;
+							
+							if (qcExt.settings.showAllMembers) {
+								angular.forEach(comicData.items, fixItem);
+							}
 						}
 
 						comicData.comic = self.comic;

@@ -119,12 +119,23 @@ var qcExt;
 						/* jscs:enable maximumLineLength */
 						/* jshint eqeqeq:true */
 					}
+					
+					function processItem(item) {
+						if (!(item.type in self.items)) {
+							self.items[item.type] = [];
+						}
+						self.items[item.type].push(item);
+					}
 
 					if (!comicData.hasData) {
 						self.messages.push(
 							'This strip has no navigation data yet'
 							);
 						self.hasWarning = true;
+						
+						if (qcExt.settings.showAllMembers) {
+							angular.forEach(comicData.items, processItem);
+						}
 						return;
 					}
 
@@ -133,10 +144,7 @@ var qcExt;
 					var hasStoryline = false;
 					angular.forEach(comicData.items,
 						function(item) {
-							if (!(item.type in self.items)) {
-								self.items[item.type] = [];
-							}
-							self.items[item.type].push(item);
+							processItem(item);
 
 							if (item.type === 'cast') {
 								hasCast = true;
