@@ -1,4 +1,4 @@
-# Questionable Content Extensions User Script [![Build Status](https://travis-ci.org/Questionable-Content-Extensions/client.svg?branch=master)](https://travis-ci.org/Questionable-Content-Extensions/client) [![Dependency Status](https://www.versioneye.com/user/projects/56e06979df573d004c95f841/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56e06979df573d004c95f841) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.svg)](http://gruntjs.com/)
+# Questionable Content Extensions User Script [![Build Status](https://travis-ci.org/Questionable-Content-Extensions/client.svg?branch=master)](https://travis-ci.org/Questionable-Content-Extensions/client) [![Dependency Status](https://www.versioneye.com/user/projects/58da3f4f26a5bb0038e42095/badge.svg?style=flat)](https://www.versioneye.com/user/projects/58da3f4f26a5bb0038e42095) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.svg)](http://gruntjs.com/)
 
 ## Getting Started
 
