@@ -24,7 +24,8 @@
         "qc-set-tagline": {},
         "qc-add-item": {},
         "qc-set-title": {},
-        "fb": {}
+        "fb": {},
+        "qc-comic-nav": {}
     },
     "attributes": {
         "aria-expanded": {},
