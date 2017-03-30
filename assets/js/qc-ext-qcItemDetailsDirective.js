@@ -52,19 +52,38 @@ var qcExt;
 						$log.debug('qcItemDetails::showModal() - item id:',
 							itemId);
 							
-						function handleItemFriendsData(response) {
+						function handleRelationData(response) {
 							if (response.status === 200) {
-								var friendData = response.data;
+								var relationData = response.data;
 								
-								$.each(friendData, function(_, friend) {
-									friend.percentage = friend.count /
+								$.each(relationData, function(_, relation) {
+									relation.percentage = relation.count /
 										self.itemData.appearances * 100;
 								});
 								
-								$scope.safeApply(function() {
-									self.itemData.friends = friendData;
-								});
+								return relationData;
 							}
+							return null;
+						}
+							
+						function handleItemFriendsData(response) {
+							var friends = handleRelationData(response);
+							if (friends === null) {
+								friends = [];
+							}
+							$scope.safeApply(function() {
+								self.itemData.friends = friends;
+							});
+						}
+							
+						function handleItemLocationsData(response) {
+							var locations = handleRelationData(response);
+							if (locations === null) {
+								locations = [];
+							}
+							$scope.safeApply(function() {
+								self.itemData.locations = locations;
+							});
 						}
 
 						function handleItemData(response) {
@@ -102,6 +121,8 @@ var qcExt;
 
 								$http.get(constants.itemFriendDataUrl + itemId)
 									.then(handleItemFriendsData);
+								$http.get(constants.itemLocationDataUrl +
+									itemId).then(handleItemLocationsData);
 							} else {
 								messageReportingService.reportError(
 									response.data);
