@@ -139,6 +139,9 @@ var qcExt;
 							}
 							
 							angular.forEach(comicData.items, fixItem);
+							if (qcExt.settings.showAllMembers) {
+								angular.forEach(comicData.allItems, fixItem);
+							}
 						} else {
 							self.nextComic = self.comic + 1 > latestComic ?
 								latestComic : self.comic + 1;
@@ -146,7 +149,7 @@ var qcExt;
 								self.comic - 1;
 							
 							if (qcExt.settings.showAllMembers) {
-								angular.forEach(comicData.items, fixItem);
+								angular.forEach(comicData.allItems, fixItem);
 							}
 						}
 

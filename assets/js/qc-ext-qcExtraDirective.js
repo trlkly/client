@@ -22,7 +22,7 @@ var qcExt;
 (function(qcExt) {
 	'use strict';
 	
-	function Controller($scope, $log, comicService, latestComic, Event) {
+	function Controller($scope, $log, comicService, latestComic, Event, $sce) {
 		var comicDataLoadingEvent = new Event(constants.comicdataLoadingEvent);
 		var comicDataLoadedEvent = new Event(constants.comicdataLoadedEvent);
 		var comicDataErrorEvent = new Event(constants.comicdataErrorEvent);
@@ -45,6 +45,7 @@ var qcExt;
 		this.comicService = comicService;
 		this.settings = qcExt.settings;
 		this.items = {};
+		this.allItems = {};
 		this.editorData = {};
 		this.messages = [];
 		this.missingDataInfo = [];
@@ -52,6 +53,7 @@ var qcExt;
 		function reset() {
 			self.isLoading = false;
 			self.items = {};
+			self.allItems = {};
 			self.editorData = {};
 			self.messages.length = 0;
 			self.missingDataInfo.length = 0;
@@ -126,6 +128,13 @@ var qcExt;
 						}
 						self.items[item.type].push(item);
 					}
+					
+					function processAllItem(item) {
+						if (!(item.type in self.allItems)) {
+							self.allItems[item.type] = [];
+						}
+						self.allItems[item.type].push(item);
+					}
 
 					if (!comicData.hasData) {
 						self.messages.push(
@@ -134,7 +143,7 @@ var qcExt;
 						self.hasWarning = true;
 						
 						if (qcExt.settings.showAllMembers) {
-							angular.forEach(comicData.items, processItem);
+							angular.forEach(comicData.allItems, processAllItem);
 						}
 						return;
 					}
@@ -153,7 +162,11 @@ var qcExt;
 							} else if (item.type === 'storyline') {
 								hasStoryline = true;
 							}
-						});
+						}
+					);
+					if (qcExt.settings.showAllMembers) {
+						angular.forEach(comicData.allItems, processAllItem);
+					}
 
 					if (!hasCast) {
 						self.missingDataInfo.push('cast members');
@@ -192,6 +205,16 @@ var qcExt;
 					return 'Storylines';
 				case 'location':
 					return 'Locations';
+					
+				case 'all-cast':
+					return $sce.trustAsHtml('Cast Members<br>' +
+						'<small>(Non-Present)</small>');
+				case 'all-storyline':
+					return $sce.trustAsHtml('Storylines<br>' +
+						'<small>(Non-Present)</small>');
+				case 'all-location':
+					return $sce.trustAsHtml('Locations<br>' +
+						'<small>(Non-Present)</small>');
 			}
 		};
 
@@ -220,7 +243,7 @@ var qcExt;
 			replace: true,
 			scope: {},
 			controller: ['$scope', '$log', 'comicService', 'latestComic',
-				'eventFactory', Controller],
+				'eventFactory', '$sce', Controller],
 			controllerAs: 'e',
 			template: qcExt.variables.angularTemplates.extra
 		};
