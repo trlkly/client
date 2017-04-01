@@ -109,6 +109,9 @@ var qcExt;
 							GM_xmlhttpRequest({
 								method: 'GET',
 								url: url,
+								headers: {
+									Accept: APPLICATION_JSON
+								},
 								onload: function(gmResponse) {
 									var headers = getHeaderFunction(
 										gmResponse.responseHeaders
@@ -154,7 +157,8 @@ var qcExt;
 								url: url,
 								data: JSON.stringify(data),
 								headers: {
-									'Content-Type': 'application/json'
+									'Content-Type': APPLICATION_JSON,
+									Accept: APPLICATION_JSON
 								},
 								onload: function(gmResponse) {
 									var headers = getHeaderFunction(
