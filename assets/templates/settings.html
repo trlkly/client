@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2016 Alexander Krivács Schrøder <alexschrod@gmail.com>
+    Copyright (C) 2016, 2017 Alexander Krivács Schrøder <alexschrod@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -58,6 +58,10 @@
                                 <div class="form-group">
                                     <label ng-class="{'disabled': svm.settings.skipNonCanon}"><input type="checkbox" ng-disabled="svm.settings.skipNonCanon" ng-model="svm.settings.skipGuest"> Skip guest strips</label>
                                     <p ng-class="{'disabled': svm.settings.skipNonCanon}" class="small">Skips strips that were not made/drawn by Jeph.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label><input type="checkbox" ng-model="svm.settings.useCorrectTimeFormat"> Use 24h clock format</label>
+                                    <p class="small">When showing when a comic was published (above the news section), use the 24-hour clock format.</p>
                                 </div>
                             </div>
                         </div>
