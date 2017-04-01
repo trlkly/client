@@ -158,7 +158,7 @@
         </tr>
         <tr ng-repeat="(type, typeItems) in e.allItems">
             <td>
-                <h1 ng-class="{'first-header': $first && !(e.settings.editMode && e.editorData.missing.any)}" ng-bind-html="e.getTypeDescription('all-' + type)"></h1>
+                <h1 ng-bind-html="e.getTypeDescription('all-' + type)"></h1>
                 <qc-extra-nav ng-repeat="item in typeItems" 
                               id="{{'qcnav_item_' + item.id}}"
                               first-title="{{'First strip with ' + item.shortName}}"
