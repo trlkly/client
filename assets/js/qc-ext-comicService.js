@@ -69,7 +69,12 @@ var qcExt;
 			});
 
 			function onErrorLog(response) {
-				messageReportingService.reportError(response.data);
+				if (response.status !== 503) {
+					messageReportingService.reportError(response.data);
+				} else {
+					messageReportingService.reportError(
+						constants.messages.maintenance);
+				}
 				return response;
 			}
 
@@ -103,8 +108,13 @@ var qcExt;
 
 				$http.get(comicDataUrl)
 					.then(function(response) {
+						if (response.status === 503) {
+							comicDataErrorEvent.notify(response);
+							return;
+						}
 						if (response.status !== 200) {
 							onErrorLog(response);
+							comicDataErrorEvent.notify(response);
 							return;
 						}
 						
@@ -158,7 +168,7 @@ var qcExt;
 						comicDataLoadedEvent.notify(self.comicData);
 					}, function(errorResponse) {
 						onErrorLog(errorResponse);
-						comicDataErrorEvent.notify(errorResponse.data);
+						comicDataErrorEvent.notify(errorResponse);
 					});
 			};
 

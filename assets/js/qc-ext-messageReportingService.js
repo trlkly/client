@@ -27,6 +27,19 @@ var qcExt;
 			var messageQueue = [];
 			var isProcessing = false;
 			
+			function escapeHtml(text) {
+				return text.replace(/[\"&'\/<>]/g, function(a) {
+					return {
+						'"': '&quot;',
+						'&': '&amp;',
+						'\'': '&#39;',
+						'/': '&#47;',
+						'<': '&lt;',
+						'>': '&gt;'
+					}[a];
+				});
+			}
+			
 			function processMessages() {
 				isProcessing = true;
 				
@@ -43,7 +56,7 @@ var qcExt;
 					'id="' + unique + '" ' +
 					'style="display: none;" ' +
 					'role="alert">' +
-					nextMessage.message +
+					escapeHtml(nextMessage.message) +
 					'</div>';
 
 				$('#messageSeat').append(messageHtml);

@@ -59,4 +59,11 @@ var constants;
 	constants.comicdataLoadedEvent = 'comicdata-loaded';
 	constants.comicdataErrorEvent = 'comicdata-error';
 	constants.itemsChangedEvent = 'items-changed';
+	
+	constants.messages = {
+		maintenance: 'The Questionable Extensions' +
+			' server is currently undergoing maintenance.' +
+			' Normal operation should resume within a' +
+			' few minutes.'
+	};
 })(constants || (constants = {}));
