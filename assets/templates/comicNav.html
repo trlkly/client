@@ -16,7 +16,7 @@
 -->
 <div class="input-group" id="comicnavDir">
     <span class="input-group-addon" title="Comic #">#</span>
-    <input id="comicnavDir_comic" type="number" class="form-control" aria-label="Comic" placeholder="Comic" ng-model="cn.currentComic" min="1" max="{{cn.latestComic}}">
+    <input id="comicnavDir_comic" type="number" class="form-control" aria-label="Comic" placeholder="Comic" ng-model="cn.currentComic" min="1" max="{{cn.latestComic}}" ng-keypress="cn.keyPress($event)">
     <div class="input-group-btn">
         <button id="comicnavDir_go" type="button" class="btn btn-default" ng-click="cn.go()" title="Navigate to the specified comic #">&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i></button>
     </div><!-- /btn-group -->

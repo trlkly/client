@@ -52,6 +52,13 @@ var qcExt;
 						comicService.gotoComic(self.currentComic);
 					};
 
+					this.keyPress = function(event) {
+						if (event.keyCode === 13) {
+							// ENTER key
+							self.go();
+						}
+					};
+
 					comicDataLoadedEvent.subscribe($scope,
 						function(event, comicData) {
 							self.currentComic = comicData.comic;
