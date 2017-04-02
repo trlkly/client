@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Alexander Krivács Schrøder <alexschrod@gmail.com>
+ * Copyright (C) 2016, 2017 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -218,6 +218,16 @@ var qcExt;
 					tagline: tagline
 				};
 				return $http.post(constants.setComicTaglineUrl, data)
+					.then(onSuccessRefreshElseErrorLog, onErrorLog);
+			};
+
+			this.setPublishDate = function(publishDate) {
+				var data = {
+					token: qcExt.settings.editModeToken,
+					comic: self.comic,
+					publishDate: publishDate
+				};
+				return $http.post(constants.setPublishDateUrl, data)
 					.then(onSuccessRefreshElseErrorLog, onErrorLog);
 			};
 

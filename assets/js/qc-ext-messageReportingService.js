@@ -88,6 +88,10 @@ var qcExt;
 				reportMessage('danger', message);
 			};
 
+			this.reportWarning = function(message) {
+				reportMessage('warning', message);
+			};
+
 			$log.debug('END messageReportingService()');
 		}]);
 })(qcExt || (qcExt = {}));

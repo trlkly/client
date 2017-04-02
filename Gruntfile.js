@@ -148,6 +148,7 @@ module.exports = function (grunt) {
                     'assets/generated/addItem.html': 'assets/templates/addItem.html',
                     'assets/generated/setTitle.html': 'assets/templates/setTitle.html',
                     'assets/generated/setTagline.html': 'assets/templates/setTagline.html',
+                    'assets/generated/setPublishDate.html': 'assets/templates/setPublishDate.html',
                     'assets/generated/donut.html': 'assets/templates/donut.html',
                     'assets/generated/itemDetails.html': 'assets/templates/itemDetails.html',
                     'assets/generated/comicNav.html': 'assets/templates/comicNav.html'

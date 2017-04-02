@@ -48,23 +48,30 @@ var qcExt;
 						}
 					};
 					
-					function formatDate(date) {
+					function formatDate(dateTime) {
 						var monthNames = [
 							'January', 'February', 'March',
 							'April', 'May', 'June', 'July',
 							'August', 'September', 'October',
 							'November', 'December'
 						];
+						
+						var weekDayNames = [
+							'Sunday', 'Monday', 'Tuesday',
+							'Wednesday', 'Thursday', 'Friday',
+							'Saturday'
+						];
 
-						var day = date.getDate();
-						var monthIndex = date.getMonth();
-						var year = date.getFullYear();
+						var dayIndex = dateTime.getDay();
+						var date = dateTime.getDate();
+						var monthIndex = dateTime.getMonth();
+						var year = dateTime.getFullYear();
 						
-						var dateText = monthNames[monthIndex] + ' ' + day +
-							', ' + year;
+						var dateText = weekDayNames[dayIndex] + ', ' +
+							monthNames[monthIndex] + ' ' + date + ', ' + year;
 						
-						var hours = date.getHours();
-						var minutes = date.getMinutes();
+						var hours = dateTime.getHours();
+						var minutes = dateTime.getMinutes();
 						
 						if (minutes < 10) {
 							minutes = '0' + minutes;
