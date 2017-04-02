@@ -87,6 +87,9 @@ var qcExt;
 	comicImg.attr('ng-click', 'c.next($event)');
 	comicImg.attr('on-error', 'c.comicService.canFallback() ' +
 		'&& c.comicService.tryFallback()');
+	
+	// #comicDirective.attr('id', 'comic-anchor');
+	comicDirective.append($('<qc-ribbon></qc-ribbon>'));
 
 	var comicImage = comicImg.get(0);
 	var comicLinkUrl = comicImage.src;
@@ -120,8 +123,6 @@ var qcExt;
 		// There's a date section: Replace with our own
 		$('#news, #newspost').prev().replaceWith('<qc-date></qc-date>');
 	}
-	
-	console.log();
 	
 	$('#news, #newspost').replaceWith('<qc-news></qc-news>');
 

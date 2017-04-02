@@ -38,6 +38,8 @@ var qcExt;
 		editMode: false,
 		editModeToken: '',
 		
+		showIndicatorRibbon: true,
+		showSmallRibbonByDefault: false,
 		useCorrectTimeFormat: true
 	};
 
