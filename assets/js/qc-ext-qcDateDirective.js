@@ -118,9 +118,11 @@ var qcExt;
 									publishDate !== undefined) {
 									var date = new Date(publishDate);
 									self.date = formatDate(date);
+									if (!comicData.isAccuratePublishDate) {
+										self.date += ' (Approximately)';
+									}
 								} else {
-									$log.debug('qcDate(): ', 'UNKNOWN');
-									self.date = '<Unknown publish date>';
+									self.date = '';
 								}
 							});
 						});

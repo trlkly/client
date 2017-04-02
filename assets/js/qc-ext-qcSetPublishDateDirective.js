@@ -66,7 +66,8 @@ var qcExt;
 								'The date entered is not valid!');
 							return;
 						}
-						comicService.setPublishDate(self.publishDate);
+						comicService.setPublishDate(self.publishDate,
+							self.isAccuratePublishDate);
 					};
 
 					this.publishDate = '';
@@ -81,6 +82,8 @@ var qcExt;
 								} else {
 									self.publishDate = null;
 								}
+								self.isAccuratePublishDate =
+									comicData.isAccuratePublishDate;
 							});
 						});
 

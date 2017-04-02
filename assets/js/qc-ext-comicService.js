@@ -221,11 +221,12 @@ var qcExt;
 					.then(onSuccessRefreshElseErrorLog, onErrorLog);
 			};
 
-			this.setPublishDate = function(publishDate) {
+			this.setPublishDate = function(publishDate, isAccurate) {
 				var data = {
 					token: qcExt.settings.editModeToken,
 					comic: self.comic,
-					publishDate: publishDate
+					publishDate: publishDate,
+					isAccuratePublishDate: isAccurate
 				};
 				return $http.post(constants.setPublishDateUrl, data)
 					.then(onSuccessRefreshElseErrorLog, onErrorLog);
