@@ -44,6 +44,7 @@ var qcExt;
 
 		this.comicService = comicService;
 		this.settings = qcExt.settings;
+		this.constants = constants;
 		this.items = {};
 		this.allItems = {};
 		this.editorData = {};

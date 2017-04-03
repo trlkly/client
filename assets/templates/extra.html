@@ -16,9 +16,9 @@
 -->
 <table id="qcnav_navbox">
     <thead>
-        <!--<tr>
-            <th class="qcnav_centered">Navigation</th>
-        </tr>-->
+        <tr ng-if="e.constants.developmentMode">
+            <th class="qcnav_centered">DEVELOPMENT MODE</th>
+        </tr>
         <tr>
             <td id="qcnav_status">
                 <i ng-show="e.isLoading" class="fa fa-refresh fa-spin"></i>

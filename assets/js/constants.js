@@ -27,8 +27,8 @@ var constants;
 
 	// Set this to true when working against your local test server.
 	// NEVER CHECK THIS FILE IN WITH developmentMode = true!
-	var developmentMode = false;
-	if (developmentMode) {
+	constants.developmentMode = false;
+	if (constants.developmentMode) {
 		constants.baseUrl =
 			'http://localhost/questionablecontentextensions/web/';
 		constants.webServiceBaseUrl = constants.baseUrl + 'app_dev.php/';
