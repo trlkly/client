@@ -26,6 +26,7 @@ var qcExt;
 	$('body').prepend('<qc-settings></qc-settings>');
 	$('body').prepend('<qc-edit-comic-data></qc-edit-comic-data>');
 	$('body').prepend('<qc-item-details></qc-item-details>');
+	$('body').prepend('<qc-change-log></qc-change-log>');
 	
 	// Take control over the page's title
 	$('title').replaceWith('<title ng-controller="titleController as t">' +
