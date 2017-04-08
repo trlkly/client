@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ "$2" != "-cl" ]
+then
+    echo "You must remember to update the changelog first!"
+    exit
+fi
+
 # Update package.json with the new version number
 sed -i "s/\"version\": .*,/echo -n \"  \\\\\"version\\\\\": \\\\\"$1\\\\\",\"/ge" package.json
 

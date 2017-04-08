@@ -82,7 +82,10 @@ var qcExt;
 					function loadItemData() {
 						$http.get(constants.itemDataUrl)
 							.then(function(response) {
-								var itemData = response.data;
+								var itemData = [];
+								if (response.status === 200) {
+									itemData = response.data;
+								}
 
 								itemData.push(addCastItem);
 								itemData.push(addStorylineItem);

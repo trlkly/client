@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Alexander Krivács Schrøder <alexschrod@gmail.com>
+ * Copyright (C) 2016, 2017 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,7 +69,12 @@ var qcExt;
 			});
 
 			function onErrorLog(response) {
-				messageReportingService.reportError(response.data);
+				if (response.status !== 503) {
+					messageReportingService.reportError(response.data);
+				} else {
+					messageReportingService.reportError(
+						constants.messages.maintenance);
+				}
 				return response;
 			}
 
@@ -103,8 +108,13 @@ var qcExt;
 
 				$http.get(comicDataUrl)
 					.then(function(response) {
+						if (response.status === 503) {
+							comicDataErrorEvent.notify(response);
+							return;
+						}
 						if (response.status !== 200) {
 							onErrorLog(response);
+							comicDataErrorEvent.notify(response);
 							return;
 						}
 						
@@ -158,7 +168,7 @@ var qcExt;
 						comicDataLoadedEvent.notify(self.comicData);
 					}, function(errorResponse) {
 						onErrorLog(errorResponse);
-						comicDataErrorEvent.notify(errorResponse.data);
+						comicDataErrorEvent.notify(errorResponse);
 					});
 			};
 
@@ -208,6 +218,17 @@ var qcExt;
 					tagline: tagline
 				};
 				return $http.post(constants.setComicTaglineUrl, data)
+					.then(onSuccessRefreshElseErrorLog, onErrorLog);
+			};
+
+			this.setPublishDate = function(publishDate, isAccurate) {
+				var data = {
+					token: qcExt.settings.editModeToken,
+					comic: self.comic,
+					publishDate: publishDate,
+					isAccuratePublishDate: isAccurate
+				};
+				return $http.post(constants.setPublishDateUrl, data)
 					.then(onSuccessRefreshElseErrorLog, onErrorLog);
 			};
 

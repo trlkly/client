@@ -44,6 +44,7 @@ var qcExt;
 
 		this.comicService = comicService;
 		this.settings = qcExt.settings;
+		this.constants = constants;
 		this.items = {};
 		this.allItems = {};
 		this.editorData = {};
@@ -191,9 +192,12 @@ var qcExt;
 			function(event, data) {
 				$scope.safeApply(reset);
 				$scope.safeApply(function() {
-					self.messages.push('Error communicating with server');
-					self.hasError = true;
-					$log.debug('Server error data:', data);
+					if (data.status !== 503) {
+						self.messages.push('Error communicating with server');
+						self.hasError = true;
+					} else {
+						self.messages.push(constants.messages.maintenance);
+					}
 				});
 			});
 

@@ -22,52 +22,44 @@ var qcExt;
 (function(qcExt) {
 	'use strict';
 
-	qcExt.app.directive('qcComicNav', function() {
+	qcExt.app.directive('qcRibbon', function() {
 		return {
 			restrict: 'E',
 			replace: true,
 			scope: {},
-			controller: ['$log', 'comicService', 'latestComic', 'eventFactory',
-				'$scope',
-				function($log, comicService, latestComic, Event, $scope) {
-					$log.debug('START qcComicNav()');
-
+			controller: ['$scope', 'eventFactory',
+				function($scope, Event) {
 					var comicDataLoadedEvent =
 						new Event(constants.comicdataLoadedEvent);
 
-					this.currentComic = null;
-					this.latestComic = latestComic;
+					$scope.safeApply = function(fn) {
+						var phase = this.$root.$$phase;
+
+						if (phase === '$apply' || phase === '$digest') {
+							if (fn && typeof fn === 'function') {
+								fn();
+							}
+						} else {
+							this.$apply(fn);
+						}
+					};
+					
+					this.settings = qcExt.settings;
+					this.isNonCanon = false;
+					this.isGuestComic = false;
+					this.isSmall = qcExt.settings.showSmallRibbonByDefault;
+
 					var self = this;
-
-					this.go = function() {
-						$log.debug('qcComicNav.go(): ' + self.currentComic);
-						if (self.currentComic === undefined ||
-							self.currentComic === null) {
-							self.currentComic = latestComic;
-						} else if (self.currentComic < 1) {
-							self.currentComic = 1;
-						} else if (self.currentComic > latestComic) {
-							self.currentComic = latestComic;
-						}
-						comicService.gotoComic(self.currentComic);
-					};
-
-					this.keyPress = function(event) {
-						if (event.keyCode === 13) {
-							// ENTER key
-							self.go();
-						}
-					};
-
 					comicDataLoadedEvent.subscribe($scope,
 						function(event, comicData) {
-							self.currentComic = comicData.comic;
+							$scope.safeApply(function() {
+								self.isNonCanon = comicData.isNonCanon;
+								self.isGuestComic = comicData.isGuestComic;
+							});
 						});
-
-					$log.debug('END qcComicNav()');
 				}],
-			controllerAs: 'cn',
-			template: qcExt.variables.angularTemplates.comicNav
+			controllerAs: 'r',
+			template: qcExt.variables.angularTemplates.ribbon
 		};
 	});
 })(qcExt || (qcExt = {}));

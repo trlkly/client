@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Alexander Krivács Schrøder <alexschrod@gmail.com>
+ * Copyright (C) 2016, 2017 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,15 +32,13 @@ var qcExt;
 					var self = this;
 					this.settings = qcExt.settings;
 					
-					$scope.$watch(function() {
+					$scope.$watchGroup([function() {
 						return self.settings.showAllMembers;
 					}, function() {
-						comicService.refreshComicData();
-					});
-					
-					$scope.$watch(function() {
 						return self.settings.editMode;
 					}, function() {
+						return self.settings.useCorrectTimeFormat;
+					}], function() {
 						comicService.refreshComicData();
 					});
 					

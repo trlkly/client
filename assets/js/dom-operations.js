@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Alexander Krivács Schrøder <alexschrod@gmail.com>
+ * Copyright (C) 2016, 2017 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,10 +22,13 @@ var qcExt;
 (function(qcExt) {
 	'use strict';
 
+	// Add our modal windows
 	$('body').prepend('<qc-settings></qc-settings>');
 	$('body').prepend('<qc-edit-comic-data></qc-edit-comic-data>');
 	$('body').prepend('<qc-item-details></qc-item-details>');
+	$('body').prepend('<qc-change-log></qc-change-log>');
 	
+	// Take control over the page's title
 	$('title').replaceWith('<title ng-controller="titleController as t">' +
 		'{{t.title}}</title>');
 
@@ -85,6 +88,9 @@ var qcExt;
 	comicImg.attr('ng-click', 'c.next($event)');
 	comicImg.attr('on-error', 'c.comicService.canFallback() ' +
 		'&& c.comicService.tryFallback()');
+	
+	// #comicDirective.attr('id', 'comic-anchor');
+	comicDirective.append($('<qc-ribbon></qc-ribbon>'));
 
 	var comicImage = comicImg.get(0);
 	var comicLinkUrl = comicImage.src;
@@ -110,6 +116,15 @@ var qcExt;
 
 	$('body #comicnav')
 		.replaceWith('<qc-nav random-comic="randomComic"></qc-nav>');
+	
+	if ($('#news, #newspost').prev().prop('tagName') === 'QC-NAV') {
+		// There's no date section: Insert our own
+		$('#news, #newspost').before('<qc-date></qc-date>');
+	} else {
+		// There's a date section: Replace with our own
+		$('#news, #newspost').prev().replaceWith('<qc-date></qc-date>');
+	}
+	
 	$('#news, #newspost').replaceWith('<qc-news></qc-news>');
 
 	// $('#side').prepend('<qc-extra></qc-extra>');

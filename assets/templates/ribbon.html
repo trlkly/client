@@ -14,10 +14,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="input-group" id="comicnavDir">
-    <span class="input-group-addon" title="Comic #">#</span>
-    <input id="comicnavDir_comic" type="number" class="form-control" aria-label="Comic" placeholder="Comic" ng-model="cn.currentComic" min="1" max="{{cn.latestComic}}" ng-keypress="cn.keyPress($event)">
-    <div class="input-group-btn">
-        <button id="comicnavDir_go" type="button" class="btn btn-default" ng-click="cn.go()" title="Navigate to the specified comic #">&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i></button>
-    </div><!-- /btn-group -->
-</div><!-- /input-group -->
+<div class="corner-ribbon top-right shadow"
+     ng-class="{
+         'blue': r.isGuestComic,
+         'red': !r.isGuestComic && r.isNonCanon,
+         'small': r.isSmall
+     }"
+     ng-show="r.settings.showIndicatorRibbon && (r.isGuestComic || r.isNonCanon)"
+     ng-click="r.isSmall = !r.isSmall"
+     title="This comic strip is {{r.isGuestComic ? 'a guest comic' : 'non-canon'}} (click to {{r.isSmall ? 'enlarge' : 'shrink'}} the ribbon)">
+    {{r.isGuestComic ? 'Guest Comic' : 'Non-Canon'}}
+</div>

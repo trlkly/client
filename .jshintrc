@@ -7,6 +7,7 @@
     "futurehostile": true,
     "globals": {
         "angular": true,
+        "GM_info": true,
         "GM_xmlhttpRequest": true,
         "GM_getValue": true,
         "GM_setValue": true,
