@@ -23,14 +23,18 @@ var qcExt;
 	qcExt.app.directive('qcComic', function() {
 		return {
 			restrict: 'E',
-			replace: true,
+			transclude: true,
 			scope: {},
+			link: function(scope, element, attrs, ctrl, transclude) {
+				transclude(scope, function(clone) {
+					element.append(clone);
+				});
+			},
 			controller: ['comicService',
 				function(comicService) {
 					this.comicService = comicService;
 				}],
-			controllerAs: 'c',
-			template: qcExt.variables.angularTemplates.comic
+			controllerAs: 'c'
 		};
 	});
 })(qcExt || (qcExt = {}));

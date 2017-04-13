@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Alexander Krivács Schrøder <alexschrod@gmail.com>
+ * Copyright (C) 2016, 2017 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,11 @@ var qcExt;
 		skipGuest: false,
 
 		editMode: false,
-		editModeToken: ''
+		editModeToken: '',
+		
+		showIndicatorRibbon: true,
+		showSmallRibbonByDefault: false,
+		useCorrectTimeFormat: true
 	};
 
 	qcExt.settings = JSON.parse(GM_getValue(constants.settingsKey,

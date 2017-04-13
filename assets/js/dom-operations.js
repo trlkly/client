@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Alexander Krivács Schrøder <alexschrod@gmail.com>
+ * Copyright (C) 2016, 2017 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,11 +22,14 @@ var qcExt;
 (function(qcExt) {
 	'use strict';
 
+	// Add our modal windows
 	$('body').prepend('<qc-settings></qc-settings>');
 	$('body').prepend('<qc-search></qc-search>');
 	$('body').prepend('<qc-edit-comic-data></qc-edit-comic-data>');
 	$('body').prepend('<qc-item-details></qc-item-details>');
+	$('body').prepend('<qc-change-log></qc-change-log>');
 	
+	// Take control over the page's title
 	$('title').replaceWith('<title ng-controller="titleController as t">' +
 		'{{t.title}}</title>');
 
@@ -54,7 +57,7 @@ var qcExt;
 	addCss(constants.baseUrl + 'style/bootstrap.min.css');
 
 	// Font Awesome
-	addCss('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/' +
+	addCss('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/' +
 		'font-awesome.min.css');
 
 	// Style adder function
@@ -73,9 +76,22 @@ var qcExt;
 	}
 
 	$('body').append($('<div ui-view></div>'));
-
-	// ComicAnchor.replaceWith('<div ui-view="comic"></div>');
-	comicAnchor.replaceWith('<qc-comic></qc-comic>');
+	
+	// To avoid triggering a flash of the comic "reloading", do in-place DOM
+	// manipulation instead of replacing the whole thing with a template.
+	// Fixes issue #13
+	var comicDirective = $('<qc-comic></qc-comic>');
+	comicAnchor.before(comicDirective);
+	comicAnchor.detach().appendTo(comicDirective);
+	comicAnchor.attr('ng-href', 'view.php?comic={{c.comicService.nextComic}}');
+	comicImg.attr('ng-src', 'http://questionablecontent.net/comics/' +
+		'{{c.comicService.comic}}.{{c.comicService.comicExtension}}');
+	comicImg.attr('ng-click', 'c.next($event)');
+	comicImg.attr('on-error', 'c.comicService.canFallback() ' +
+		'&& c.comicService.tryFallback()');
+	
+	// #comicDirective.attr('id', 'comic-anchor');
+	comicDirective.append($('<qc-ribbon></qc-ribbon>'));
 
 	var comicImage = comicImg.get(0);
 	var comicLinkUrl = comicImage.src;
@@ -101,6 +117,15 @@ var qcExt;
 
 	$('body #comicnav')
 		.replaceWith('<qc-nav random-comic="randomComic"></qc-nav>');
+	
+	if ($('#news, #newspost').prev().prop('tagName') === 'QC-NAV') {
+		// There's no date section: Insert our own
+		$('#news, #newspost').before('<qc-date></qc-date>');
+	} else {
+		// There's a date section: Replace with our own
+		$('#news, #newspost').prev().replaceWith('<qc-date></qc-date>');
+	}
+	
 	$('#news, #newspost').replaceWith('<qc-news></qc-news>');
 
 	// $('#side').prepend('<qc-extra></qc-extra>');

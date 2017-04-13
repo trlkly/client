@@ -1,0 +1,117 @@
+<!--
+    Copyright (C) 2016, 2017 Alexander Krivács Schrøder <alexschrod@gmail.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div class="modal fade" tabindex="-1" role="dialog" id="changeLogDialog" style="display: none;">
+    <div class="modal-dialog" style="overflow-y: initial !important;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Change Log</h3>
+            </div>
+            <div class="modal-body" style="max-height: 73.5vh; overflow-y: auto;">
+                <div ng-if="clvm.previousVersion">
+                    <h4>Script updated!</h4>
+                    <p>Your Questionable Content Extensions has been updated from v{{ clvm.previousVersion || 'none'}} to v{{ clvm.currentVersion }}!</p>
+                </div>
+                <div ng-if="!clvm.previousVersion">
+                    <h4>Script installed!</h4>
+                    <p>Thank you for installing Questionable Content Extensions!</p>
+                </div>
+                <h4>0.5.1 <small>April 8, 2017</small></h4>
+                <ul>
+                    <li>Deal better with server errors and maintenance</li>
+                    <li>Add support for showing the comic strip publish date</li>
+                    <li>Add a ribbon indicating comic status for non-canon and guest strips</li>
+                    <li>Make it possible to hit ENTER to navigate in the comic navigation widget</li>
+                    <li>Show a change log on installation and update of script</li>
+                </ul>
+                
+                <h4>0.5.0 <small>March 30, 2017</small></h4>
+                <ul>
+                    <li>Show locations an item has visited/been shown together with</li>
+                    <li>Show all members should always work, even when a comic has no data</li>
+                    <li>Add navigation control, which lets you navigate to any specific comic #</li>
+                    <li>Make "Show all members" behave much nicer than before</li>
+                </ul>
+                
+                <h4>0.4.1 <small>December 26, 2016</small></h4>
+                <ul>
+                    <li>Fix invalid editor token causing an error in the comic load routine</li>
+                </ul>
+                
+                <h4>0.4.0 <small>December 26, 2016</small></h4>
+                <ul>
+                    <li>Put comic number in site title for better browser navigation experience</li>
+                    <li>Update non-color style to work with new page design</li>
+                    <li>Save settings regardless of how the setting dialog is closed</li>
+                    <li>Refresh comic data when editor mode is enabled</li>
+                    <li>Fix "flash of unloaded content" when the script was loading</li>
+                </ul>
+                
+                <h4>0.3.3 <small>August 19, 2016</small></h4>
+                <ul>
+                    <li>Update visual style to better match new page design/layout</li>
+                </ul>
+                
+                <h4>0.3.2 <small>August 19, 2016</small></h4>
+                <ul>
+                    <li>Fix script to work with new page design/layout</li>
+                </ul>
+                
+                <h4>0.3.1 <small>March 23, 2016</small></h4>
+                <ul>
+                    <li>Fix issue with next/previous comic calculation when server reports unknown</li>
+                </ul>
+                
+                <h4>0.3 <small>March 18, 2016</small></h4>
+                <ul>
+                    <li>Use navigation data for next and previous comic from the webservice to respect the "skip guest" and "skip non-canon" settings</li>
+                    <li>Add "friend list" to cast info: Who's seen the most together with whom</li>
+                    <li>Don't interfere with Firefox' Alt+Left/Alt+Right navigation</li>
+                    <li>Deal properly with the two special cases of no next or no previous comic from the web service.</li>
+                    <li>Show different "friend list" messages for different kinds of items</li>
+                </ul>
+                
+                <h4>0.2.1 <small>March 13, 2016</small></h4>
+                <ul>
+                    <li>Fix issues with Firefox</li>
+                </ul>
+                
+                <h4>0.2.0 <small>March 13, 2016</small></h4>
+                <ul>
+                    <li>Add keyboard shortcuts to make edit mode easier to use</li>
+                    <li>Position the "no image" elements more centrally</li>
+                    <li>Better choice of word doesn't imply it's the last time we'll ever see cast members again</li>
+                    <li>Add "tagline" support to the comic</li>
+                    <li>Minor user interface improvements</li>
+                    <li>Show proper error message dialog instead of just logging errors to console</li>
+                </ul>
+                
+                <h4>0.1.2 <small>March 12, 2016</small></h4>
+                <ul>
+                    <li>Show "Loading..." text when data for the next comic is loading rather than keep showing the old comic's news</li>
+                </ul>
+                
+                <h4>0.1.0 <small>March 10, 2016</small></h4>
+                <ul>
+                    <li>Initial release</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" ng-click="clvm.close()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

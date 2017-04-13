@@ -16,9 +16,9 @@
 -->
 <table id="qcnav_navbox">
     <thead>
-        <!--<tr>
-            <th class="qcnav_centered">Navigation</th>
-        </tr>-->
+        <tr ng-if="e.constants.developmentMode">
+            <th class="qcnav_centered">DEVELOPMENT MODE</th>
+        </tr>
         <tr>
             <td id="qcnav_status">
                 <i ng-show="e.isLoading" class="fa fa-refresh fa-spin"></i>
@@ -141,6 +141,11 @@
                 <button type="button" class="btn btn-default" ng-click="e.openSearch()">Search</button>
             </td>
         </tr>
+        <tr>
+            <td>
+                <qc-comic-nav></qc-comic-nav>
+            </td>
+        </tr>
         <tr ng-if="e.settings.editMode">
             <td>
                 <qc-add-item></qc-add-item>
@@ -154,6 +159,25 @@
         <tr ng-show="e.settings.editMode">
             <td>
                 <qc-set-tagline></qc-set-tagline>
+            </td>
+        </tr>
+        <tr ng-repeat="(type, typeItems) in e.allItems">
+            <td>
+                <h1 ng-bind-html="e.getTypeDescription('all-' + type)"></h1>
+                <qc-extra-nav ng-repeat="item in typeItems" 
+                              id="{{'qcnav_item_' + item.id}}"
+                              first-title="{{'First strip with ' + item.shortName}}"
+                              first-value="item.first"
+                              previous-title="{{'Previous strip with ' + item.shortName}}"
+                              previous-value="item.previous"
+                              next-title="{{'Next strip with ' + item.shortName}}"
+                              next-value="item.next"
+                              last-title="{{'Last strip with ' + item.shortName}}"
+                              last-value="item.last"
+                              name="{{item.shortName}}"
+                              name-title="{{item.name}}"
+                              click-action="e.showDetailsFor(item)">
+                </qc-extra-nav>
             </td>
         </tr>
     </tbody>

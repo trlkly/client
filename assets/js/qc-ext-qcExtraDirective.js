@@ -22,7 +22,7 @@ var qcExt;
 (function(qcExt) {
 	'use strict';
 	
-	function Controller($scope, $log, comicService, latestComic, Event) {
+	function Controller($scope, $log, comicService, latestComic, Event, $sce) {
 		var comicDataLoadingEvent = new Event(constants.comicdataLoadingEvent);
 		var comicDataLoadedEvent = new Event(constants.comicdataLoadedEvent);
 		var comicDataErrorEvent = new Event(constants.comicdataErrorEvent);
@@ -44,7 +44,9 @@ var qcExt;
 
 		this.comicService = comicService;
 		this.settings = qcExt.settings;
+		this.constants = constants;
 		this.items = {};
+		this.allItems = {};
 		this.editorData = {};
 		this.messages = [];
 		this.missingDataInfo = [];
@@ -52,6 +54,7 @@ var qcExt;
 		function reset() {
 			self.isLoading = false;
 			self.items = {};
+			self.allItems = {};
 			self.editorData = {};
 			self.messages.length = 0;
 			self.missingDataInfo.length = 0;
@@ -74,7 +77,8 @@ var qcExt;
 				$scope.safeApply(function() {
 					reset();
 
-					if (self.settings.editMode) {
+					if (self.settings.editMode &&
+						comicData.editorData) {
 						self.editorData = comicData.editorData;
 						self.editorData.missing.cast.any =
 							self.editorData.missing.cast.first !== null;
@@ -118,12 +122,30 @@ var qcExt;
 						/* jscs:enable maximumLineLength */
 						/* jshint eqeqeq:true */
 					}
+					
+					function processItem(item) {
+						if (!(item.type in self.items)) {
+							self.items[item.type] = [];
+						}
+						self.items[item.type].push(item);
+					}
+					
+					function processAllItem(item) {
+						if (!(item.type in self.allItems)) {
+							self.allItems[item.type] = [];
+						}
+						self.allItems[item.type].push(item);
+					}
 
 					if (!comicData.hasData) {
 						self.messages.push(
 							'This strip has no navigation data yet'
 							);
 						self.hasWarning = true;
+						
+						if (qcExt.settings.showAllMembers) {
+							angular.forEach(comicData.allItems, processAllItem);
+						}
 						return;
 					}
 
@@ -132,10 +154,7 @@ var qcExt;
 					var hasStoryline = false;
 					angular.forEach(comicData.items,
 						function(item) {
-							if (!(item.type in self.items)) {
-								self.items[item.type] = [];
-							}
-							self.items[item.type].push(item);
+							processItem(item);
 
 							if (item.type === 'cast') {
 								hasCast = true;
@@ -144,7 +163,11 @@ var qcExt;
 							} else if (item.type === 'storyline') {
 								hasStoryline = true;
 							}
-						});
+						}
+					);
+					if (qcExt.settings.showAllMembers) {
+						angular.forEach(comicData.allItems, processAllItem);
+					}
 
 					if (!hasCast) {
 						self.missingDataInfo.push('cast members');
@@ -169,9 +192,12 @@ var qcExt;
 			function(event, data) {
 				$scope.safeApply(reset);
 				$scope.safeApply(function() {
-					self.messages.push('Error communicating with server');
-					self.hasError = true;
-					$log.debug('Server error data:', data);
+					if (data.status !== 503) {
+						self.messages.push('Error communicating with server');
+						self.hasError = true;
+					} else {
+						self.messages.push(constants.messages.maintenance);
+					}
 				});
 			});
 
@@ -183,6 +209,16 @@ var qcExt;
 					return 'Storylines';
 				case 'location':
 					return 'Locations';
+					
+				case 'all-cast':
+					return $sce.trustAsHtml('Cast Members<br>' +
+						'<small>(Non-Present)</small>');
+				case 'all-storyline':
+					return $sce.trustAsHtml('Storylines<br>' +
+						'<small>(Non-Present)</small>');
+				case 'all-location':
+					return $sce.trustAsHtml('Locations<br>' +
+						'<small>(Non-Present)</small>');
 			}
 		};
 
@@ -215,7 +251,7 @@ var qcExt;
 			replace: true,
 			scope: {},
 			controller: ['$scope', '$log', 'comicService', 'latestComic',
-				'eventFactory', Controller],
+				'eventFactory', '$sce', Controller],
 			controllerAs: 'e',
 			template: qcExt.variables.angularTemplates.extra
 		};

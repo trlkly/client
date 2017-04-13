@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Alexander Krivács Schrøder <alexschrod@gmail.com>
+ * Copyright (C) 2016, 2017 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@ var constants;
 
 	// Set this to true when working against your local test server.
 	// NEVER CHECK THIS FILE IN WITH developmentMode = true!
-	var developmentMode = false;
-	if (developmentMode) {
+	constants.developmentMode = false;
+	if (constants.developmentMode) {
 		constants.baseUrl =
 			'http://localhost/questionablecontentextensions/web/';
 		constants.webServiceBaseUrl = constants.baseUrl + 'app_dev.php/';
@@ -42,11 +42,13 @@ var constants;
 	constants.removeItemFromComicUrl = constants.comicDataUrl + 'removeitem';
 	constants.setComicTitleUrl = constants.comicDataUrl + 'settitle';
 	constants.setComicTaglineUrl = constants.comicDataUrl + 'settagline';
+	constants.setPublishDateUrl = constants.comicDataUrl + 'setpublishdate';
 	constants.setGuestComicUrl = constants.comicDataUrl + 'setguest';
 	constants.setNonCanonUrl = constants.comicDataUrl + 'setnoncanon';
 	
 	constants.itemDataUrl = constants.webServiceBaseUrl + 'itemdata/';
 	constants.itemFriendDataUrl = constants.itemDataUrl + 'friends/';
+	constants.itemLocationDataUrl = constants.itemDataUrl + 'locations/';
 	constants.setItemDataPropertyUrl = constants.itemDataUrl + 'setproperty';
 	
 	constants.characterImageBaseUrl = constants.baseUrl + 'images/characters/';
@@ -61,4 +63,11 @@ var constants;
 	
 	constants.dragStartEvent = 'drag-start';
 	constants.dragEndEvent = 'drag-end';
+	
+	constants.messages = {
+		maintenance: 'The Questionable Extensions' +
+			' server is currently undergoing maintenance.' +
+			' Normal operation should resume within a' +
+			' few minutes.'
+	};
 })(constants || (constants = {}));

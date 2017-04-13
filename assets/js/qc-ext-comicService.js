@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Alexander Krivács Schrøder <alexschrod@gmail.com>
+ * Copyright (C) 2016, 2017 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ var qcExt;
 			var comicExtensionIndex = 0;
 
 			function updateComic() {
+				$log.debug('comicService:updateComic()');
 				var comic;
 
 				if (typeof $stateParams.comic === 'string') {
@@ -49,6 +50,9 @@ var qcExt;
 				}
 
 				self.comic = comic;
+				self.nextComic = self.comic + 1 > latestComic ?
+					latestComic : self.comic + 1;
+				self.previousComic = self.comic - 1 < 1 ? 1 : self.comic - 1;
 				self.latestComic = latestComic;
 				comicExtensionIndex = 0;
 				self.comicExtension =
@@ -65,7 +69,12 @@ var qcExt;
 			});
 
 			function onErrorLog(response) {
-				messageReportingService.reportError(response.data);
+				if (response.status !== 503) {
+					messageReportingService.reportError(response.data);
+				} else {
+					messageReportingService.reportError(
+						constants.messages.maintenance);
+				}
 				return response;
 			}
 
@@ -99,13 +108,32 @@ var qcExt;
 
 				$http.get(comicDataUrl)
 					.then(function(response) {
+						if (response.status === 503) {
+							comicDataErrorEvent.notify(response);
+							return;
+						}
 						if (response.status !== 200) {
 							onErrorLog(response);
+							comicDataErrorEvent.notify(response);
 							return;
 						}
 						
-						var comicData = response.data;
+						function fixItem(item) {
+							/* jshint eqeqeq:false */
+							if (item.first == self.comic) {
+								item.first = null;
+							}
 
+							if (item.last == self.comic) {
+								item.last = null;
+							}
+							/* jshint eqeqeq:true */
+
+							styleService.addItemStyle(item.id,
+								item.color);
+						}
+
+						var comicData = response.data;
 						if (comicData.hasData) {
 							if (comicData.next !== null) {
 								self.nextComic = comicData.next;
@@ -120,61 +148,19 @@ var qcExt;
 									self.comic - 1;
 							}
 							
-							angular.forEach(comicData.items,
-								function(value) {
-									/* jshint eqeqeq:false */
-									if (value.first == self.comic) {
-										value.first = null;
-									}
-
-									if (value.last == self.comic) {
-										value.last = null;
-									}
-									/* jshint eqeqeq:true */
-
-									var qcNavItem = '#qcnav_item_' +
-										value.id + ' > table';
-									var qcNavItemWithColor = qcNavItem +
-										'.with_color';
-
-									if (!styleService
-										.hasStyle(qcNavItemWithColor)) {
-										var backgroundColor = value.color;
-										var foregroundColor = colorService
-											.createTintOrShade(value.color);
-										var hoverFocusColor = colorService
-											.createTintOrShade(value.color, 2);
-
-										// jscs:disable maximumLineLength
-										var itemStyle =
-											qcNavItemWithColor + '{' +
-												'background-color:' + backgroundColor + ';' +
-											'}' +
-											qcNavItemWithColor + ',' +
-											qcNavItemWithColor + ' a.qcnav_name_link,' +
-											qcNavItemWithColor + ' a:link,' +
-											qcNavItemWithColor + ' a:visited{' +
-												'color:' + foregroundColor + ';' +
-											'}' +
-											qcNavItem + ' a.qcnav_name_link{' +
-												'cursor: pointer;' +
-												'text-decoration: none;' +
-											'}' +
-											qcNavItemWithColor + ' a:hover,' +
-											qcNavItemWithColor + ' a:focus{' +
-												'color: ' + hoverFocusColor + ';' +
-											'}';
-										// jscs:enable maximumLineLength
-
-										styleService.addCustomStyle(
-											qcNavItemWithColor, itemStyle);
-									}
-								});
+							angular.forEach(comicData.items, fixItem);
+							if (qcExt.settings.showAllMembers) {
+								angular.forEach(comicData.allItems, fixItem);
+							}
 						} else {
 							self.nextComic = self.comic + 1 > latestComic ?
 								latestComic : self.comic + 1;
 							self.previousComic = self.comic - 1 < 1 ? 1 :
 								self.comic - 1;
+							
+							if (qcExt.settings.showAllMembers) {
+								angular.forEach(comicData.allItems, fixItem);
+							}
 						}
 
 						comicData.comic = self.comic;
@@ -182,7 +168,7 @@ var qcExt;
 						comicDataLoadedEvent.notify(self.comicData);
 					}, function(errorResponse) {
 						onErrorLog(errorResponse);
-						comicDataErrorEvent.notify(errorResponse.data);
+						comicDataErrorEvent.notify(errorResponse);
 					});
 			};
 
@@ -232,6 +218,17 @@ var qcExt;
 					tagline: tagline
 				};
 				return $http.post(constants.setComicTaglineUrl, data)
+					.then(onSuccessRefreshElseErrorLog, onErrorLog);
+			};
+
+			this.setPublishDate = function(publishDate, isAccurate) {
+				var data = {
+					token: qcExt.settings.editModeToken,
+					comic: self.comic,
+					publishDate: publishDate,
+					isAccuratePublishDate: isAccurate
+				};
+				return $http.post(constants.setPublishDateUrl, data)
 					.then(onSuccessRefreshElseErrorLog, onErrorLog);
 			};
 
