@@ -56,6 +56,7 @@ var qcExt;
 						function() {
 							$scope.safeApply(function() {
 								self.date = null;
+								self.approximateDate = false;
 							});
 						});
 					comicDataLoadedEvent.subscribe($scope,
