@@ -153,7 +153,8 @@ module.exports = function (grunt) {
                     'assets/generated/ribbon.html': 'assets/templates/ribbon.html',
                     'assets/generated/itemDetails.html': 'assets/templates/itemDetails.html',
                     'assets/generated/comicNav.html': 'assets/templates/comicNav.html',
-                    'assets/generated/changeLog.html': 'assets/templates/changeLog.html'
+                    'assets/generated/changeLog.html': 'assets/templates/changeLog.html',
+                    'assets/generated/date.html': 'assets/templates/date.html'
                 }
             }
         }
