@@ -16,7 +16,9 @@ all copies or substantial portions of the Software.
 */
 
 if (typeof GM !== 'undefined') {
-	var GM_xmlhttpRequest = GM.xmlHttpRequest;
+    /*jshint unused:false*/
+
+    var GM_xmlhttpRequest = GM.xmlHttpRequest;
     var storagePrefix = GM.info.script.namespace + '?';
 
 	// The following functions all use local storage, and thus could be accessed
@@ -30,7 +32,7 @@ if (typeof GM !== 'undefined') {
 	var GM_getValue = function (aKey, aDefault) {
         'use strict';
 		var aValue = localStorage.getItem(storagePrefix + aKey);
-		if (null === aValue && 'undefined' !== typeof aDefault) return aDefault;
+		if (null === aValue && 'undefined' !== typeof aDefault) { return aDefault; }
 		return aValue;
 	};
 
