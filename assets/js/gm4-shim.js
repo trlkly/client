@@ -16,28 +16,28 @@ all copies or substantial portions of the Software.
 */
 
 if (typeof GM !== 'undefined') {
-    /*jshint unused:false*/
+	/*jshint unused:false*/
 
-    var GM_xmlhttpRequest = GM.xmlHttpRequest;
-    var storagePrefix = GM.info.script.namespace + '?';
+	var GM_xmlhttpRequest = GM.xmlHttpRequest;
+	var storagePrefix = GM.info.script.namespace + '?';
 
 	// The following functions all use local storage, and thus could be accessed
 	// by the host. They are also restricted to a single domain.
 
 	var GM_deleteValue = function (aKey) {
-        'use strict';
+		'use strict';
 		localStorage.removeItem(storagePrefix + aKey);
 	};
 
 	var GM_getValue = function (aKey, aDefault) {
-        'use strict';
+		'use strict';
 		var aValue = localStorage.getItem(storagePrefix + aKey);
 		if (null === aValue && 'undefined' !== typeof aDefault) { return aDefault; }
 		return aValue;
 	};
 
 	var GM_listValues = function () {
-        'use strict';
+		'use strict';
 		var prefixLen = storagePrefix.length;
 		var values = [];
 		for (var i = 0; i < localStorage.length; i++) {
@@ -50,7 +50,7 @@ if (typeof GM !== 'undefined') {
 	};
 
 	var GM_setValue = function (aKey, aVal) {
-        'use strict';
+		'use strict';
 		localStorage.setItem(storagePrefix + aKey, aVal);
 	};
 }
