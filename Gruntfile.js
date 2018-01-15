@@ -86,6 +86,7 @@ module.exports = function (grunt) {
                     banner: '<%= pkg.licenseBanner %>\n<%= pkg.userscriptBanner %>'
                 },
                 src: [
+                    'assets/js/gm4-shim.js',
                     'assets/js/constants.js',
                     'assets/generated/variables.pass2.js',
                     'assets/js/settings.js',
