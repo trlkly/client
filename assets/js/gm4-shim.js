@@ -15,9 +15,9 @@ The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
 */
 
-if (typeof GM !== 'undefined' && typeof GM_getValue === 'undefined') {
-	/*jshint unused:false*/
+/*jshint unused:false, esversion: 6, latedef: false*/
 
+if (typeof GM !== 'undefined' && typeof GM_getValue === 'undefined') {
 	if (typeof GM_info === 'undefined') { const GM_info = GM.info; }
 	var GM_xmlhttpRequest = GM.xmlHttpRequest;
 	var storagePrefix = GM.info.script.name.replace(/[^A-Z]*/g, '') + '-';
