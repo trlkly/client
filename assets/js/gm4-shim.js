@@ -15,11 +15,12 @@ The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
 */
 
-if (typeof GM !== 'undefined') {
+if (typeof GM !== 'undefined' && typeof GM_getValue === 'undefined') {
 	/*jshint unused:false*/
 
+	if (typeof GM_info === 'undefined') { const GM_info = GM.info; }
 	var GM_xmlhttpRequest = GM.xmlHttpRequest;
-	var storagePrefix = GM.info.script.namespace + '?';
+	var storagePrefix = GM.info.script.name.replace(/[^A-Z]*/g, '') + '-';
 
 	// The following functions all use local storage, and thus could be accessed
 	// by the host. They are also restricted to a single domain.
