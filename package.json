@@ -10,7 +10,7 @@
     "grunt-contrib-jshint": "~1.1",
     "grunt-contrib-uglify": "~2.2",
     "grunt-contrib-watch": "~1.0",
-    "grunt-files-to-javascript-variables": "~0.2",
+    "grunt-files-to-javascript-variables": "git://github.com/alexschrod/grunt-files-to-javascript-variables.git#master",
     "grunt-jscs": "~3.0",
     "load-grunt-tasks": "~3.5"
   },

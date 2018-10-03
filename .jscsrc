@@ -146,7 +146,7 @@
     },
     "safeContextKeyword": ["self"],
     "validateIndentation": "\t",
-    "validateLineBreaks": "LF",
+    "validateLineBreaks": null,
     "validateParameterSeparator": ", ",
     "validateQuoteMarks": "'"
 }
