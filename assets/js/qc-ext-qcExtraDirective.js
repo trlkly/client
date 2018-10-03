@@ -185,15 +185,15 @@ var qcExt;
 						comicService.comic > constants.taglineThreshold) {
 						self.missingDataInfo.push('a tagline');
 					}
-					
+
+					var currentVersion = GM_info.script.version;
 					if (qcExt.settings.version === undefined) {
 						// Version is undefined. We're a new user!
 						$log.debug('qcExtra(): Version undefined!');
 						self.showWelcomeMessage = true;
 					} else if (qcExt.settings.version !==
-						self.currentVersion) {
+						currentVersion) {
 						// Version is changed. Script has been updated!
-						$log.debug('qcExtra(): Version different!');
 						self.showUpdateMessage = true;
 					}
 				});
