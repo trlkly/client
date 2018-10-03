@@ -16,8 +16,8 @@
 -->
 <div class="row">
     <b>
-        <span ng-if="d.settings.useCorrectTimeFormat">{{d.date | date:\'EEEE, MMMM d, yyyy HH:mm\' }}</span>
-        <span ng-if="!d.settings.useCorrectTimeFormat">{{d.date | date:\'EEEE, MMMM d, yyyy h:mm a\' }}</span>
+        <span ng-if="d.settings.useCorrectTimeFormat">{{d.date | date:'EEEE, MMMM d, yyyy HH:mm' }}</span>
+        <span ng-if="!d.settings.useCorrectTimeFormat">{{d.date | date:'EEEE, MMMM d, yyyy h:mm a' }}</span>
         <span ng-if="d.approximateDate"> (Approximately)</span>
     </b>
 </div>
