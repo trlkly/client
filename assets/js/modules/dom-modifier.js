@@ -53,7 +53,7 @@ export default class DomModifier {
 			'{{t.title}}</title>');
 
 		// Bootstrap
-		addCss(constants.baseUrl + 'style/bootstrap.min.css');
+		addCss(constants.siteUrl + 'style/bootstrap.min.css');
 
 		// Font Awesome
 		addCss('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/' +

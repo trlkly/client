@@ -1,9 +1,13 @@
 module.exports = {
+	"parser": "babel-eslint",
+	"plugins": [
+		"flowtype"
+	],
 	"env": {
 		"browser": true,
 		"es6": true
 	},
-	"extends": "eslint:recommended",
+	"extends": "plugin:flowtype/recommended",
 	"parserOptions": {
 		"ecmaVersion": 2017,
 		"sourceType": "module"
@@ -28,5 +32,10 @@ module.exports = {
 		"jQuery": true,
 		"$": true,
 		"GM": true
+	},
+	"settings": {
+		"flowtype": {
+			"onlyFilesWithFlowAnnotation": false
+		}
 	}
 };

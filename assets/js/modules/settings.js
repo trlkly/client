@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import GM from 'greasemonkey';
+
 import constants from '../constants';
 
 /**
@@ -26,7 +29,7 @@ function loadFromGM4Shim() {
 	let storagePrefix = GM.info.script.name.replace(/[^A-Z]*/g, '') + '-';
 	function shimGetValue(aKey, aDefault) {
 		let aValue = localStorage.getItem(storagePrefix + aKey);
-		if (null === aValue && 'undefined' !== typeof aDefault) { return aDefault; }
+	    if (null === aValue && 'undefined' !== typeof aDefault) { return aDefault; }
 		return aValue;
 	}
 	function shimDeleteValue(aKey) {
@@ -40,7 +43,31 @@ function loadFromGM4Shim() {
 	return shimSettings;
 }
 
+type SettingValues = {
+	showDebugLogs: boolean,
+	scrollToTop: boolean,
+
+	showAllMembers: boolean,
+	showCast: boolean,
+	showStorylines: boolean,
+	showLocations: boolean,
+	useColors: boolean,
+
+	skipNonCanon: boolean,
+	skipGuest: boolean,
+
+	editMode: boolean,
+	editModeToken: string,
+
+	showIndicatorRibbon: boolean,
+	showSmallRibbonByDefault: boolean,
+	useCorrectTimeFormat: boolean
+};
+
 class Settings {
+	defaults: SettingValues;
+	settings: SettingValues;
+
 	constructor() {
 		this.defaults = {
 			showDebugLogs: false,
@@ -69,9 +96,17 @@ class Settings {
 		return new Proxy(this, {
 			get(target, prop) {
 				if (!(prop in target)) {
-					return self.settings[prop];
+					return target.settings[prop];
 				}
-				return target[prop];
+				return (target: any)[prop];
+			},
+			set(target, prop, value) {
+				if (!(prop in target) && target.settings && (prop in target.settings)) {
+					target.settings[prop] = value;
+				} else {
+					(target: any)[prop] = value;
+				}
+				return true;
 			}
 		});
 	}

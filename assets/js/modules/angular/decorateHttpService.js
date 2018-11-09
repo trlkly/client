@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import angular from 'angular';
+
 // TODO: Since we're not using the original service at all, we might
 // as well completely replace it rather than decorate it...
 // http://www.bennadel.com/blog/

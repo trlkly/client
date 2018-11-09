@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -19,9 +20,9 @@
 // NEVER CHECK THIS FILE IN WITH developmentMode = true!
 const developmentMode = false;
 
-function getBaseUrl() {
+function getSiteUrl() {
 	if (developmentMode) {
-		return 'http://localhost/questionablecontentextensions/web/';
+		return 'http://localhost:3000/';
 	} else {
 		return 'https://questionablextensions.net/';
 	}
@@ -29,9 +30,9 @@ function getBaseUrl() {
 
 function getWebserviceBaseUrl() {
 	if (developmentMode) {
-		return getBaseUrl() + 'app_dev.php/';
+		return 'http://localhost:3000/api/';
 	} else {
-		return getBaseUrl();
+		return 'https://questionablecontent.herokuapp.com/api/';
 	}
 }
 
@@ -42,10 +43,10 @@ let constants = {
 	settingsKey: 'settings',
 
 	developmentMode,
-	baseUrl: getBaseUrl(),
+	siteUrl: getSiteUrl(),
 	comicDataUrl,
 	itemDataUrl,
-	
+
 	// Comics after 3132 should have a tagline
 	taglineThreshold: 3132,
 
@@ -56,13 +57,13 @@ let constants = {
 	setPublishDateUrl: comicDataUrl + 'setpublishdate',
 	setGuestComicUrl: comicDataUrl + 'setguest',
 	setNonCanonUrl: comicDataUrl + 'setnoncanon',
-	
-	
+
+
 	itemFriendDataUrl: itemDataUrl + 'friends/',
 	itemLocationDataUrl: itemDataUrl + 'locations/',
 	setItemDataPropertyUrl: itemDataUrl + 'setproperty',
-	
-	characterImageBaseUrl: getBaseUrl() + 'images/characters/',
+
+	characterImageBaseUrl: getSiteUrl() + 'images/characters/',
 	characterImageExtension: 'png',
 
 	comicExtensions: ['png', 'gif', 'jpg'],

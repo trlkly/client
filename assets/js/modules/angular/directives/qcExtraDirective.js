@@ -15,12 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import angular from 'angular';
+
 import constants from '../../../constants';
 import settings from '../../settings';
 import variables from '../../../../generated/variables.pass2';
 
 export default function (app) {
-
 	function Controller($scope, $log, comicService, latestComic, Event, $sce) {
 		var comicDataLoadingEvent = new Event(constants.comicdataLoadingEvent);
 		var comicDataLoadedEvent = new Event(constants.comicdataLoadedEvent);

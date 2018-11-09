@@ -38,6 +38,7 @@ var userScriptBanner =
 // @require      https://questionablextensions.net/scripts/angular.custom.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.18/angular-ui-router.min.js
 // @connect      questionablextensions.net
+// @connect      questionablecontent.herokuapp.com
 // @connect      localhost
 // @grant        GM.openInTab
 // @grant        GM.setValue

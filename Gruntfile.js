@@ -17,16 +17,31 @@
 
 /* global module, require */
 
-let resolve = require('rollup-plugin-node-resolve');
-let commonJs = require('rollup-plugin-commonjs');
+const resolve = require('rollup-plugin-node-resolve');
+const commonJs = require('rollup-plugin-commonjs');
+const virtual = require('rollup-plugin-virtual');
 
-let licenseBanner = require('./licenseBanner');
-let userScriptBanner = require('./userScriptBanner');
+const licenseBanner = require('./licenseBanner');
+const userScriptBanner = require('./userScriptBanner');
 
-let baseFileName = 'qc-ext';
+const baseFileName = 'qc-ext';
 
 module.exports = function (grunt) {
 	'use strict';
+
+	grunt.registerTask('flowRemoveTypes', 'Runs flow-remove-types.', function () {
+		const flowRemoveTypes = require('flow-remove-types');
+
+		const files = grunt.file.expand('assets/js/**/*.js');
+		for (var i = 0, len = files.length; i < len; i++) {
+			const inputFile = files[i];
+			const outputFileName = inputFile.substring('assets/js/'.length);
+
+			const input = grunt.file.read(inputFile);
+			const output = flowRemoveTypes(input);
+			grunt.file.write('assets/removeFlow/' + outputFileName, output.toString());
+		}
+	});
 
 	// Project configuration.
 	grunt.initConfig({
@@ -150,7 +165,13 @@ module.exports = function (grunt) {
 		},
 		rollup: {
 			options: {
+				pureExternalImports: true,
 				plugins: [
+					virtual({
+						'jquery': 'export default jQuery',
+						'angular': 'export default angular',
+						'greasemonkey': 'export default GM'
+					}),
 					resolve({
 						browser: true
 					}),
@@ -159,9 +180,15 @@ module.exports = function (grunt) {
 			},
 			main: {
 				files: {
-					'assets/generated/rollup.js': 'assets/js/app.js'
+					'assets/generated/rollup.js': 'assets/removeFlow/app.js'
 				}
 			}
+		},
+		flow: {
+			options: {
+				server: false
+			},
+			files: ['assets/js/**/*.js']
 		}
 	});
 
@@ -171,6 +198,8 @@ module.exports = function (grunt) {
 	// Register the tasks.
 	grunt.registerTask('default', ['build']);
 	grunt.registerTask('build', [
+		'flow',               // Type-checking
+		'flowRemoveTypes',    // Removes flow annotations
 		'eslint',             // Check for lint
 		'compass',            // Compile CSS
 		'htmlmin',            // Minify HTML templates

@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import angular from 'angular';
+
 import constants from '../../../constants';
 
 import settings from '../../settings';
