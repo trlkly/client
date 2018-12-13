@@ -16,14 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import type { AngularModule, $Log } from 'angular';
-import type { ComicService } from '../services/comicService';
+export function nl2br(str: string, isXhtml: boolean) {
+	const breakTag = isXhtml ||
+		typeof isXhtml === 'undefined' ?
+		'<br />' : '<br>';
 
-export default function (app: AngularModule) {
-	app.controller('comicController', ['$log', 'comicService',
-		function ($log: $Log, comicService: ComicService) {
-			$log.debug('START comicController()');
-			this.comicService = comicService;
-			$log.debug('END comicController()');
-		}]);
+	return String(str).replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g,
+		'$1' + breakTag + '$2');
+}
+
+const comicLinkRegexp =
+/<a[^>]*href=(?:"|')(?:http:\/\/(?:www\.)?questionablecontent.net\/)?view\.php\?comic=(\d+)(?:"|')[^>]*>/;
+export function angularizeLinks(str: string) {
+	return String(str).replace(comicLinkRegexp,
+		'<a ng-href="view.php?comic=$1">');
 }

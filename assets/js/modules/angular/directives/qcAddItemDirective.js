@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,212 +16,227 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import type { AngularModule, $Log, $Timeout, $Http, $Filter } from 'angular';
+
 import constants from '../../../constants';
 import variables from '../../../../generated/variables.pass2';
 
-export default function (app) {
+import { SetValueControllerBase } from '../controllers/ControllerBases';
+
+import type { $DecoratedScope } from '../decorateScope';
+import type { ComicService } from '../services/comicService';
+import type { EventService } from '../services/eventService';
+import type { ItemBaseData, ItemData } from '../api/itemData';
+import type { ComicItem } from '../api/comicData';
+
+const addCastTemplate = 'Add new cast member';
+const addCastItem: ItemBaseData = {
+	id: -1,
+	type: 'cast',
+	shortName: `${addCastTemplate} ''`,
+	name: ''
+};
+const addStorylineTemplate = 'Add new storyline';
+const addStorylineItem: ItemBaseData = {
+	id: -1,
+	type: 'storyline',
+	shortName: `${addStorylineTemplate} ''`,
+	name: ''
+};
+const addLocationTemplate = 'Add new location';
+const addLocationItem: ItemBaseData = {
+	id: -1,
+	type: 'location',
+	shortName: `${addLocationTemplate} ''`,
+	name: ''
+};
+
+function escapeRegExp(s) {
+	return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+
+let triggeredFocus = false;
+let dropdownOpen = false;
+let firstRun = true;
+
+export class AddItemController extends SetValueControllerBase<AddItemController> {
+	static $inject: string[];
+
+	$log: $Log;
+	$http: $Http;
+	$timeout: $Timeout;
+	$filter: $Filter;
+
+	searchFieldId: string;
+	dropdownId: string;
+	dropdownButtonId: string;
+
+	itemFilterText: string;
+	items: ItemBaseData[];
+
+	constructor(
+		$scope: $DecoratedScope<AddItemController>,
+		$log: $Log,
+		comicService: ComicService,
+		eventService: EventService,
+		$http: $Http,
+		$timeout: $Timeout,
+		$filter: $Filter
+	) {
+		$log.debug('START AddItemController');
+
+		super($scope, comicService, eventService);
+
+		this.$log = $log;
+		this.$http = $http;
+		this.$timeout = $timeout;
+		this.$filter = $filter;
+
+		this.searchFieldId = `#addItem_${this.unique}_search`;
+		this.dropdownId = `#addItem_${this.unique}_dropdown`;
+		this.dropdownButtonId = `#addItem_${this.unique}_dropdownButton`;
+		
+		this.items = [];
+		this.itemFilterText = '';
+
+		(this: any).itemFilter = this.itemFilter.bind(this);
+
+		this._loadItemData();
+
+		$log.debug('END AddItemController');
+	}
+
+	_loadItemData() {
+		this.$http.get(constants.itemDataUrl)
+			.then((response) => {
+				let itemData: ItemBaseData[] = [];
+				if (response.status === 200) {
+					itemData = response.data;
+				}
+
+				itemData.push(addCastItem);
+				itemData.push(addStorylineItem);
+				itemData.push(addLocationItem);
+
+				this.$scope.safeApply(() => {
+					this.items = itemData;
+				});
+			});
+	}
+
+	_updateValue() {
+		// Add the top item in the list
+		const filteredList = this.$filter('filter')(this.items,
+			this.itemFilter);
+		const chosenItem = filteredList[0];
+		this.addItem(chosenItem);
+	}
+
+	_itemsChanged() {
+		this._loadItemData();
+	}
+
+	searchChanged() {
+		let filterText = this.itemFilterText;
+
+		if (filterText.charAt(0) === '!') {
+			filterText = filterText.substr(1);
+		} else if (filterText.charAt(0) === '@') {
+			filterText = filterText.substr(1);
+		} else if (filterText.charAt(0) === '#') {
+			filterText = filterText.substr(1);
+		}
+
+		addCastItem.shortName = `${addCastTemplate} '${filterText}'`;
+		addCastItem.name = filterText;
+		addStorylineItem.shortName = `${addStorylineTemplate} '${filterText}'`;
+		addStorylineItem.name = filterText;
+		addLocationItem.shortName = `${addLocationTemplate} '${filterText}'`;
+		addLocationItem.name = filterText;
+	}
+
+	itemFilter(value: ItemBaseData) {
+		let filterText = this.itemFilterText;
+
+		let result = true;
+		if (filterText.charAt(0) === '!') {
+			result = value.type === 'cast';
+			filterText = filterText.substr(1);
+		} else if (filterText.charAt(0) === '@') {
+			result = value.type === 'location';
+			filterText = filterText.substr(1);
+		} else if (filterText.charAt(0) === '#') {
+			result = value.type === 'storyline';
+			filterText = filterText.substr(1);
+		}
+
+		const searchRegex = new RegExp(escapeRegExp(filterText), 'i');
+		result = result &&
+			value.shortName.match(searchRegex) !== null;
+
+		return result;
+	}
+
+	focusSearch() {
+		this.$log.debug('AddItemController::focusSearch(): #1 Search focused');
+		if (firstRun) {
+			$(this.dropdownId).on('shown.bs.dropdown', () => {
+				dropdownOpen = true;
+				this.$log.debug('AddItemController::focusSearch(): #4 Dropdown opened');
+
+				// Opening the dropdown makes the search field
+				// lose focus. So set it again.
+				$(this.searchFieldId).focus();
+				triggeredFocus = false;
+
+				$(this.dropdownId + ' .dropdown-menu').width($(
+					this.dropdownId).width());
+			});
+			$(this.dropdownId).on('hidden.bs.dropdown', () => {
+				this.$log.debug('AddItemController::focusSearch(): #5 Dropdown closed');
+				dropdownOpen = false;
+			});
+
+			firstRun = false;
+		}
+
+		if (!dropdownOpen && !triggeredFocus) {
+			this.$log.debug(
+				'AddItemController::focusSearch(): #2 Focus was user-initiated');
+			triggeredFocus = true;
+			this.$timeout(() => {
+				if (!dropdownOpen) {
+					this.$log.debug(
+						'AddItemController::focusSearch(): #3 Toggle dropdown');
+					($(this.dropdownButtonId): any).dropdown('toggle');
+				}
+			}, 150);
+		}
+	}
+
+	addItem(item: ComicItem) {
+		this.comicService.addItem(item).then((response) => {
+			if (response.status === 200) {
+				this.eventService.itemsChangedEvent.publish();
+				this.$scope.safeApply(() => {
+					this.itemFilterText = '';
+				});
+			}
+		});
+	}
+}
+AddItemController.$inject = [
+	'$scope', '$log', 'comicService', 'eventService',
+	'$http', '$timeout'
+];
+
+export default function (app: AngularModule) {
 	app.directive('qcAddItem', function () {
 		return {
 			restrict: 'E',
 			replace: true,
 			scope: {},
-			controller: ['$http', '$scope', '$log', '$timeout', '$filter',
-				'comicService', 'eventFactory',
-				function ($http, $scope, $log, $timeout, $filter,
-					comicService, Event) {
-					$log.debug('START qcAddItem()');
-
-					var self = this;
-
-					this.unique = Math.random().toString(36).slice(-5);
-
-					var itemsChangedEvent =
-						new Event(constants.itemsChangedEvent);
-
-					$scope.safeApply = function (fn) {
-						var phase = this.$root.$$phase;
-						if (phase === '$apply' || phase === '$digest') {
-							if (fn && typeof fn === 'function') {
-								fn();
-							}
-						} else {
-							this.$apply(fn);
-						}
-					};
-
-					var searchFieldId = '#addItem_' + this.unique + '_search';
-					var dropdownId = '#addItem_' + this.unique + '_dropdown';
-					var dropdownButtonId = '#addItem_' + this.unique +
-						'_dropdownButton';
-					this.items = [];
-
-					var addCastTemplate = 'Add new cast member ';
-					var addCastItem = {
-						id: -1,
-						type: 'cast',
-						shortName: addCastTemplate + '\'\'',
-						name: ''
-					};
-					var addStorylineTemplate = 'Add new storyline ';
-					var addStorylineItem = {
-						id: -1,
-						type: 'storyline',
-						shortName: addStorylineTemplate + '\'\'',
-						name: ''
-					};
-					var addLocationTemplate = 'Add new location ';
-					var addLocationItem = {
-						id: -1,
-						type: 'location',
-						shortName: addLocationTemplate + '\'\'',
-						name: ''
-					};
-
-					function loadItemData() {
-						$http.get(constants.itemDataUrl)
-							.then(function (response) {
-								var itemData = [];
-								if (response.status === 200) {
-									itemData = response.data;
-								}
-
-								itemData.push(addCastItem);
-								itemData.push(addStorylineItem);
-								itemData.push(addLocationItem);
-
-								$scope.safeApply(function () {
-									self.items = itemData;
-								});
-							});
-					}
-					loadItemData();
-
-					function escapeRegExp(s) {
-						return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
-					}
-
-					this.searchChanged = function () {
-						var filterText = self.itemFilterText;
-
-						if (filterText.charAt(0) === '!') {
-							filterText = filterText.substr(1);
-						} else if (filterText.charAt(0) === '@') {
-							filterText = filterText.substr(1);
-						} else if (filterText.charAt(0) === '#') {
-							filterText = filterText.substr(1);
-						}
-
-						addCastItem.shortName = addCastTemplate +
-							'\'' + filterText + '\'';
-						addCastItem.name = filterText;
-						addStorylineItem.shortName = addStorylineTemplate +
-							'\'' + filterText + '\'';
-						addStorylineItem.name = filterText;
-						addLocationItem.shortName = addLocationTemplate +
-							'\'' + filterText + '\'';
-						addLocationItem.name = filterText;
-					};
-
-					var triggeredFocus = false;
-					var dropdownOpen = false;
-					var firstRun = true;
-
-					this.itemFilterText = '';
-					this.itemFilter = function (value) {
-						var filterText = self.itemFilterText;
-
-						var result = true;
-						if (filterText.charAt(0) === '!') {
-							result = value.type === 'cast';
-							filterText = filterText.substr(1);
-						} else if (filterText.charAt(0) === '@') {
-							result = value.type === 'location';
-							filterText = filterText.substr(1);
-						} else if (filterText.charAt(0) === '#') {
-							result = value.type === 'storyline';
-							filterText = filterText.substr(1);
-						}
-
-						var searchRegex = new RegExp(
-							escapeRegExp(filterText), 'i');
-						result = result &&
-							value.shortName.match(searchRegex) !== null;
-
-						return result;
-					};
-					// {shortName: ''};
-					this.focusSearch = function () {
-						$log.debug('qcAdditem(): #1 Search focused');
-						if (firstRun) {
-							$(dropdownId).on('shown.bs.dropdown', function () {
-								dropdownOpen = true;
-								$log.debug('qcAdditem(): #4 Dropdown opened');
-
-								// Opening the dropdown makes the search field
-								// lose focus. So set it again.
-								$(searchFieldId).focus();
-								triggeredFocus = false;
-
-								$(dropdownId + ' .dropdown-menu').width($(
-									dropdownId).width());
-							});
-							$(dropdownId).on('hidden.bs.dropdown', function () {
-								$log.debug('qcAdditem(): #5 Dropdown closed');
-								dropdownOpen = false;
-							});
-
-							firstRun = false;
-						}
-
-						if (!dropdownOpen && !triggeredFocus) {
-							$log.debug(
-								'qcAdditem(): #2 Focus was user-initiated');
-							triggeredFocus = true;
-							$timeout(function () {
-								if (!dropdownOpen) {
-									$log.debug(
-										'qcAdditem(): #3 Toggle dropdown');
-									$(dropdownButtonId).dropdown('toggle');
-								}
-							}, 150);
-						}
-					};
-
-					this.keyPress = function (event) {
-						if (event.keyCode === 13) {
-							// ENTER key
-
-							// Add the top item in the list
-							var filteredList = $filter('filter')(self.items,
-								self.itemFilter);
-							var chosenItem = filteredList[0];
-							self.addItem(chosenItem);
-						}
-					};
-
-					/*#this.blurSearch = function() {
-					 if (!intendedFocus) {
-					 $log.debug('addItem(): blur!');
-					 }
-					 };*/
-
-					this.addItem = function (item) {
-						comicService.addItem(item).then(function (response) {
-							if (response.status === 200) {
-								itemsChangedEvent.notify();
-								$scope.safeApply(function () {
-									self.itemFilterText = '';
-								});
-							}
-						});
-					};
-
-					itemsChangedEvent.subscribe($scope, function () {
-						loadItemData();
-					});
-
-					$log.debug('END qcAddItem()');
-				}],
+			controller: AddItemController,
 			controllerAs: 'a',
 			template: variables.html.addItem
 		};

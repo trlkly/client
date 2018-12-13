@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,281 +16,297 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import type { AngularModule, $Log } from 'angular';
+
 // Parts based on code from:
 // http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
 
-export default function (app) {
-	app.service('colorService', ['$log',
-		function ($log) {
-			$log.debug('START colorService()');
+function hue2rgb(p, q, t) {
+	if (t < 0) {
+		t += 1;
+	}
 
-			function hue2rgb(p, q, t) {
-				if (t < 0) {
-					t += 1;
-				}
+	if (t > 1) {
+		t -= 1;
+	}
 
-				if (t > 1) {
-					t -= 1;
-				}
+	if (t < 1 / 6) {
+		return p + (q - p) * 6 * t;
+	}
 
-				if (t < 1 / 6) {
-					return p + (q - p) * 6 * t;
-				}
+	if (t < 1 / 2) {
+		return q;
+	}
 
-				if (t < 1 / 2) {
-					return q;
-				}
+	if (t < 2 / 3) {
+		return p + (q - p) * (2 / 3 - t) * 6;
+	}
 
-				if (t < 2 / 3) {
-					return p + (q - p) * (2 / 3 - t) * 6;
-				}
+	return p;
+}
 
-				return p;
+type HSLValue = [number, number, number];
+type RGBValue = [number, number, number];
+type HSVValue = [number, number, number];
+
+export class ColorService {
+	$log: $Log;
+
+	constructor($log: $Log) {
+		this.$log = $log;
+	}
+
+	/**
+	 * Converts an RGB color value to HSL. Conversion formula
+	 * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+	 * Assumes r, g, and b are contained in the set [0, 255] and
+	 * returns h, s, and l in the set [0, 1].
+	 *
+	 * @param   {number}  r       The red color value
+	 * @param   {number}  g       The green color value
+	 * @param   {number}  b       The blue color value
+	 * @return  {HSLValue}        The HSL representation
+	 */
+	rgbToHsl(r: number, g: number, b: number): HSLValue {
+		r /= 255;
+		g /= 255;
+		b /= 255;
+		const max = Math.max(r, g, b);
+		const min = Math.min(r, g, b);
+		let h = 0;
+		let s;
+		const l = (max + min) / 2;
+
+		if (max === min) {
+			h = s = 0; // Achromatic
+		} else {
+			const d = max - min;
+
+			s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+			switch (max) {
+				case r:
+					h = (g - b) / d + (g < b ? 6 : 0);
+					break;
+
+				case g:
+					h = (b - r) / d + 2;
+					break;
+
+				case b:
+					h = (r - g) / d + 4;
+					break;
 			}
+			h /= 6;
+		}
 
-			/**
-			 * Converts an RGB color value to HSL. Conversion formula
-			 * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
-			 * Assumes r, g, and b are contained in the set [0, 255] and
-			 * returns h, s, and l in the set [0, 1].
-			 *
-			 * @param   {number}  r       The red color value
-			 * @param   {number}  g       The green color value
-			 * @param   {number}  b       The blue color value
-			 * @return  Array           The HSL representation
-			 */
-			this.rgbToHsl = function (r, g, b) {
-				r /= 255;
-				g /= 255;
-				b /= 255;
-				var max = Math.max(r, g, b);
-				var min = Math.min(r, g, b);
-				var h;
-				var s;
-				var l = (max + min) / 2;
+		return [h, s, l];
+	}
 
-				if (max === min) {
-					h = s = 0; // Achromatic
-				} else {
-					var d = max - min;
+	/**
+	 * Converts an HSL color value to RGB. Conversion formula
+	 * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+	 * Assumes h, s, and l are contained in the set [0, 1] and
+	 * returns r, g, and b in the set [0, 255].
+	 *
+	 * @param   {number}  h       The hue
+	 * @param   {number}  s       The saturation
+	 * @param   {number}  l       The lightness
+	 * @return  {RGBValue}        The RGB representation
+	 */
+	hslToRgb(h: number, s: number, l: number): RGBValue {
+		let r;
+		let g;
+		let b;
 
-					s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+		if (s === 0) {
+			r = g = b = l; // Achromatic
+		} else {
+			const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+			const p = 2 * l - q;
 
-					switch (max) {
-						case r:
-							h = (g - b) / d + (g < b ? 6 : 0);
-							break;
+			r = hue2rgb(p, q, h + 1 / 3);
+			g = hue2rgb(p, q, h);
+			b = hue2rgb(p, q, h - 1 / 3);
+		}
 
-						case g:
-							h = (b - r) / d + 2;
-							break;
+		return [
+			Math.round(r * 255),
+			Math.round(g * 255),
+			Math.round(b * 255)
+		];
+	}
 
-						case b:
-							h = (r - g) / d + 4;
-							break;
-					}
-					h /= 6;
-				}
 
-				return [h, s, l];
-			};
+	/**
+	 * Converts an RGB color value to HSV. Conversion formula
+	 * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
+	 * Assumes r, g, and b are contained in the set [0, 255] and
+	 * returns h, s, and v in the set [0, 1].
+	 *
+	 * @param   {number}  r       The red color value
+	 * @param   {number}  g       The green color value
+	 * @param   {number}  b       The blue color value
+	 * @return  {HSVValue}        The HSV representation
+	 */
+	rgbToHsv(r: number, g: number, b: number): HSVValue {
+		r = r / 255;
+		g = g / 255;
+		b = b / 255;
+		const max = Math.max(r, g, b);
+		const min = Math.min(r, g, b);
+		let h = 0;
+		let s;
+		const v = max;
 
-			/**
-			 * Converts an HSL color value to RGB. Conversion formula
-			 * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
-			 * Assumes h, s, and l are contained in the set [0, 1] and
-			 * returns r, g, and b in the set [0, 255].
-			 *
-			 * @param   {number}  h       The hue
-			 * @param   {number}  s       The saturation
-			 * @param   {number}  l       The lightness
-			 * @return  Array           The RGB representation
-			 */
-			this.hslToRgb = function (h, s, l) {
-				var r;
-				var g;
-				var b;
+		const d = max - min;
 
-				if (s === 0) {
-					r = g = b = l; // Achromatic
-				} else {
-					var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-					var p = 2 * l - q;
+		s = max === 0 ? 0 : d / max;
 
-					r = hue2rgb(p, q, h + 1 / 3);
-					g = hue2rgb(p, q, h);
-					b = hue2rgb(p, q, h - 1 / 3);
-				}
+		if (max === min) {
+			h = 0; // Achromatic
+		} else {
+			switch (max) {
+				case r:
+					h = (g - b) / d + (g < b ? 6 : 0);
+					break;
 
-				return [
-					Math.round(r * 255),
-					Math.round(g * 255),
-					Math.round(b * 255)
-				];
-			};
+				case g:
+					h = (b - r) / d + 2;
+					break;
 
-			/**
-			 * Converts an RGB color value to HSV. Conversion formula
-			 * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
-			 * Assumes r, g, and b are contained in the set [0, 255] and
-			 * returns h, s, and v in the set [0, 1].
-			 *
-			 * @param   {number}  r       The red color value
-			 * @param   {number}  g       The green color value
-			 * @param   {number}  b       The blue color value
-			 * @return  Array           The HSV representation
-			 */
-			this.rgbToHsv = function (r, g, b) {
-				r = r / 255;
-				g = g / 255;
-				b = b / 255;
-				var max = Math.max(r, g, b);
-				var min = Math.min(r, g, b);
-				var h;
-				var s;
-				var v = max;
+				case b:
+					h = (r - g) / d + 4;
+					break;
+			}
+			h /= 6;
+		}
 
-				var d = max - min;
+		return [h, s, v];
+	}
 
-				s = max === 0 ? 0 : d / max;
+	/**
+	 * Converts an HSV color value to RGB. Conversion formula
+	 * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
+	 * Assumes h, s, and v are contained in the set [0, 1] and
+	 * returns r, g, and b in the set [0, 255].
+	 *
+	 * @param   {number}  h       The hue
+	 * @param   {number}  s       The saturation
+	 * @param   {number}  v       The value
+	 * @return  {RGBValue}        The RGB representation
+	 */
+	hsvToRgb(h: number, s: number, v: number) {
+		let r = 0;
+		let g = 0;
+		let b = 0;
 
-				if (max === min) {
-					h = 0; // Achromatic
-				} else {
-					switch (max) {
-						case r:
-							h = (g - b) / d + (g < b ? 6 : 0);
-							break;
+		const i = Math.floor(h * 6);
+		const f = h * 6 - i;
+		const p = v * (1 - s);
+		const q = v * (1 - f * s);
+		const t = v * (1 - (1 - f) * s);
 
-						case g:
-							h = (b - r) / d + 2;
-							break;
+		switch (i % 6) {
+			case 0:
+				r = v;
+				g = t;
+				b = p;
+				break;
 
-						case b:
-							h = (r - g) / d + 4;
-							break;
-					}
-					h /= 6;
-				}
+			case 1:
+				r = q;
+				g = v;
+				b = p;
+				break;
 
-				return [h, s, v];
-			};
+			case 2:
+				r = p;
+				g = v;
+				b = t;
+				break;
 
-			/**
-			 * Converts an HSV color value to RGB. Conversion formula
-			 * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
-			 * Assumes h, s, and v are contained in the set [0, 1] and
-			 * returns r, g, and b in the set [0, 255].
-			 *
-			 * @param   {number}  h       The hue
-			 * @param   {number}  s       The saturation
-			 * @param   {number}  v       The value
-			 * @return  Array           The RGB representation
-			 */
-			this.hsvToRgb = function (h, s, v) {
-				var r;
-				var g;
-				var b;
+			case 3:
+				r = p;
+				g = q;
+				b = v;
+				break;
 
-				var i = Math.floor(h * 6);
-				var f = h * 6 - i;
-				var p = v * (1 - s);
-				var q = v * (1 - f * s);
-				var t = v * (1 - (1 - f) * s);
+			case 4:
+				r = t;
+				g = p;
+				b = v;
+				break;
 
-				switch (i % 6) {
-					case 0:
-						r = v;
-						g = t;
-						b = p;
-						break;
+			case 5:
+				r = v;
+				g = p;
+				b = q;
+				break;
+		}
 
-					case 1:
-						r = q;
-						g = v;
-						b = p;
-						break;
+		return [
+			Math.round(r * 255),
+			Math.round(g * 255),
+			Math.round(b * 255)
+		];
+	}
 
-					case 2:
-						r = p;
-						g = v;
-						b = t;
-						break;
+	hexColorToRgb(hexColor: string): RGBValue {
+		if (hexColor.charAt(0) === '#') {
+			hexColor = hexColor.substring(1); // Strip #
+		}
+		const rgb = parseInt(hexColor, 16); // Convert rrggbb to decimal
+		const r = rgb >> 16 & 0xff;         // Extract red
+		const g = rgb >> 8 & 0xff;          // Extract green
+		const b = rgb & 0xff;               // Extract blue
+		return [r, g, b];
+	}
 
-					case 3:
-						r = p;
-						g = q;
-						b = v;
-						break;
+	rgbToHexColor(r: number, g: number, b: number): string {
+		return '#' + ((1 << 24) + (r << 16) + (g << 8) + b)
+			.toString(16).slice(1);
+	}
 
-					case 4:
-						r = t;
-						g = p;
-						b = v;
-						break;
+	getRgbRelativeLuminance(r: number, g: number, b: number): number {
+		return 0.2126 * r + 0.7152 * g + 0.0722 * b; // Per ITU-R BT.709
+	}
 
-					case 5:
-						r = v;
-						g = p;
-						b = q;
-						break;
-				}
+	createTintOrShade(hexColor: string, iterations?: number): string {
+		if (typeof iterations === 'undefined') {
+			iterations = 1;
+		}
 
-				return [
-					Math.round(r * 255),
-					Math.round(g * 255),
-					Math.round(b * 255)
-				];
-			};
+		let rgb = this.hexColorToRgb(hexColor);
+		const hsl = this.rgbToHsl(rgb[0], rgb[1], rgb[2]);
 
-			this.hexColorToRgb = function (hexColor) {
-				if (hexColor.charAt(0) === '#') {
-					hexColor = hexColor.substring(1); // Strip #
-				}
-				var rgb = parseInt(hexColor, 16); // Convert rrggbb to decimal
-				var r = rgb >> 16 & 0xff;         // Extract red
-				var g = rgb >> 8 & 0xff;          // Extract green
-				var b = rgb & 0xff;               // Extract blue
-				return [r, g, b];
-			};
+		const tint = hsl[2] < 0.5;
 
-			this.rgbToHexColor = function (r, g, b) {
-				return '#' + ((1 << 24) + (r << 16) + (g << 8) + b)
-					.toString(16).slice(1);
-			};
+		for (let i = iterations; i > 0; i--) {
+			// If it's a dark color, make it lighter
+			// and vice versa.
+			if (tint) {
+				// Increase the lightness by
+				// 50% (tint)
+				hsl[2] = (hsl[2] + 1) / 2;
+			} else {
+				// Decrease the lightness by
+				// 50% (shade)
+				hsl[2] /= 2;
+			}
+		}
 
-			this.getRgbRelativeLuminance = function (r, g, b) {
-				return 0.2126 * r + 0.7152 * g + 0.0722 * b; // Per ITU-R BT.709
-			};
+		rgb = this.hslToRgb(hsl[0], hsl[1], hsl[2]);
+		return this.rgbToHexColor(rgb[0], rgb[1], rgb[2]);
+	}
+}
 
-			this.createTintOrShade = function (hexColor, iterations) {
-				if (typeof iterations === 'undefined') {
-					iterations = 1;
-				}
-
-				var rgb = this.hexColorToRgb(hexColor);
-				var hsl = this.rgbToHsl(rgb[0], rgb[1], rgb[2]);
-
-				var tint = hsl[2] < 0.5;
-
-				for (var i = iterations; i > 0; i--) {
-					// If it's a dark color, make it lighter
-					// and vice versa.
-					if (tint) {
-						// Increase the lightness by
-						// 50% (tint)
-						hsl[2] = (hsl[2] + 1) / 2;
-					} else {
-						// Decrease the lightness by
-						// 50% (shade)
-						hsl[2] /= 2;
-					}
-				}
-
-				rgb = this.hslToRgb(hsl[0], hsl[1], hsl[2]);
-				return this.rgbToHexColor(rgb[0], rgb[1], rgb[2]);
-			};
-
+export default function (app: AngularModule) {
+	app.service('colorService', ['$log',
+		function ($log: $Log) {
+			$log.debug('START colorService()');
+			const colorService = new ColorService($log);
 			$log.debug('END colorService()');
+			return colorService;
 		}]);
 }

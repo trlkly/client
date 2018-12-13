@@ -3279,7 +3279,7 @@ declare class JQuery {
    *
    * @param index A zero-based integer indicating which element to retrieve.
    */
-  get(index: number): HTMLElement;
+  get<T: HTMLElement>(index: number): T;
   /**
    * Retrieve the elements matched by the jQuery object.
    */

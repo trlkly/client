@@ -16,14 +16,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import type { AngularModule, $Log } from 'angular';
-import type { ComicService } from '../services/comicService';
+export type ItemType = 'cast' | 'location' | 'storyline';
 
-export default function (app: AngularModule) {
-	app.controller('comicController', ['$log', 'comicService',
-		function ($log: $Log, comicService: ComicService) {
-			$log.debug('START comicController()');
-			this.comicService = comicService;
-			$log.debug('END comicController()');
-		}]);
+export type ItemBaseData = {
+	id: number;
+	shortName: string;
+	name: string;
+	type: ItemType;
 }
+
+export type ItemBaseDataWithColor = ItemBaseData & {
+	color: string;
+}
+
+export type ItemData = ItemBaseDataWithColor & {
+	first: number;
+	last: number;
+	appearances: number;
+	totalComics: number;
+	presence: number;
+	hasImage: boolean;
+};
+
+export type ItemRelationData = ItemBaseDataWithColor & {
+	count: number;
+	percentage: number;
+};
+
+export type DecoratedItemData = ItemData & {
+	highlightColor: string;
+	locations: ItemRelationData[];
+	friends: ItemRelationData[];
+};

@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,10 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import type { AngularModule } from 'angular';
+
 import variables from '../../../../generated/variables.pass2';
 
-export default function (app) {
-	app.directive('donut', [
+export default function (app: AngularModule) {
+	app.directive('donut',
 		function () {
 			return {
 				restrict: 'E',
@@ -62,5 +65,5 @@ export default function (app) {
 				],
 				template: variables.html.donut
 			};
-		}]);
+		});
 }

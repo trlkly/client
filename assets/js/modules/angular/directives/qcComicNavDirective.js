@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,54 +16,80 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import type { AngularModule, $Log } from 'angular';
+
 import constants from '../../../constants';
 import variables from '../../../../generated/variables.pass2';
 
-export default function (app) {
+import { ComicDataControllerBase } from '../controllers/ControllerBases';
+
+import type { $DecoratedScope } from '../decorateScope';
+import type { ComicService } from '../services/comicService';
+import type { EventService } from '../services/eventService';
+import type { ComicData } from '../api/comicData';
+
+export class ComicNavController extends ComicDataControllerBase<ComicNavController> {
+	static $inject: string[];
+
+	$log: $Log;
+	comicService: ComicService;
+	latestComic: number;
+
+	currentComic: ?number;
+
+	constructor(
+		$scope: $DecoratedScope<ComicNavController>,
+		$log: $Log,
+		comicService: ComicService,
+		eventService: EventService,
+		latestComic: number
+	) {
+		$log.debug('START ComicNavController');
+
+		super($scope, eventService);
+
+		this.$log = $log;
+		this.comicService = comicService;
+		this.latestComic = latestComic;
+
+		this.currentComic = null;
+
+		$log.debug('END ComicNavController');
+	}
+
+	_comicDataLoaded(comicData: ComicData) {
+		this.currentComic = comicData.comic;
+	}
+
+	go() {
+		this.$log.debug(`ComicNavController::go(): ${this.currentComic ? this.currentComic : 'NONE'}`);
+		if (!this.currentComic) {
+			this.currentComic = this.latestComic;
+		} else if (this.currentComic < 1) {
+			this.currentComic = 1;
+		} else if (this.currentComic > this.latestComic) {
+			this.currentComic = this.latestComic;
+		}
+		this.comicService.gotoComic(this.currentComic);
+	}
+
+	keyPress(event: KeyboardEvent) {
+		if (event.keyCode === 13) {
+			// ENTER key
+			this.go();
+		}
+	}
+
+}
+ComicNavController.$inject = ['$scope', '$log', 'comicService', 'eventService', 'latestComic'];
+
+export default function (app: AngularModule) {
 	app.directive('qcComicNav', function () {
 		return {
 			restrict: 'E',
 			replace: true,
 			scope: {},
-			controller: ['$log', 'comicService', 'latestComic', 'eventFactory',
-				'$scope',
-				function ($log, comicService, latestComic, Event, $scope) {
-					$log.debug('START qcComicNav()');
-
-					var comicDataLoadedEvent =
-						new Event(constants.comicdataLoadedEvent);
-
-					this.currentComic = null;
-					this.latestComic = latestComic;
-					var self = this;
-
-					this.go = function () {
-						$log.debug('qcComicNav.go(): ' + self.currentComic);
-						if (self.currentComic === undefined ||
-							self.currentComic === null) {
-							self.currentComic = latestComic;
-						} else if (self.currentComic < 1) {
-							self.currentComic = 1;
-						} else if (self.currentComic > latestComic) {
-							self.currentComic = latestComic;
-						}
-						comicService.gotoComic(self.currentComic);
-					};
-
-					this.keyPress = function (event) {
-						if (event.keyCode === 13) {
-							// ENTER key
-							self.go();
-						}
-					};
-
-					comicDataLoadedEvent.subscribe($scope,
-						function (event, comicData) {
-							self.currentComic = comicData.comic;
-						});
-
-					$log.debug('END qcComicNav()');
-				}],
+			controller: ComicNavController,
 			controllerAs: 'cn',
 			template: variables.html.comicNav
 		};

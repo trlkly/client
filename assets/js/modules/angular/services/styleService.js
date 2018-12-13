@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,87 +16,105 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export default function (app) {
+import $ from 'jquery';
+import type { AngularModule, $Log } from 'angular';
+
+import type { ColorService } from './colorService';
+
+function addStyle(style: string) {
+	const styleElement =
+		$('<style type="text/css">' + style + '</style>');
+	$('head').append(styleElement);
+	return styleElement;
+}
+
+export class StyleService {
+	$log: $Log;
+	colorService: ColorService;
+
+	customStyles: {};
+	customStyleElements: {};
+
+	constructor($log: $Log, colorService: ColorService) {
+		this.$log = $log;
+		this.colorService = colorService;
+
+		this.customStyles = {};
+		this.customStyleElements = {};
+	}
+
+	_hasCustomStyle(key: string) {
+		return key in this.customStyles;
+	}
+
+	_addCustomStyle(key: string, style: string) {
+		if (this._hasCustomStyle(key)) {
+			return;
+		}
+
+		const styleElement = addStyle(style);
+		this.customStyles[key] = style;
+		this.customStyleElements[key] = styleElement;
+	}
+
+	_removeCustomStyle(key: string) {
+		delete this.customStyles[key];
+		this.customStyleElements[key].remove();
+		delete this.customStyleElements[key];
+	}
+
+	addItemStyle(id: number, color: string) {
+		const itemId = 'item_' + id;
+		if (!this._hasCustomStyle(itemId)) {
+			const qcNavItem = '#qcnav_item_' + id + ' > table';
+			const qcNavItemWithColor = qcNavItem + '.with_color';
+
+			const backgroundColor = color;
+			const foregroundColor = this.colorService.createTintOrShade(color);
+			const hoverFocusColor = this.colorService.createTintOrShade(color, 2);
+
+			const itemStyle =
+				qcNavItemWithColor + '{' +
+				'background-color:' + backgroundColor + ';' +
+				'}' +
+				qcNavItemWithColor + ',' +
+				qcNavItemWithColor + ' a.qcnav_name_link,' +
+				qcNavItemWithColor + ' a:link,' +
+				qcNavItemWithColor + ' a:visited{' +
+				'color:' + foregroundColor + ';' +
+				'}' +
+				qcNavItem + ' a.qcnav_name_link{' +
+				'cursor: pointer;' +
+				'text-decoration: none;' +
+				'}' +
+				qcNavItemWithColor + ' a:hover,' +
+				qcNavItemWithColor + ' a:focus{' +
+				'color: ' + hoverFocusColor + ';' +
+				'}';
+
+			this._addCustomStyle(itemId, itemStyle);
+		}
+	}
+
+	removeItemStyle(id: number) {
+		const itemId = 'item_' + id;
+		if (this._hasCustomStyle(itemId)) {
+			this._removeCustomStyle(itemId);
+		}
+	}
+
+	hasItemStyle(id: number) {
+		const itemId = 'item_' + id;
+		return this._hasCustomStyle(itemId);
+	}
+}
+
+export default function (app: AngularModule) {
 	app.service('styleService', ['$log', 'colorService',
-		function ($log, colorService) {
+		function ($log: $Log, colorService: ColorService) {
 			$log.debug('START styleService()');
-
-			function addStyle(style) {
-				var styleElement =
-					$('<style type="text/css">' + style + '</style>');
-				$('head').append(styleElement);
-				return styleElement;
-			}
-
-			var customStyles = {};
-			var customStyleElements = {};
-
-			this.addCustomStyle = function (key, style) {
-				if (this.hasCustomStyle(key)) {
-					return;
-				}
-
-				var styleElement = addStyle(style);
-				customStyles[key] = style;
-				customStyleElements[key] = styleElement;
-			};
-
-			this.removeCustomStyle = function (key) {
-				delete customStyles[key];
-				customStyleElements[key].remove();
-				delete customStyleElements[key];
-			};
-
-			this.hasCustomStyle = function (key) {
-				return key in customStyles;
-			};
-
-			this.addItemStyle = function (id, color) {
-				var itemId = 'item_' + id;
-				if (!this.hasCustomStyle(itemId)) {
-					var qcNavItem = '#qcnav_item_' + id + ' > table';
-					var qcNavItemWithColor = qcNavItem + '.with_color';
-
-					var backgroundColor = color;
-					var foregroundColor = colorService.createTintOrShade(color);
-					var hoverFocusColor = colorService
-						.createTintOrShade(color, 2);
-
-					var itemStyle =
-						qcNavItemWithColor + '{' +
-						'background-color:' + backgroundColor + ';' +
-						'}' +
-						qcNavItemWithColor + ',' +
-						qcNavItemWithColor + ' a.qcnav_name_link,' +
-						qcNavItemWithColor + ' a:link,' +
-						qcNavItemWithColor + ' a:visited{' +
-						'color:' + foregroundColor + ';' +
-						'}' +
-						qcNavItem + ' a.qcnav_name_link{' +
-						'cursor: pointer;' +
-						'text-decoration: none;' +
-						'}' +
-						qcNavItemWithColor + ' a:hover,' +
-						qcNavItemWithColor + ' a:focus{' +
-						'color: ' + hoverFocusColor + ';' +
-						'}';
-
-					this.addCustomStyle(itemId, itemStyle);
-				}
-			};
-
-			this.removeItemStyle = function (id) {
-				var itemId = 'item_' + id;
-				if (this.hasCustomStyle(itemId)) {
-					this.removeCustomStyle(itemId);
-				}
-			};
-
-			this.hasItemStyle = function (id) {
-				var itemId = 'item_' + id;
-				return this.hasCustomStyle(itemId);
-			};
-
+			const styleService = new StyleService($log, colorService);
 			$log.debug('END styleService()');
+			return styleService;
 		}]);
 }

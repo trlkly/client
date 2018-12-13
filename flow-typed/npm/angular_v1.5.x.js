@@ -19,7 +19,7 @@ declare module angular {
   //
   // NOTE: if you use compile step to mangle array, replace below with
   // declare type $npm$angular$DependencyInjection<T> = T
-  declare type $npm$angular$DependencyInjection<T> = Array<string | T>;
+  declare type $npm$angular$DependencyInjection<T> = Array<string | T> | Function;
 
   // Extending Array<Element> allows us to do the `jq[0]` expression and friends
   // to get the actual underlying Element.
@@ -60,7 +60,8 @@ declare module angular {
   // should write something to handle it.
   declare type DirectiveRestrict = "A" | "E" | "AE" | "EA";
   declare type Directive = {|
-    restrict?: DirectiveRestrict,
+	restrict?: DirectiveRestrict,
+	replace?: boolean,
     template?: string,
     templateUrl?: string,
     scope?: Scope,
@@ -104,17 +105,17 @@ declare module angular {
 
   declare type FactoryDeclaration = (
     name: string,
-    di: $npm$angular$DependencyInjection<(...a: Array<*>) => Object>
+    di: $npm$angular$DependencyInjection<Object>
   ) => AngularModule;
 
   declare type FilterDeclaration = (
     name: string,
-    di: $npm$angular$DependencyInjection<(...a: Array<*>) => Function>
+    di: $npm$angular$DependencyInjection<Function>
   ) => AngularModule;
 
   declare type ServiceDeclaration = (
     name: string,
-    di: $npm$angular$DependencyInjection<(...a: Array<*>) => Function | Object>
+    di: $npm$angular$DependencyInjection<Function | Object>
   ) => AngularModule;
 
   declare type RunDeclaration = (
@@ -220,8 +221,13 @@ declare module angular {
   //----------------------------------------------------------------------------
 
   declare type AngularHttpService = {
-    post: AngularHttpPost<*>
+	get: AngularHttpGet<*>;
+    post: AngularHttpPost<*>;
   };
+
+  declare type AngularHttpGet<T> = (
+	  url: string
+  ) => AngularPromise<T>
 
   declare type AngularHttpPost<T> = (
     url: string,
@@ -298,4 +304,51 @@ declare module angular {
     invokeApply?: boolean,
     additionalParams?: *
   ) => AngularPromise<*>;
+
+  declare type $Log = {
+	log(...Array<*>): void;
+	info(...Array<*>): void;
+	warn(...Array<*>): void;
+	error(...Array<*>): void;
+	debug(...Array<*>): void;
+  }
+
+  declare type $Location = {
+	absUrl(): string;
+	url(url?: string): string;
+	protocol(): string;
+	host(): string;
+	port(): number;
+	path(path: string|number): string|Object;
+	search(search:any, paramValue?: string|number|Array<string>|boolean): Object;
+	hash(hash: string|number): string;
+	replace(): void;
+	state(state?: Object): Object;
+  }
+  declare type CompiledExpression = (context: Object, locals: Object) => string;
+  declare type $Sce = {
+	isEnabled(): boolean;
+	parseAs(type: string, expression: string): CompiledExpression;
+	trustAs<T>(type: string, value: T): T;
+	trustAsHtml<T>(value: T): T;
+	trustAsCss<T>(value: T): T;
+	trustAsUrl<T>(value: T): T;
+	trustAsResourceUrl<T>(value: T): T;
+	trustAsJs<T>(value: T): T;
+	getTrusted<T>(type: string, maybeTrusted: T): T;
+	getTrustedHtml<T>(value: T): T;
+	getTrustedCss<T>(value: T): T;
+	getTrustedUrl<T>(value: T): T;
+	getTrustedResourceUrl<T>(value: T): T;
+	getTrustedJs<T>(value: T): T;
+	parseAsHtml(expression: string): CompiledExpression;
+	parseAsCss(expression: string): CompiledExpression;
+	parseAsUrl(expression: string): CompiledExpression;
+	parseAsResourceUrl(expression: string): CompiledExpression;
+	parseAsJs(expression: string): CompiledExpression;
+  }
+
+  declare type $Http = AngularHttpService;
+
+  declare type $Filter = (name: string) => Function;
 }

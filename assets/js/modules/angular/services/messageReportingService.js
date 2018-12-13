@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -14,80 +15,100 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import $ from 'jquery';
 
-export default function (app) {
+import type { AngularModule, $Log, $Timeout } from 'angular';
+
+function escapeHtml(text: string): string {
+	return text.replace(/["&'/<>]/g, function (a) {
+		return {
+			'"': '&quot;',
+			'&': '&amp;',
+			'\'': '&#39;',
+			'/': '&#47;',
+			'<': '&lt;',
+			'>': '&gt;'
+		}[a];
+	});
+}
+
+type MessageType = 'danger' | 'warning';
+type Message = { type: MessageType, message: string };
+
+export class MessageReportingService {
+	$log: $Log;
+	$timeout: $Timeout;
+
+	messageQueue: Message[];
+	isProcessing: boolean;
+
+	constructor($log: $Log, $timeout: $Timeout) {
+		this.$log = $log;
+		this.$timeout = $timeout;
+
+		this.messageQueue = [];
+		this.isProcessing = false;
+	}
+
+	processMessages() {
+		this.isProcessing = true;
+
+		let nextMessage = this.messageQueue.shift();
+		if (typeof nextMessage === 'undefined') {
+			this.isProcessing = false;
+			return;
+		}
+
+		const unique = Math.random().toString(36).slice(-5);
+
+		const messageHtml = '<div class="alert alert-' +
+			nextMessage.type + '" ' +
+			'id="' + unique + '" ' +
+			'style="display: none;" ' +
+			'role="alert">' +
+			escapeHtml(nextMessage.message) +
+			'</div>';
+
+		$('#messageSeat').append(messageHtml);
+		const messageElement = $('#' + unique);
+		messageElement.slideDown();
+
+		function removeMessage() {
+			messageElement.slideUp(
+				function () {
+					messageElement.remove();
+					this.processMessages();
+				});
+		}
+
+		const timeoutHandle = this.$timeout(removeMessage, 5000, false);
+
+		messageElement.click(function () {
+			this.$timeout.cancel(timeoutHandle);
+			removeMessage();
+		});
+	}
+
+	reportMessage(type: MessageType, message: string) {
+		this.messageQueue.push({ type: type, message: message });
+		if (!this.isProcessing) { this.processMessages(); }
+	}
+
+	reportError(message: string) {
+		this.reportMessage('danger', message);
+	}
+	
+	reportWarning(message: string) {
+		this.reportMessage('warning', message);
+	}
+}
+
+export default function (app: AngularModule) {
 	app.service('messageReportingService', ['$log', '$timeout',
-		function ($log, $timeout) {
+		function ($log: $Log, $timeout: $Timeout) {
 			$log.debug('START messageReportingService()');
-
-			var messageQueue = [];
-			var isProcessing = false;
-
-			function escapeHtml(text) {
-				return text.replace(/["&'/<>]/g, function (a) {
-					return {
-						'"': '&quot;',
-						'&': '&amp;',
-						'\'': '&#39;',
-						'/': '&#47;',
-						'<': '&lt;',
-						'>': '&gt;'
-					}[a];
-				});
-			}
-
-			function processMessages() {
-				isProcessing = true;
-
-				var nextMessage = messageQueue.shift();
-				if (typeof nextMessage === 'undefined') {
-					isProcessing = false;
-					return;
-				}
-
-				var unique = Math.random().toString(36).slice(-5);
-
-				var messageHtml = '<div class="alert alert-' +
-					nextMessage.type + '" ' +
-					'id="' + unique + '" ' +
-					'style="display: none;" ' +
-					'role="alert">' +
-					escapeHtml(nextMessage.message) +
-					'</div>';
-
-				$('#messageSeat').append(messageHtml);
-				var messageElement = $('#' + unique);
-				messageElement.slideDown();
-
-				function removeMessage() {
-					messageElement.slideUp(
-						function () {
-							messageElement.remove();
-							processMessages();
-						});
-				}
-
-				var timeoutHandle = $timeout(removeMessage, 5000, false);
-
-				messageElement.click(function () {
-					$timeout.cancel(timeoutHandle);
-					removeMessage();
-				});
-			}
-
-			function reportMessage(type, message) {
-				messageQueue.push({ type: type, message: message });
-				if (!isProcessing) { processMessages(); }
-			}
-
-			this.reportError = function (message) {
-				reportMessage('danger', message);
-			};
-
-			this.reportWarning = function (message) {
-				reportMessage('warning', message);
-			};
-
+			const messageReportingService = new MessageReportingService($log, $timeout);
 			$log.debug('END messageReportingService()');
+			return messageReportingService;
 		}]);
 }

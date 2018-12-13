@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,184 +16,213 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import type { AngularModule, $Log, $Http } from 'angular';
+
 import constants from '../../../constants';
-import settings from '../../settings';
+import settings, { Settings } from '../../settings';
 import variables from '../../../../generated/variables.pass2';
 
-export default function (app) {
+import type { $DecoratedScope } from '../decorateScope';
+import type { ColorService } from '../services/colorService';
+import type { ComicService } from '../services/comicService';
+import type { MessageReportingService } from '../services/messageReportingService';
+import type { StyleService } from '../services/styleService';
+import type { DecoratedItemData, ItemRelationData } from '../api/itemData';
+
+export class ItemDetailsController {
+	static $inject: string[];
+
+	$log: $Log;
+	$http: $Http;
+	$scope: $DecoratedScope<ItemDetailsController>;
+	colorService: ColorService;
+	comicService: ComicService;
+	messageReportingService: MessageReportingService;
+	styleService: StyleService;
+
+	isLoading: boolean;
+	settings: Settings;
+	itemData: DecoratedItemData;
+
+	constructor(
+		$log: $Log,
+		$http: $Http,
+		$scope: $DecoratedScope<ItemDetailsController>,
+		colorService: ColorService,
+		comicService: ComicService,
+		messageReportingService: MessageReportingService,
+		styleService: StyleService
+	) {
+		$log.debug('START ItemDetailsController');
+
+		this.$log = $log;
+		this.$http = $http;
+		this.$scope = $scope;
+		this.colorService = colorService;
+		this.comicService = comicService;
+		this.messageReportingService = messageReportingService;
+		this.styleService = styleService;
+
+		this.isLoading = true;
+		this.settings = settings;
+
+		$('#itemDetailsDialog').on('show.bs.modal', () => this._getItemDetails());
+
+		$log.debug('END ItemDetailsController');
+	}
+
+	_getItemDetails() {
+		const self = this;
+		const itemId = $('#itemDetailsDialog').data('itemId');
+		this.$log.debug('ItemDetailsController::showModal() - item id:',
+			itemId);
+
+		function handleRelationData(response): ?ItemRelationData[] {
+			if (response.status === 200) {
+				const relationData = (response.data: ItemRelationData[]);
+
+				$.each(relationData, (_: number, relation) => {
+					relation.percentage = relation.count /
+						self.itemData.appearances * 100;
+				});
+
+				return relationData;
+			}
+			return null;
+		}
+
+		function handleItemFriendsData(response) {
+			let friends = handleRelationData(response);
+			self.$scope.safeApply(() => {
+				self.itemData.friends = friends || [];
+			});
+		}
+
+		function handleItemLocationsData(response) {
+			let locations = handleRelationData(response);
+			self.$scope.safeApply(() => {
+				self.itemData.locations = locations || [];
+			});
+		}
+
+		function handleItemData(response) {
+			if (response.status === 200) {
+				const itemData = response.data;
+
+				itemData.highlightColor = self.colorService
+					.createTintOrShade(itemData.color);
+
+				if (itemData.hasImage) {
+					itemData.imagePath =
+						constants.characterImageBaseUrl +
+						itemData.id + '.' +
+						constants.characterImageExtension;
+				}
+
+				self.$log.debug('qcItemDetails::showModal() - ' +
+					'item data:', itemData);
+
+				// If the color changes, also update the
+				// highlight color
+				self.$scope.safeApply(() => {
+					self.itemData = itemData;
+					self.isLoading = false;
+
+					self.$scope.$watch(() => {
+						return self.itemData.color;
+					}, function () {
+						self.itemData.highlightColor =
+							self.colorService
+								.createTintOrShade(
+									itemData.color);
+					});
+				});
+
+				self.$http.get(constants.itemFriendDataUrl + itemId)
+					.then(handleItemFriendsData);
+				self.$http.get(constants.itemLocationDataUrl +
+					itemId).then(handleItemLocationsData);
+			} else {
+				self.messageReportingService.reportError(
+					response.data);
+			}
+		}
+
+		this.itemData = (({}: any): DecoratedItemData);
+		this.isLoading = true;
+		this.$http.get(constants.itemDataUrl + itemId)
+			.then(response => handleItemData(response));
+	}
+
+	_onErrorLog(response: any) {
+		this.messageReportingService.reportError(response.data);
+		return response;
+	}
+
+	_onSuccessRefreshElseErrorLog(response: any) {
+		if (response.status === 200) {
+			this.comicService.refreshComicData();
+		} else {
+			this._onErrorLog(response);
+		}
+		return response;
+	}
+
+	showInfoFor(id: number) {
+		$('#itemDetailsDialog').data('itemId', id);
+		this._getItemDetails();
+	}
+
+	keypress(event: KeyboardEvent, property: string) {
+		if (event.keyCode === 13) {
+			// ENTER key
+			this.update(property);
+		}
+	}
+
+	update(property: string) {
+		const self = this;
+		function updateItemColor(response) {
+			if (response.status === 200) {
+				if (property === 'color') {
+					self.$log.debug('ItemDetailsController::update() - ' +
+						'update item color');
+					self.styleService.removeItemStyle(
+						self.itemData.id);
+				}
+			}
+			return self._onSuccessRefreshElseErrorLog(response);
+		}
+
+		const data = {
+			token: settings.values.editModeToken,
+			item: this.itemData.id,
+			property: property,
+			value: this.itemData[property]
+		};
+		this.$http.post(constants.setItemDataPropertyUrl, data)
+			.then(r => updateItemColor(r)).catch(r => this._onErrorLog(r));
+	}
+
+	goToComic(comic: number) {
+		this.comicService.gotoComic(comic);
+		this.close();
+	}
+
+	close() {
+		($('#itemDetailsDialog'): any).modal('hide');
+	}
+}
+ItemDetailsController.$inject = ['$log', '$http', '$scope', 'colorService',
+	'comicService', 'messageReportingService', 'styleService'];
+
+export default function (app: AngularModule) {
 	app.directive('qcItemDetails', function () {
 		return {
 			restrict: 'E',
 			replace: true,
 			scope: {},
-			controller: ['$log', '$http', '$scope', 'colorService',
-				'comicService', 'messageReportingService', 'styleService',
-				function ($log, $http, $scope, colorService,
-					comicService, messageReportingService, styleService) {
-					var self = this;
-
-					this.isLoading = true;
-					this.settings = settings;
-
-					$scope.safeApply = function (fn) {
-						var phase = this.$root.$$phase;
-						if (phase === '$apply' || phase === '$digest') {
-							if (fn && typeof fn === 'function') {
-								fn();
-							}
-						} else {
-							this.$apply(fn);
-						}
-					};
-
-					function getItemDetails() {
-						var itemId = $('#itemDetailsDialog').data('itemId');
-						$log.debug('qcItemDetails::showModal() - item id:',
-							itemId);
-
-						function handleRelationData(response) {
-							if (response.status === 200) {
-								var relationData = response.data;
-
-								$.each(relationData, function (_, relation) {
-									relation.percentage = relation.count /
-										self.itemData.appearances * 100;
-								});
-
-								return relationData;
-							}
-							return null;
-						}
-
-						function handleItemFriendsData(response) {
-							var friends = handleRelationData(response);
-							if (friends === null) {
-								friends = [];
-							}
-							$scope.safeApply(function () {
-								self.itemData.friends = friends;
-							});
-						}
-
-						function handleItemLocationsData(response) {
-							var locations = handleRelationData(response);
-							if (locations === null) {
-								locations = [];
-							}
-							$scope.safeApply(function () {
-								self.itemData.locations = locations;
-							});
-						}
-
-						function handleItemData(response) {
-							if (response.status === 200) {
-								var itemData = response.data;
-
-								itemData.highlightColor = colorService
-									.createTintOrShade(itemData.color);
-
-								if (itemData.hasImage) {
-									itemData.imagePath =
-										constants.characterImageBaseUrl +
-										itemData.id + '.' +
-										constants.characterImageExtension;
-								}
-
-								$log.debug('qcItemDetails::showModal() - ' +
-									'item data:', itemData);
-
-								// If the color changes, also update the
-								// highlight color
-								$scope.safeApply(function () {
-									self.itemData = itemData;
-									self.isLoading = false;
-
-									$scope.$watch(function () {
-										return self.itemData.color;
-									}, function () {
-										itemData.highlightColor =
-											colorService
-												.createTintOrShade(
-													itemData.color);
-									});
-								});
-
-								$http.get(constants.itemFriendDataUrl + itemId)
-									.then(handleItemFriendsData);
-								$http.get(constants.itemLocationDataUrl +
-									itemId).then(handleItemLocationsData);
-							} else {
-								messageReportingService.reportError(
-									response.data);
-							}
-						}
-
-						self.itemData = {};
-						self.isLoading = true;
-						$http.get(constants.itemDataUrl + itemId)
-							.then(handleItemData);
-					}
-
-					$('#itemDetailsDialog').on('show.bs.modal', getItemDetails);
-
-					this.showInfoFor = function (id) {
-						$('#itemDetailsDialog').data('itemId', id);
-						getItemDetails();
-					};
-
-					this.keypress = function (event, property) {
-						if (event.keyCode === 13) {
-							// ENTER key
-							self.update(property);
-						}
-					};
-
-					function onErrorLog(response) {
-						messageReportingService.reportError(response.data);
-						return response;
-					}
-
-					function onSuccessRefreshElseErrorLog(response) {
-						if (response.status === 200) {
-							comicService.refreshComicData();
-						} else {
-							onErrorLog(response);
-						}
-						return response;
-					}
-
-					this.update = function (property) {
-						function updateItemColor(response) {
-							if (response.status === 200) {
-								if (property === 'color') {
-									$log.debug('qcItemDetails::update() - ' +
-										'update item color');
-									styleService.removeItemStyle(
-										self.itemData.id);
-								}
-							}
-							return onSuccessRefreshElseErrorLog(response);
-						}
-
-						var data = {
-							token: settings.editModeToken,
-							item: self.itemData.id,
-							property: property,
-							value: self.itemData[property]
-						};
-						$http.post(constants.setItemDataPropertyUrl, data)
-							.then(updateItemColor, onErrorLog);
-					};
-
-					this.goToComic = function (comic) {
-						comicService.gotoComic(comic);
-						self.close();
-					};
-
-					this.close = function () {
-						$('#itemDetailsDialog').modal('hide');
-					};
-				}],
+			controller: ItemDetailsController,
 			controllerAs: 'idvm',
 			template: variables.html.itemDetails
 		};

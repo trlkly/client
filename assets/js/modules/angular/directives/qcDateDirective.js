@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,66 +16,74 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import type { AngularModule, $Log } from 'angular';
+
 import constants from '../../../constants';
-import settings from '../../settings';
+import settings, { Settings } from '../../settings';
 import variables from '../../../../generated/variables.pass2';
 
-export default function (app) {
+import { ComicDataControllerBase } from '../controllers/ControllerBases';
+
+import type { $DecoratedScope } from '../decorateScope';
+import type { EventService } from '../services/eventService';
+import type { ComicData } from '../api/comicData';
+
+export class DateController extends ComicDataControllerBase<DateController> {
+	static $inject: string[];
+
+	$log: $Log;
+
+	settings: Settings;
+
+	date: ?Date;
+	approximateDate: boolean;
+
+	constructor(
+		$scope: $DecoratedScope<DateController>,
+		$log: $Log,
+		eventService: EventService
+	) {
+		$log.debug('START DateController');
+
+		super($scope, eventService);
+
+		this.$log = $log;
+
+		this.settings = settings;
+		this.date = null;
+		this.approximateDate = false;
+
+		$log.debug('END DateController');
+	}
+
+	_comicDataLoading(comic: number) {
+		self.date = null;
+		self.approximateDate = false;
+	}
+
+	_comicDataLoaded(comicData: ComicData) {
+		this.approximateDate = !comicData.isAccuratePublishDate;
+		const publishDate = comicData.publishDate;
+		this.$log.debug('DateController::_comicDataLoaded(): ', publishDate);
+		if (publishDate !== null &&
+			publishDate !== undefined) {
+			const date = new Date(publishDate);
+			this.date = date;
+		} else {
+			this.date = null;
+		}
+	}
+
+}
+DateController.$inject = ['$scope', '$log', 'eventService'];
+
+export default function (app: AngularModule) {
 	app.directive('qcDate', function () {
 		return {
 			restrict: 'E',
 			replace: true,
 			scope: {},
-			controller: ['$scope', '$log', 'eventFactory',
-				function ($scope, $log, Event) {
-					var comicDataLoadingEvent =
-						new Event(constants.comicdataLoadingEvent);
-					var comicDataLoadedEvent =
-						new Event(constants.comicdataLoadedEvent);
-
-					$log.debug('START qcDate()');
-
-					$scope.safeApply = function (fn) {
-						var phase = this.$root.$$phase;
-
-						if (phase === '$apply' || phase === '$digest') {
-							if (fn && typeof fn === 'function') {
-								fn();
-							}
-						} else {
-							this.$apply(fn);
-						}
-					};
-
-					var self = this;
-					this.settings = settings;
-					this.date = null;
-					this.approximateDate = false;
-					comicDataLoadingEvent.subscribe($scope,
-						function () {
-							$scope.safeApply(function () {
-								self.date = null;
-								self.approximateDate = false;
-							});
-						});
-					comicDataLoadedEvent.subscribe($scope,
-						function (event, comicData) {
-							$scope.safeApply(function () {
-								self.approximateDate = !comicData.isAccuratePublishDate;
-								var publishDate = comicData.publishDate;
-								$log.debug('qcDate(): ', publishDate);
-								if (publishDate !== null &&
-									publishDate !== undefined) {
-									var date = new Date(publishDate);
-									self.date = date;
-								} else {
-									self.date = null;
-								}
-							});
-						});
-
-					$log.debug('END qcDate()');
-				}],
+			controller: DateController,
 			controllerAs: 'd',
 			template: variables.html.date
 		};

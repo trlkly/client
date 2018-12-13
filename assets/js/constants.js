@@ -39,7 +39,7 @@ function getWebserviceBaseUrl() {
 const comicDataUrl = getWebserviceBaseUrl() + 'comicdata/';
 const itemDataUrl = getWebserviceBaseUrl() + 'itemdata/';
 
-let constants = {
+const constants = {
 	settingsKey: 'settings',
 
 	developmentMode,
@@ -57,7 +57,6 @@ let constants = {
 	setPublishDateUrl: comicDataUrl + 'setpublishdate',
 	setGuestComicUrl: comicDataUrl + 'setguest',
 	setNonCanonUrl: comicDataUrl + 'setnoncanon',
-
 
 	itemFriendDataUrl: itemDataUrl + 'friends/',
 	itemLocationDataUrl: itemDataUrl + 'locations/',

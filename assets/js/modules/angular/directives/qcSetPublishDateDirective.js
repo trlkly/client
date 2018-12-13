@@ -1,3 +1,5 @@
+// @flow
+
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,77 +17,81 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import type { AngularModule, $Log } from 'angular';
+
 import constants from '../../../constants';
 import variables from '../../../../generated/variables.pass2';
 
-export default function (app) {
+import { SetValueControllerBase } from '../controllers/ControllerBases';
+
+import type { $DecoratedScope } from '../decorateScope';
+import type { ComicService } from '../services/comicService';
+import type { EventService } from '../services/eventService';
+import type { MessageReportingService } from '../services/messageReportingService';
+import type { ComicData } from '../api/comicData';
+
+export class SetPublishDateController extends SetValueControllerBase<SetPublishDateController> {
+	static $inject: string[];
+
+	$log: $Log;
+
+	messageReportingService: MessageReportingService;
+
+	publishDate: ?Date;
+	isAccuratePublishDate: ?boolean;
+
+	constructor(
+		$scope: $DecoratedScope<SetPublishDateController>,
+		$log: $Log,
+		comicService: ComicService,
+		eventService: EventService,
+		messageReportingService: MessageReportingService
+	) {
+		$log.debug('START SetPublishDateController');
+
+		super($scope, comicService, eventService);
+		this.$log = $log;
+		this.messageReportingService = messageReportingService;
+
+		this.publishDate = new Date();
+
+		$log.debug('END SetPublishDateController');
+	}
+
+	_comicDataLoaded(comicData: ComicData) {
+		if (comicData.publishDate != null) {
+			this.publishDate = new Date(comicData.publishDate);
+		} else {
+			this.publishDate = null;
+		}
+		this.isAccuratePublishDate =
+			comicData.isAccuratePublishDate;
+	}
+
+	_updateValue() {
+		this.setPublishDate();
+	}
+
+	setPublishDate() {
+		if (this.publishDate == null) {
+			// Error
+			this.messageReportingService.reportWarning(
+				'The date entered is not valid!');
+			return;
+		}
+		this.comicService.setPublishDate(this.publishDate,
+			this.isAccuratePublishDate != null ? this.isAccuratePublishDate : false);
+	}
+}
+SetPublishDateController.$inject = ['$scope', '$log', 'comicService', 'eventService', 'messageReportingService'];
+
+export default function (app: AngularModule) {
 	app.directive('qcSetPublishDate', function () {
 		return {
 			restrict: 'E',
 			replace: true,
 			scope: {},
-			controller: ['$scope', '$log', 'comicService', 'eventFactory',
-				'messageReportingService',
-				function ($scope, $log, comicService, Event,
-					messageReportingService) {
-					$log.debug('START qcSetPublishDate()');
-
-					var self = this;
-
-					this.unique = Math.random().toString(36).slice(-5);
-
-					var comicDataLoadedEvent =
-						new Event(constants.comicdataLoadedEvent);
-
-					$scope.safeApply = function (fn) {
-						var phase = this.$root.$$phase;
-						if (phase === '$apply' || phase === '$digest') {
-							if (fn && typeof fn === 'function') {
-								fn();
-							}
-						} else {
-							this.$apply(fn);
-						}
-					};
-
-					this.keyPress = function (event) {
-						if (event.keyCode === 13) {
-							// ENTER key
-							self.setPublishDate();
-						}
-					};
-
-					this.setPublishDate = function () {
-						if (self.publishDate === null || self.publishDate ===
-							undefined) {
-							// Error
-							messageReportingService.reportWarning(
-								'The date entered is not valid!');
-							return;
-						}
-						comicService.setPublishDate(self.publishDate,
-							self.isAccuratePublishDate);
-					};
-
-					this.publishDate = '';
-					comicDataLoadedEvent.subscribe($scope,
-						function (event, comicData) {
-							$scope.safeApply(function () {
-								var publishDate = comicData.publishDate;
-								if (publishDate !== null &&
-									publishDate !== undefined) {
-									var date = new Date(publishDate);
-									self.publishDate = date;
-								} else {
-									self.publishDate = null;
-								}
-								self.isAccuratePublishDate =
-									comicData.isAccuratePublishDate;
-							});
-						});
-
-					$log.debug('END qcSetPublishDate()');
-				}],
+			controller: SetPublishDateController,
 			controllerAs: 's',
 			template: variables.html.setPublishDate
 		};

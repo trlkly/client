@@ -20,30 +20,7 @@ import GM from 'greasemonkey';
 
 import constants from '../constants';
 
-/**
- * Because we used a shim for GM4 temporarily, we should
- * load our shimmed settings when migrating, to give the
- * user a better UX.
- */
-function loadFromGM4Shim() {
-	let storagePrefix = GM.info.script.name.replace(/[^A-Z]*/g, '') + '-';
-	function shimGetValue(aKey, aDefault) {
-		let aValue = localStorage.getItem(storagePrefix + aKey);
-	    if (null === aValue && 'undefined' !== typeof aDefault) { return aDefault; }
-		return aValue;
-	}
-	function shimDeleteValue(aKey) {
-		localStorage.removeItem(storagePrefix + aKey);
-	}
-
-	let shimSettings = shimGetValue(constants.settingsKey);
-	if (shimSettings) {
-		shimDeleteValue(constants.settingsKey);
-	}
-	return shimSettings;
-}
-
-type SettingValues = {
+export type SettingValues = {
 	showDebugLogs: boolean,
 	scrollToTop: boolean,
 
@@ -61,12 +38,37 @@ type SettingValues = {
 
 	showIndicatorRibbon: boolean,
 	showSmallRibbonByDefault: boolean,
-	useCorrectTimeFormat: boolean
+	useCorrectTimeFormat: boolean,
+
+	version: ?string
 };
 
-class Settings {
+/**
+ * Because we used a shim for GM4 temporarily, we should
+ * load our shimmed settings when migrating, to give the
+ * user a better UX.
+ */
+function loadFromGM4Shim(): ?string {
+	const storagePrefix = GM.info.script.name.replace(/[^A-Z]*/g, '') + '-';
+	function shimGetValue(aKey: string, aDefault?: string): ?string {
+		const aValue = localStorage.getItem(storagePrefix + aKey);
+	    if (null === aValue && 'undefined' !== typeof aDefault) { return aDefault; }
+		return aValue;
+	}
+	function shimDeleteValue(aKey: string): void {
+		localStorage.removeItem(storagePrefix + aKey);
+	}
+
+	const shimSettings = shimGetValue(constants.settingsKey);
+	if (shimSettings) {
+		shimDeleteValue(constants.settingsKey);
+	}
+	return shimSettings;
+}
+
+export class Settings {
 	defaults: SettingValues;
-	settings: SettingValues;
+	values: SettingValues;
 
 	constructor() {
 		this.defaults = {
@@ -87,7 +89,9 @@ class Settings {
 
 			showIndicatorRibbon: true,
 			showSmallRibbonByDefault: false,
-			useCorrectTimeFormat: true
+			useCorrectTimeFormat: true,
+
+			version: null
 		};
 
 		// This proxy makes it so you can access properties within the settings object
@@ -96,13 +100,13 @@ class Settings {
 		return new Proxy(this, {
 			get(target, prop) {
 				if (!(prop in target)) {
-					return target.settings[prop];
+					return target.values[prop];
 				}
 				return (target: any)[prop];
 			},
 			set(target, prop, value) {
-				if (!(prop in target) && target.settings && (prop in target.settings)) {
-					target.settings[prop] = value;
+				if (!(prop in target) && target.values && (prop in target.values)) {
+					target.values[prop] = value;
 				} else {
 					(target: any)[prop] = value;
 				}
@@ -112,28 +116,28 @@ class Settings {
 	}
 
 	async loadSettings() {
-		let shimSettings = loadFromGM4Shim();
-		let settingsValue = shimSettings
+		const shimSettings = loadFromGM4Shim();
+		const settingsValue = shimSettings
 			? shimSettings
 			: await GM.getValue(constants.settingsKey,
 				JSON.stringify(this.defaults));
 
-		let settings = JSON.parse(settingsValue);
+		const settings = JSON.parse(settingsValue);
 
 		// This makes sure that when new settings are added, users will
 		// automatically receive the default values for those new settings when
 		// they update.
-		$.each(this.defaults, function (key, defaultValue) {
+		$.each(this.defaults, (key, defaultValue) => {
 			if (!(key in settings)) {
 				settings[key] = defaultValue;
 			}
 		});
 
-		this.settings = settings;
+		this.values = settings;
 	}
 
 	async saveSettings() {
-		await GM.setValue(constants.settingsKey, JSON.stringify(this.settings));
+		await GM.setValue(constants.settingsKey, JSON.stringify(this.values));
 	}
 }
 

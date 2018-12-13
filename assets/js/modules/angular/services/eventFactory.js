@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,30 +16,48 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export default function (app) {
+import type { AngularModule, $Log, $Scope } from 'angular';
+
+import type { RootScope } from '../scopes/rootScope';
+
+export class Event<T> {
+	static $log: $Log;
+	static $rootScope: $Scope<RootScope>;
+
+	eventName: string;
+
+	constructor(eventName: string) {
+		this.eventName = eventName;
+	}
+
+	//$FlowFixMe when Flow properly supports generics
+	subscribe(scope: $Scope<*>, callback: (event: string, eventData?: T) => void) {
+		const handle = Event.$rootScope.$on(this.eventName, callback);
+		scope.$on('$destroy', handle);
+	}
+
+	publish(data?: T) {
+		const eventData: [string, ?T] = [this.eventName, null];
+
+		if (data != null) {
+			eventData[1] = data;
+		}
+
+		Event.$log.debug('Event data: ', eventData);
+		Event.$rootScope.$emit.apply(Event.$rootScope, eventData);
+	}
+}
+
+export type EventFactory = <T>(eventName: string) => Event<T>;
+
+export default function (app: AngularModule) {
 	app.factory('eventFactory', ['$rootScope', '$log',
-		function ($rootScope, $log) {
-			var eventFactory = function (eventName) {
-				this.eventName = eventName;
-			};
+		function ($rootScope: $Scope<RootScope>, $log: $Log) {
+			$log.debug('START eventFactory()');
+			Event.$rootScope = $rootScope;
+			Event.$log = $log;
 
-			eventFactory.prototype.subscribe = function (scope, callback) {
-				var handle = $rootScope.$on(this.eventName, callback);
-
-				scope.$on('$destroy', handle);
-			};
-
-			eventFactory.prototype.notify = function (data) {
-				var eventData = [this.eventName];
-
-				if (typeof data !== 'undefined') {
-					eventData = eventData.concat(data);
-				}
-
-				$log.debug('Event data: ', eventData);
-				$rootScope.$emit.apply($rootScope, eventData);
-			};
-
-			return eventFactory;
+			$log.debug('END eventFactory()');
+			return <T>(eventName: string) => new Event<T>(eventName);
 		}]);
 }

@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,9 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import type { AngularModule } from 'angular';
+
 import variables from '../../../../generated/variables.pass2';
 
-export default function (app) {
+export default function (app: AngularModule) {
 	app.directive('qcExtraNav', function () {
 		return {
 			restrict: 'E',

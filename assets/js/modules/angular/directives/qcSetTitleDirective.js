@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,58 +16,62 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import type { AngularModule, $Log } from 'angular';
+
 import constants from '../../../constants';
 import variables from '../../../../generated/variables.pass2';
 
-export default function (app) {
+import { SetValueControllerBase } from '../controllers/ControllerBases';
+
+import type { $DecoratedScope } from '../decorateScope';
+import type { ComicService } from '../services/comicService';
+import type { EventService } from '../services/eventService';
+import type { ComicData } from '../api/comicData';
+
+export class SetTitleController extends SetValueControllerBase<SetTitleController> {
+	static $inject: string[];
+
+	$log: $Log;
+
+	title: ?string;
+
+	constructor(
+		$scope: $DecoratedScope<SetTitleController>,
+		$log: $Log,
+		comicService: ComicService,
+		eventService: EventService
+	) {
+		$log.debug('START SetTitleController');
+
+		super($scope, comicService, eventService);
+		this.$log = $log;
+
+		this.title = '';
+
+		$log.debug('END SetTitleController');
+	}
+
+	_comicDataLoaded(comicData: ComicData) {
+		this.title = comicData.title;
+	}
+
+	_updateValue() {
+		this.setTitle();
+	}
+
+	setTitle() {
+		this.comicService.setTitle(this.title ? this.title : '');
+	};
+}
+SetTitleController.$inject = ['$scope', '$log', 'comicService', 'eventService'];
+
+export default function (app: AngularModule) {
 	app.directive('qcSetTitle', function () {
 		return {
 			restrict: 'E',
 			replace: true,
 			scope: {},
-			controller: ['$scope', '$log', 'comicService', 'eventFactory',
-				function ($scope, $log, comicService, Event) {
-					$log.debug('START qcSetTitle()');
-
-					var self = this;
-
-					this.unique = Math.random().toString(36).slice(-5);
-
-					var comicDataLoadedEvent =
-						new Event(constants.comicdataLoadedEvent);
-
-					$scope.safeApply = function (fn) {
-						var phase = this.$root.$$phase;
-						if (phase === '$apply' || phase === '$digest') {
-							if (fn && typeof fn === 'function') {
-								fn();
-							}
-						} else {
-							this.$apply(fn);
-						}
-					};
-
-					this.keyPress = function (event) {
-						if (event.keyCode === 13) {
-							// ENTER key
-							self.setTitle();
-						}
-					};
-
-					this.setTitle = function () {
-						comicService.setTitle(self.title);
-					};
-
-					this.title = '';
-					comicDataLoadedEvent.subscribe($scope,
-						function (event, comicData) {
-							$scope.safeApply(function () {
-								self.title = comicData.title;
-							});
-						});
-
-					$log.debug('END qcSetTitle()');
-				}],
+			controller: SetTitleController,
 			controllerAs: 's',
 			template: variables.html.setTitle
 		};

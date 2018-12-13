@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,13 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import GM from 'greasemonkey';
 import angular from 'angular';
 
 // TODO: Since we're not using the original service at all, we might
 // as well completely replace it rather than decorate it...
 // http://www.bennadel.com/blog/
 // 2927-overriding-core-and-custom-services-in-angularjs.htm
-export default function ($provide) {
+export default function ($provide: any) {
 
 	// Let's take over $http and make it use Greasemonkey's cross-domain
 	// XMLHTTPRequests instead of the browser's.
@@ -29,16 +31,16 @@ export default function ($provide) {
 
 		// START Code bits borrowed from angular
 		// (see angular's license for details)
-		var APPLICATION_JSON = 'application/json';
-		var JSON_START = /^\[|^\{(?!\{)/;
-		var JSON_ENDS = {
+		const APPLICATION_JSON = 'application/json';
+		const JSON_START = /^\[|^\{(?!\{)/;
+		const JSON_ENDS = {
 			'[': /]$/,
 			'{': /}$/
 		};
-		var JSON_PROTECTION_PREFIX = /^\)\]\}',?\n/;
+		const JSON_PROTECTION_PREFIX = /^\)\]\}',?\n/;
 
 		function isJsonLike(str) {
-			var jsonStart = str.match(JSON_START);
+			const jsonStart = str.match(JSON_START);
 
 			return jsonStart && JSON_ENDS[jsonStart[0]].test(str);
 		}
@@ -58,14 +60,14 @@ export default function ($provide) {
 
 			// Strip json vulnerability protection prefix
 			// and trim whitespace
-			var tempData = data.replace(JSON_PROTECTION_PREFIX, '')
+			const tempData = data.replace(JSON_PROTECTION_PREFIX, '')
 				.trim();
 
 			if (!tempData) {
 				return data;
 			}
 
-			var contentType = headers('Content-Type');
+			const contentType = headers('Content-Type');
 
 			if (contentType &&
 				contentType.indexOf(APPLICATION_JSON) === 0 ||
@@ -79,10 +81,10 @@ export default function ($provide) {
 		// END Code bits borrowed from angular
 
 		function getHeaderFunction(headers) {
-			var keyedHeaders = {};
+			const keyedHeaders = {};
 
 			angular.forEach(headers, function (value) {
-				var splitValue = value.trim().split(':', 2);
+				const splitValue = value.trim().split(':', 2);
 
 				if (splitValue.length < 2) {
 					return;
@@ -97,9 +99,9 @@ export default function ($provide) {
 			};
 		}
 
-		var injector = angular.injector(['ng']);
-		var $q = injector.get('$q');
-		var ourHttp = {
+		const injector = (angular: any).injector(['ng']);
+		const $q = injector.get('$q');
+		const ourHttp = {
 			get: function (url, config) {
 				return $q(function (resolve, reject) {
 					GM.xmlHttpRequest({
@@ -109,14 +111,14 @@ export default function ($provide) {
 							Accept: APPLICATION_JSON
 						},
 						onload: function (gmResponse) {
-							var headers = getHeaderFunction(
+							const headers = getHeaderFunction(
 								gmResponse.responseHeaders
 									.split('\n'));
-							var responseData = gmResponse.response;
+							let responseData = gmResponse.response;
 
 							responseData = defaultHttpResponseTransform(
 								responseData, headers);
-							var response = {
+							const response = {
 								data: responseData,
 								status: gmResponse.status,
 								headers: headers,
@@ -127,13 +129,13 @@ export default function ($provide) {
 							resolve(response);
 						},
 						onerror: function (gmResponse) {
-							var headers = getHeaderFunction(gmResponse
+							const headers = getHeaderFunction(gmResponse
 								.responseHeaders.split('\n'));
-							var responseData = gmResponse.response;
+							let responseData = gmResponse.response;
 
 							responseData = defaultHttpResponseTransform(
 								responseData, headers);
-							var response = {
+							const response = {
 								data: responseData,
 								status: gmResponse.status,
 								headers: headers,
@@ -157,14 +159,14 @@ export default function ($provide) {
 							Accept: APPLICATION_JSON
 						},
 						onload: function (gmResponse) {
-							var headers = getHeaderFunction(
+							const headers = getHeaderFunction(
 								gmResponse.responseHeaders
 									.split('\n'));
-							var responseData = gmResponse.response;
+							let responseData = gmResponse.response;
 
 							responseData = defaultHttpResponseTransform(
 								responseData, headers);
-							var response = {
+							const response = {
 								data: responseData,
 								status: gmResponse.status,
 								headers: headers,
@@ -175,13 +177,13 @@ export default function ($provide) {
 							resolve(response);
 						},
 						onerror: function (gmResponse) {
-							var headers = getHeaderFunction(gmResponse
+							const headers = getHeaderFunction(gmResponse
 								.responseHeaders.split('\n'));
-							var responseData = gmResponse.response;
+							let responseData = gmResponse.response;
 
 							responseData = defaultHttpResponseTransform(
 								responseData, headers);
-							var response = {
+							const response = {
 								data: responseData,
 								status: gmResponse.status,
 								headers: headers,

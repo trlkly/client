@@ -28,7 +28,7 @@ import { setup as setupAngular } from './modules/angular-app';
 (async () => {
 	await settings.loadSettings();
 
-	let domModifier = new DomModifier();
+	const domModifier = new DomModifier();
 	domModifier.modify();
 
 	setupAngular();

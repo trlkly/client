@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,7 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export default function (app) {
+import type { AngularModule } from 'angular';
+
+export default function (app: AngularModule) {
 	app.directive('onError', function () {
 		return {
 			restrict: 'A',

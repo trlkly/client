@@ -27,12 +27,6 @@ module.exports = {
 			"always"
 		]
 	},
-	"globals": {
-		"angular": true,
-		"jQuery": true,
-		"$": true,
-		"GM": true
-	},
 	"settings": {
 		"flowtype": {
 			"onlyFilesWithFlowAnnotation": false

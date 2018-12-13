@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,17 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import GM from 'greasemonkey';
+import angular from 'angular';
+import type { AngularModule } from 'angular';
+
 import settings from './../settings';
 
 import decorateHttpService from './decorateHttpService';
+import decorateScope from './decorateScope';
 
-export default function (app) {
+export default function (app: AngularModule) {
 	// Set up routing and do other configuration
 	app.config(['$stateProvider', '$urlRouterProvider',
 		'$locationProvider', '$provide', '$logProvider',
 		function ($stateProvider, $urlRouterProvider, $locationProvider,
 			$provide, $logProvider) {
 			decorateHttpService($provide);
+			decorateScope($provide);
 
 			$stateProvider.state('homepage', {
 				url: '^/$',
@@ -44,6 +51,6 @@ export default function (app) {
 
 			$locationProvider.html5Mode(true);
 
-			$logProvider.debugEnabled(settings.showDebugLogs);
+			$logProvider.debugEnabled(settings.values.showDebugLogs);
 		}]);
 }

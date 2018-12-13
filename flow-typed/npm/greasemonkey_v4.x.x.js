@@ -36,6 +36,7 @@ declare module greasemonkey {
 	}
 
 	declare class GMXHRResult extends XMLHttpRequest {
+		responseHeaders: string;
 		context?: any;
 	}
 
@@ -53,9 +54,9 @@ declare module greasemonkey {
 		method: "GET" | "POST" | "HEAD" | "PUT" | "PATCH" | "DELETE";
 		overrideMimeType?: string;
 		password?: string;
-		synchronous: boolean;
-		timeout: number;
-		upload: any;
+		synchronous?: boolean;
+		timeout?: number;
+		upload?: any;
 		url: string;
 		user?: string;
 
@@ -79,6 +80,7 @@ declare module greasemonkey {
 
 	notification(text: string, title: string, image: ?string, onclick: ?() => void): void;
 	setClipboard(text: string): void;
+	openInTab(url: string, open_in_background: ?boolean): void;
 
 	xmlHttpRequest(details: GMXHRDetails): void;
 }

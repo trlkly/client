@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,14 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import type { AngularModule, $Log, $Scope } from 'angular';
+
 import settings from '../../settings';
 
-export default function (app) {
+import type { $DecoratedScope } from '../decorateScope';
+import type { ComicService } from '../services/comicService';
+
+export default function (app: AngularModule) {
 	app.controller('bodyController', ['$log', '$scope', 'comicService',
-		function ($log, $scope, comicService) {
+		function ($log: $Log, $scope: $DecoratedScope<any>, comicService: ComicService) {
 			$log.debug('START bodyController()');
 
-			var isStupidFox =
+			const isStupidFox =
 				navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
 			function previous() {
@@ -37,14 +43,14 @@ export default function (app) {
 				});
 			}
 
-			var shortcut =
+			const shortcut =
 				window.eval('window.shortcut');
 
 			// Firefox balks at me trying to use the "shortcut" object from
 			// my user script. Works just fine in Chrome. I can't be bothered
 			// to cater to one browser's stupidity.
 			if (isStupidFox) {
-				var shortcutRemove =
+				const shortcutRemove =
 					window.eval('window.shortcut.remove').bind(shortcut);
 				shortcutRemove('Left');
 				shortcutRemove('Right');
@@ -82,7 +88,7 @@ export default function (app) {
 				shortcut.add('Ctrl+Right', next);
 
 				shortcut.add('Q', function () {
-					if (settings.editMode) {
+					if (settings.values.editMode) {
 						$('input[id^="addItem"]').focus();
 					}
 				}, { disable_in_input: true });

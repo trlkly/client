@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,52 +16,54 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import type { AngularModule, $Log } from 'angular';
+
 import constants from '../../../constants';
 
-export default function (app) {
-	app.controller('titleController', ['$log', '$scope', 'eventFactory',
-		function ($log, $scope, Event) {
-			$log.debug('START titleController()');
+import { ComicDataControllerBase } from './ControllerBases';
 
-			this.title = 'Loading Questionable Content Extension...';
+import type { $DecoratedScope } from '../decorateScope';
+import type { EventService } from '../services/eventService';
+import type { ComicData } from '../api/comicData';
 
-			var comicDataLoadingEvent =
-				new Event(constants.comicdataLoadingEvent);
-			var comicDataLoadedEvent =
-				new Event(constants.comicdataLoadedEvent);
+export class TitleController extends ComicDataControllerBase<TitleController> {
+	static $inject: string[];
 
-			$scope.safeApply = function (fn) {
-				var phase = this.$root.$$phase;
-				if (phase === '$apply' || phase === '$digest') {
-					if (fn && typeof fn === 'function') {
-						fn();
-					}
-				} else {
-					this.$apply(fn);
-				}
-			};
+	$log: $Log;
 
-			var self = this;
+	title: string;
 
-			comicDataLoadingEvent.subscribe($scope, function (event, comic) {
-				$scope.safeApply(function () {
-					self.title = 'Loading #' + comic +
-						' — Questionable Content';
-				});
-			});
+	constructor(
+		$scope: $DecoratedScope<TitleController>,
+		$log: $Log,
+		eventService: EventService
+	) {
+		$log.debug('START TitleController');
 
-			comicDataLoadedEvent.subscribe($scope, function (event, comicData) {
-				$scope.safeApply(function () {
-					if (comicData.hasData && comicData.title) {
-						self.title = '#' + comicData.comic + ': ' +
-							comicData.title + ' — Questionable Content';
-					} else {
-						self.title = '#' + comicData.comic +
-							' — Questionable Content';
-					}
-				});
-			});
+		super($scope, eventService);
 
-			$log.debug('END titleController()');
-		}]);
+		this.$log = $log;
+
+		this.title = 'Loading Questionable Content Extension...';
+
+		$log.debug('END TitleController');
+	}
+
+	_comicDataLoading(comic: number) {
+		this.title = `Loading #${comic} — Questionable Content`;
+	}
+
+	_comicDataLoaded(comicData: ComicData) {
+		if (comicData.hasData && comicData.title) {
+			this.title = `#${comicData.comic}: ${comicData.title} — Questionable Content`;
+		} else {
+			this.title = `#${comicData.comic} — Questionable Content`;
+		}
+	}
+
+}
+TitleController.$inject = ['$scope', '$log', 'eventService'];
+
+export default function (app: AngularModule) {
+	app.controller('titleController', TitleController);
 }

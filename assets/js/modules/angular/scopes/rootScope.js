@@ -16,14 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import type { AngularModule, $Log } from 'angular';
-import type { ComicService } from '../services/comicService';
+export type RootScope = {
 
-export default function (app: AngularModule) {
-	app.controller('comicController', ['$log', 'comicService',
-		function ($log: $Log, comicService: ComicService) {
-			$log.debug('START comicController()');
-			this.comicService = comicService;
-			$log.debug('END comicController()');
-		}]);
-}
+};

@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,70 +16,65 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import constants from '../../../constants';
+import type { AngularModule, $Log, $Sce } from 'angular';
 
-export default function (app) {
+import constants from '../../../constants';
+import { nl2br, angularizeLinks } from '../util';
+
+import { ComicDataControllerBase } from '../controllers/ControllerBases';
+
+import type { $DecoratedScope } from '../decorateScope';
+import type { EventService } from '../services/eventService';
+import type { ComicData } from '../api/comicData';
+
+export class NewsController extends ComicDataControllerBase<NewsController> {
+	static $inject: string[];
+
+	$sce: $Sce;
+
+	news: string;
+
+	constructor(
+		$scope: $DecoratedScope<NewsController>,
+		$log: $Log,
+		eventService: EventService,
+		$sce: $Sce
+	) {
+		$log.debug('START NewsController');
+
+		super($scope, eventService);
+		this.$sce = $sce;
+
+		this.news = $sce.trustAsHtml('Loading...');
+
+		$log.debug('END NewsController');
+	}
+
+	_comicDataLoading(comic: number) {
+		this.news = this.$sce.trustAsHtml('Loading...');
+	}
+
+	_comicDataLoaded(comicData: ComicData) {
+		const news = comicData.news;
+		if (news == null) {
+			this.news = '';
+		} else {
+			this.news = this.$sce.trustAsHtml(nl2br(angularizeLinks(news), false));
+		}
+	}
+
+}
+NewsController.$inject = ['$scope', '$log', 'eventService', '$sce'];
+
+export default function (app: AngularModule) {
 	app.directive('qcNews', function () {
 		return {
 			restrict: 'E',
 			replace: true,
 			scope: {},
-			controller: ['$scope', '$sce', '$compile', 'eventFactory',
-				function ($scope, $sce, $compile, Event) {
-					var comicDataLoadingEvent =
-						new Event(constants.comicdataLoadingEvent);
-					var comicDataLoadedEvent =
-						new Event(constants.comicdataLoadedEvent);
-
-					$scope.safeApply = function (fn) {
-						var phase = this.$root.$$phase;
-
-						if (phase === '$apply' || phase === '$digest') {
-							if (fn && typeof fn === 'function') {
-								fn();
-							}
-						} else {
-							this.$apply(fn);
-						}
-					};
-
-					function nl2br(str, isXhtml) {
-						var breakTag = isXhtml ||
-							typeof isXhtml === 'undefined' ?
-							'<br />' : '<br>';
-
-						return String(str).replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g,
-							'$1' + breakTag + '$2');
-					}
-
-					function angularizeLinks(str) {
-						var comicLinkRegexp =
-							/<a[^>]*href=(?:"|')(?:http:\/\/(?:www\.)?questionablecontent.net\/)?view\.php\?comic=(\d+)(?:"|')[^>]*>/;
-
-						return String(str).replace(comicLinkRegexp,
-							'<a ng-href="view.php?comic=$1">');
-					}
-
-					var self = this;
-
-					this.news = $sce.trustAsHtml('Loading...');
-					comicDataLoadingEvent.subscribe($scope,
-						function () {
-							$scope.safeApply(function () {
-								self.news = $sce.trustAsHtml('Loading...');
-							});
-						});
-					comicDataLoadedEvent.subscribe($scope,
-						function (event, comicData) {
-							$scope.safeApply(function () {
-								self.news = $sce.trustAsHtml(nl2br(
-									angularizeLinks(comicData.news), false));
-							});
-						});
-				}],
+			controller: NewsController,
 			controllerAs: 'n',
-			template:
-				'<div id="news" ng-bind-html="n.news" compile-template></div>'
+			template: '<div id="news" ng-bind-html="n.news" compile-template></div>'
 		};
 	});
 }

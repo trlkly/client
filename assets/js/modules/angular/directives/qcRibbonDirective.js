@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,47 +16,58 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import type { AngularModule, $Log } from 'angular';
+
 import constants from '../../../constants';
-import settings from '../../settings';
+import settings, { Settings } from '../../settings';
 import variables from '../../../../generated/variables.pass2';
 
-export default function (app) {
+import { ComicDataControllerBase } from '../controllers/ControllerBases';
+
+import type { $DecoratedScope } from '../decorateScope';
+import type { EventService } from '../services/eventService';
+import type { ComicData } from '../api/comicData';
+
+export class RibbonController extends ComicDataControllerBase<RibbonController> {
+	static $inject: string[];
+
+	settings: Settings;
+	isNonCanon: ?boolean;
+	isGuestComic: ?boolean;
+	isSmall: boolean;
+
+	constructor(
+		$scope: $DecoratedScope<RibbonController>,
+		$log: $Log,
+		eventService: EventService
+	) {
+		$log.debug('START RibbonController');
+
+		super($scope, eventService);
+
+		this.settings = settings;
+		this.isNonCanon = false;
+		this.isGuestComic = false;
+		this.isSmall = settings.values.showSmallRibbonByDefault;
+
+		$log.debug('END RibbonController');
+	}
+
+	_comicDataLoaded(comicData: ComicData) {
+		this.isNonCanon = comicData.isNonCanon;
+		this.isGuestComic = comicData.isGuestComic;
+	}
+
+}
+RibbonController.$inject = ['$scope', '$log', 'eventService'];
+
+export default function (app: AngularModule) {
 	app.directive('qcRibbon', function () {
 		return {
 			restrict: 'E',
 			replace: true,
 			scope: {},
-			controller: ['$scope', 'eventFactory',
-				function ($scope, Event) {
-					var comicDataLoadedEvent =
-						new Event(constants.comicdataLoadedEvent);
-
-					$scope.safeApply = function (fn) {
-						var phase = this.$root.$$phase;
-
-						if (phase === '$apply' || phase === '$digest') {
-							if (fn && typeof fn === 'function') {
-								fn();
-							}
-						} else {
-							this.$apply(fn);
-						}
-					};
-
-					this.settings = settings;
-					this.isNonCanon = false;
-					this.isGuestComic = false;
-					this.isSmall = settings.showSmallRibbonByDefault;
-
-					var self = this;
-					comicDataLoadedEvent.subscribe($scope,
-						function (event, comicData) {
-							$scope.safeApply(function () {
-								self.isNonCanon = comicData.isNonCanon;
-								self.isGuestComic = comicData.isGuestComic;
-							});
-						});
-				}],
+			controller: RibbonController,
 			controllerAs: 'r',
 			template: variables.html.ribbon
 		};

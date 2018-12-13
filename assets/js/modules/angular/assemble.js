@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import type { AngularModule } from 'angular';
+
 import config from './config';
 import run from './run';
 
@@ -25,6 +28,7 @@ import titleController from './controllers/titleController';
 import colorService from './services/colorService';
 import comicService from './services/comicService';
 import eventFactory from './services/eventFactory';
+import eventService from './services/eventService';
 import messageReportingService from './services/messageReportingService';
 import styleService from './services/styleService';
 
@@ -47,7 +51,7 @@ import qcSetTaglineDirective from './directives/qcSetTaglineDirective';
 import qcSettingsDirective from './directives/qcSettingsDirective';
 import qcSetTitleDirective from './directives/qcSetTitleDirective';
 
-export default function (app) {
+export default function (app: AngularModule) {
 	config(app);
 	run(app);
 
@@ -58,6 +62,7 @@ export default function (app) {
 	colorService(app);
 	comicService(app);
 	eventFactory(app);
+	eventService(app);
 	messageReportingService(app);
 	styleService(app);
 

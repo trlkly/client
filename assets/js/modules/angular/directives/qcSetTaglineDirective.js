@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,58 +16,62 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import type { AngularModule, $Log } from 'angular';
+
 import constants from '../../../constants';
 import variables from '../../../../generated/variables.pass2';
 
-export default function (app) {
+import { SetValueControllerBase } from '../controllers/ControllerBases';
+
+import type { $DecoratedScope } from '../decorateScope';
+import type { ComicService } from '../services/comicService';
+import type { EventService } from '../services/eventService';
+import type { ComicData } from '../api/comicData';
+
+export class SetTaglineController extends SetValueControllerBase<SetTaglineController> {
+	static $inject: string[];
+
+	$log: $Log;
+
+	tagline: ?string;
+
+	constructor(
+		$scope: $DecoratedScope<SetTaglineController>,
+		$log: $Log,
+		comicService: ComicService,
+		eventService: EventService
+	) {
+		$log.debug('START SetTaglineController');
+
+		super($scope, comicService, eventService);
+		this.$log = $log;
+
+		this.tagline = '';
+
+		$log.debug('END SetTaglineController');
+	}
+
+	_comicDataLoaded(comicData: ComicData) {
+		this.tagline = comicData.tagline;
+	}
+
+	_updateValue() {
+		this.setTagline();
+	}
+
+	setTagline() {
+		this.comicService.setTagline(this.tagline ? this.tagline : '');
+	}
+}
+SetTaglineController.$inject = ['$scope', '$log', 'comicService', 'eventService'];
+
+export default function (app: AngularModule) {
 	app.directive('qcSetTagline', function () {
 		return {
 			restrict: 'E',
 			replace: true,
 			scope: {},
-			controller: ['$scope', '$log', 'comicService', 'eventFactory',
-				function ($scope, $log, comicService, Event) {
-					$log.debug('START qcSetTagline()');
-
-					var self = this;
-
-					this.unique = Math.random().toString(36).slice(-5);
-
-					var comicDataLoadedEvent =
-						new Event(constants.comicdataLoadedEvent);
-
-					$scope.safeApply = function (fn) {
-						var phase = this.$root.$$phase;
-						if (phase === '$apply' || phase === '$digest') {
-							if (fn && typeof fn === 'function') {
-								fn();
-							}
-						} else {
-							this.$apply(fn);
-						}
-					};
-
-					this.keyPress = function (event) {
-						if (event.keyCode === 13) {
-							// ENTER key
-							self.setTagline();
-						}
-					};
-
-					this.setTagline = function () {
-						comicService.setTagline(self.tagline);
-					};
-
-					this.tagline = '';
-					comicDataLoadedEvent.subscribe($scope,
-						function (event, comicData) {
-							$scope.safeApply(function () {
-								self.tagline = comicData.tagline;
-							});
-						});
-
-					$log.debug('END qcSetTagline()');
-				}],
+			controller: SetTaglineController,
 			controllerAs: 's',
 			template: variables.html.setTagline
 		};

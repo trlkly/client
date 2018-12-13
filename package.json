@@ -18,6 +18,8 @@
 	},
 	"homepage": "https://questionablextensions.net/",
 	"devDependencies": {
+		"@babel/core": "^7.1.5",
+		"@babel/preset-flow": "^7.0.0",
 		"babel-eslint": "^10.0.1",
 		"eslint": "^5.8.0",
 		"eslint-plugin-flowtype": "^3.2.0",
@@ -25,6 +27,7 @@
 		"flow-remove-types": "^1.2.3",
 		"flow-typed": "^2.5.1",
 		"grunt": "~1.0.1",
+		"grunt-babel": "^8.0.0",
 		"grunt-contrib-compass": "~1.1",
 		"grunt-contrib-concat": "~1.0",
 		"grunt-contrib-htmlmin": "~2.3",
@@ -36,6 +39,7 @@
 		"grunt-rollup": "^8.1.0",
 		"jquery": "^3.2.1",
 		"load-grunt-tasks": "~3.5",
+		"rollup-plugin-babel": "^4.0.3",
 		"rollup-plugin-commonjs": "^8.2.6",
 		"rollup-plugin-node-resolve": "^3.0.0",
 		"rollup-plugin-virtual": "^1.0.1"

@@ -17,7 +17,7 @@
 
 /* global module */
 
-var userScriptBanner =
+const userScriptBanner =
 `// ==UserScript==
 // @name         Questionable Content Single-Page Application with Extra Features
 // @namespace    https://questionablextensions.net/

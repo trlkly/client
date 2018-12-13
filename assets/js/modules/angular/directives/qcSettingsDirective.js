@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,39 +16,62 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import settings from '../../settings';
+import type { AngularModule, $Log } from 'angular';
+
+import settings, { Settings } from '../../settings';
 import variables from '../../../../generated/variables.pass2';
 
-export default function (app) {
+import type { $DecoratedScope } from '../decorateScope';
+import type { ComicService } from '../services/comicService';
+
+export class SettingsController {
+	static $inject: string[];
+
+	$scope: $DecoratedScope<SettingsController>;
+	$log: $Log;
+	comicService: ComicService;
+
+	settings: Settings;
+
+	constructor($scope: $DecoratedScope<SettingsController>, $log: $Log, comicService: ComicService) {
+		$log.debug('START SettingsController');
+
+		this.$scope = $scope;
+		this.$log = $log;
+		this.comicService = comicService;
+
+		this.settings = settings;
+
+		$scope.$watchGroup([() => {
+			return this.settings.values.showAllMembers;
+		}, () => {
+			return this.settings.values.editMode;
+		}], () => {
+			this.comicService.refreshComicData();
+		});
+
+		$('#settingsDialog').on('hide.bs.modal', () => {
+			$log.debug('Saving settings...');
+			this.settings.saveSettings().then(() => {
+				$log.debug('Settings saved.');
+			});
+		});
+
+		$log.debug('END SettingsController');
+	}
+
+	close() {
+		($('#settingsDialog'): any).modal('hide');
+	}
+}
+
+export default function (app: AngularModule) {
 	app.directive('qcSettings', function () {
 		return {
 			restrict: 'E',
 			replace: true,
 			scope: {},
-			controller: ['$scope', 'comicService', '$log',
-				function ($scope, comicService, $log) {
-					var self = this;
-					this.settings = settings;
-
-					$scope.$watchGroup([function () {
-						return self.settings.showAllMembers;
-					}, function () {
-						return self.settings.editMode;
-					}], function () {
-						comicService.refreshComicData();
-					});
-
-					$('#settingsDialog').on('hide.bs.modal', function () {
-						$log.debug('Saving settings...');
-						settings.saveSettings().then(() => {
-							$log.debug('Settings saved.');
-						});
-					});
-
-					this.close = function () {
-						$('#settingsDialog').modal('hide');
-					};
-				}],
+			controller: SettingsController,
 			controllerAs: 'svm',
 			template: variables.html.settings
 		};

@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2016-2018 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
@@ -15,56 +16,78 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import type { AngularModule, $Log } from 'angular';
+
 import variables from '../../../../generated/variables.pass2';
 
-export default function (app) {
+import type { $DecoratedScope } from '../decorateScope';
+import type { ComicService } from '../services/comicService';
+
+export class NavController {
+	static $inject: string[];
+
+	$scope: $DecoratedScope<NavController>;
+	comicService: ComicService;
+	latestComic: number;
+	randomComic: number;
+
+	constructor(
+		$scope: $DecoratedScope<NavController>,
+		comicService: ComicService,
+		latestComic: number
+	) {
+		this.$scope = $scope;
+		this.comicService = comicService;
+		this.latestComic = latestComic;
+
+		this._updateRandomComic();
+	}
+
+	_updateRandomComic() {
+		this.$scope.randomComic = Math.floor(Math.random() *
+			(parseInt(this.latestComic) + 1));
+	}
+
+	first(event: UIEvent) {
+		event.preventDefault();
+		event.stopPropagation();
+		this.comicService.first();
+	}
+
+	previous(event: UIEvent) {
+		event.preventDefault();
+		event.stopPropagation();
+		this.comicService.previous();
+	}
+
+	next(event: UIEvent) {
+		event.preventDefault();
+		event.stopPropagation();
+		this.comicService.next();
+	}
+
+	last(event: UIEvent) {
+		event.preventDefault();
+		event.stopPropagation();
+		this.comicService.last();
+	}
+
+	random(event: UIEvent) {
+		event.preventDefault();
+		event.stopPropagation();
+
+		this.comicService.gotoComic(this.$scope.randomComic);
+		this._updateRandomComic();
+	}
+}
+NavController.$inject = ['$scope', 'comicService', 'latestComic'];
+
+export default function (app: AngularModule) {
 	app.directive('qcNav', function () {
 		return {
 			restrict: 'E',
 			scope: { randomComic: '=' },
-			controller: ['$scope', 'comicService', 'latestComic',
-				function ($scope, comicService, latestComic) {
-					this.comicService = comicService;
-
-					function updateRandomComic() {
-						$scope.randomComic = Math.floor(Math.random() *
-							(parseInt(latestComic) + 1));
-					}
-
-					updateRandomComic();
-
-					this.first = function (event) {
-						event.preventDefault();
-						event.stopPropagation();
-						comicService.first();
-					};
-
-					this.previous = function (event) {
-						event.preventDefault();
-						event.stopPropagation();
-						comicService.previous();
-					};
-
-					this.next = function (event) {
-						event.preventDefault();
-						event.stopPropagation();
-						comicService.next();
-					};
-
-					this.last = function (event) {
-						event.preventDefault();
-						event.stopPropagation();
-						comicService.last();
-					};
-
-					this.random = function (event) {
-						event.preventDefault();
-						event.stopPropagation();
-
-						comicService.gotoComic($scope.randomComic);
-						updateRandomComic();
-					};
-				}],
+			controller: NavController,
 			controllerAs: 'n',
 			template: variables.html.navigation
 		};
