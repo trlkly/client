@@ -149,15 +149,22 @@ export default function ($provide: any) {
 				});
 			},
 			post: function (url, data, config) {
+				config = config || {};
+				const contentType = 'contentType' in config ? config.contentType : APPLICATION_JSON;
+				const dataTransform = 'dataTransform' in config ? config.dataTransform : (d) => JSON.stringify(d);
+
+				const headers = {};
+				headers.Accept = APPLICATION_JSON;
+				if (contentType) {
+					headers['Content-Type'] = contentType;
+				}
+
 				return $q(function (resolve, reject) {
 					GM.xmlHttpRequest({
 						method: 'POST',
 						url: url,
-						data: JSON.stringify(data),
-						headers: {
-							'Content-Type': APPLICATION_JSON,
-							Accept: APPLICATION_JSON
-						},
+						data: dataTransform(data),
+						headers,
 						onload: function (gmResponse) {
 							const headers = getHeaderFunction(
 								gmResponse.responseHeaders

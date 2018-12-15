@@ -33,6 +33,7 @@ import messageReportingService from './services/messageReportingService';
 import styleService from './services/styleService';
 
 import donutDirective from './directives/donutDirective';
+import fileDataDirective from './directives/fileDataDirective';
 import onErrorDirective from './directives/onErrorDirective';
 import qcAddItemDirective from './directives/qcAddItemDirective';
 import qcChangeLogDirective from './directives/qcChangeLogDirective';
@@ -67,6 +68,7 @@ export default function (app: AngularModule) {
 	styleService(app);
 
 	donutDirective(app);
+	fileDataDirective(app);
 	onErrorDirective(app);
 	qcAddItemDirective(app);
 	qcChangeLogDirective(app);

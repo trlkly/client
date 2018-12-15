@@ -201,9 +201,9 @@ module.exports = function (grunt) {
 		'filesToJavascript',  // Convert HTML templates to JS variables
 		'concat:variables',   // Create finished variable.pass2.js file
 		'flow',               // Type-checking
-		'eslint',             // Check for lint
 		'rollup:main',        // Rollup all the javascript files into one
 		'concat:source',      // Add banner to rollup result
 		'uglify',             // Minify the javascript
+		'eslint',             // Check for lint
 	]);
 };

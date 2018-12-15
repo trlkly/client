@@ -16,18 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import angular from 'angular';
+
 import type { AngularModule, $Log, $Http } from 'angular';
 
 import constants from '../../../constants';
 import settings, { Settings } from '../../settings';
 import variables from '../../../../generated/variables.pass2';
 
+import { convertDataUritoBlob } from '../util';
+
 import type { $DecoratedScope } from '../decorateScope';
 import type { ColorService } from '../services/colorService';
 import type { ComicService } from '../services/comicService';
 import type { MessageReportingService } from '../services/messageReportingService';
 import type { StyleService } from '../services/styleService';
-import type { DecoratedItemData, ItemRelationData } from '../api/itemData';
+import type { DecoratedItemData, ItemRelationData, ItemImageData } from '../api/itemData';
 
 export class ItemDetailsController {
 	static $inject: string[];
@@ -40,9 +44,15 @@ export class ItemDetailsController {
 	messageReportingService: MessageReportingService;
 	styleService: StyleService;
 
-	isLoading: boolean;
+	isLoading: number;
 	settings: Settings;
 	itemData: DecoratedItemData;
+
+	imagePaths: string[];
+	currentImagePath: number;
+	isImagePreview: boolean;
+	imageFile: ?string;
+	imageFileInfo: any;
 
 	constructor(
 		$log: $Log,
@@ -63,8 +73,14 @@ export class ItemDetailsController {
 		this.messageReportingService = messageReportingService;
 		this.styleService = styleService;
 
-		this.isLoading = true;
+		this.isLoading = 1;
 		this.settings = settings;
+
+		this.imagePaths = [];
+		this.currentImagePath = 0;
+		this.isImagePreview = false;
+		this.imageFile = null;
+		this.imageFileInfo = null;
 
 		$('#itemDetailsDialog').on('show.bs.modal', () => this._getItemDetails());
 
@@ -95,6 +111,7 @@ export class ItemDetailsController {
 			let friends = handleRelationData(response);
 			self.$scope.safeApply(() => {
 				self.itemData.friends = friends || [];
+				self.isLoading--;
 			});
 		}
 
@@ -102,31 +119,51 @@ export class ItemDetailsController {
 			let locations = handleRelationData(response);
 			self.$scope.safeApply(() => {
 				self.itemData.locations = locations || [];
+				self.isLoading--;
 			});
+		}
+
+		function handleItemImageData(response) {
+			if (response.status === 200) {
+				let images = response.data;
+				let imagePaths: string[] = [];
+				$.each(images, (_: number, image: ItemImageData) => {
+					imagePaths.push(`${constants.itemDataUrl}image/${image.id}`);
+				});
+				self.$scope.safeApply(() => {
+					self.imagePaths = imagePaths;
+					self.currentImagePath = 0;
+					self.isLoading--;
+				});
+			}
 		}
 
 		function handleItemData(response) {
 			if (response.status === 200) {
-				const itemData = response.data;
+				const itemData = (response.data: DecoratedItemData);
 
 				itemData.highlightColor = self.colorService
 					.createTintOrShade(itemData.color);
 
-				if (itemData.hasImage) {
-					itemData.imagePath =
-						constants.characterImageBaseUrl +
-						itemData.id + '.' +
-						constants.characterImageExtension;
-				}
-
 				self.$log.debug('qcItemDetails::showModal() - ' +
 					'item data:', itemData);
+
+				self.isLoading += 2;
+				self.$http.get(constants.itemFriendDataUrl + itemId)
+					.then(handleItemFriendsData);
+				self.$http.get(constants.itemLocationDataUrl + itemId)
+					.then(handleItemLocationsData);
+				if (itemData.hasImage) {
+					self.isLoading++;
+					self.$http.get(constants.itemDataUrl + itemId + '/images')
+						.then(handleItemImageData);
+				}
 
 				// If the color changes, also update the
 				// highlight color
 				self.$scope.safeApply(() => {
 					self.itemData = itemData;
-					self.isLoading = false;
+					self.isLoading--;
 
 					self.$scope.$watch(() => {
 						return self.itemData.color;
@@ -137,19 +174,24 @@ export class ItemDetailsController {
 									itemData.color);
 					});
 				});
-
-				self.$http.get(constants.itemFriendDataUrl + itemId)
-					.then(handleItemFriendsData);
-				self.$http.get(constants.itemLocationDataUrl +
-					itemId).then(handleItemLocationsData);
 			} else {
+				self.$scope.safeApply(() => {
+					self.isLoading--;
+				});
 				self.messageReportingService.reportError(
 					response.data);
 			}
 		}
 
 		this.itemData = (({}: any): DecoratedItemData);
-		this.isLoading = true;
+		this.isLoading = 1;
+
+		this.imagePaths = [];
+		this.currentImagePath = 0;
+		this.isImagePreview = false;
+		this.imageFile = null;
+		this.imageFileInfo = null;
+
 		this.$http.get(constants.itemDataUrl + itemId)
 			.then(response => handleItemData(response));
 	}
@@ -211,6 +253,46 @@ export class ItemDetailsController {
 
 	close() {
 		($('#itemDetailsDialog'): any).modal('hide');
+	}
+
+	previewImage() {
+		if (this.imageFile && this.imageFileInfo.type == 'image/png') {
+			this.isImagePreview = true;
+		}
+	}
+
+	uploadImage() {
+		if (this.imageFile && this.imageFileInfo.type == 'image/png') {
+			const imageBlob = convertDataUritoBlob(this.imageFile);
+			this.$log.debug(imageBlob, this.$http);
+
+			const formData = new FormData();
+			formData.append('ItemId', String(this.itemData.id));
+			formData.append('Image', imageBlob, this.imageFileInfo.name);
+			formData.append('Token', settings.values.editModeToken);
+
+			this.$http.post(constants.itemDataUrl + 'image/upload', formData, {contentType: undefined, dataTransform: (d) => d})
+				.then(() => {
+					this._getItemDetails();
+				}).catch((error) => {
+					self.messageReportingService.reportError(
+						error);
+				});
+		}
+	}
+
+	previousImage() {
+		this.currentImagePath--;
+		if (this.currentImagePath < 0) {
+			this.currentImagePath = 0;
+		}
+	}
+
+	nextImage() {
+		this.currentImagePath++;
+		if (this.currentImagePath >= this.imagePaths.length) {
+			this.currentImagePath = this.imagePaths.length - 1;
+		}
 	}
 }
 ItemDetailsController.$inject = ['$log', '$http', '$scope', 'colorService',

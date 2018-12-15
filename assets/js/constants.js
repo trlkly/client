@@ -21,12 +21,8 @@
 const developmentMode = false;
 
 function getSiteUrl() {
-	if (developmentMode) {
-		return 'http://localhost:3000/';
-	} else {
 		return 'https://questionablextensions.net/';
 	}
-}
 
 function getWebserviceBaseUrl() {
 	if (developmentMode) {
@@ -61,9 +57,6 @@ const constants = {
 	itemFriendDataUrl: itemDataUrl + 'friends/',
 	itemLocationDataUrl: itemDataUrl + 'locations/',
 	setItemDataPropertyUrl: itemDataUrl + 'setproperty',
-
-	characterImageBaseUrl: getSiteUrl() + 'images/characters/',
-	characterImageExtension: 'png',
 
 	comicExtensions: ['png', 'gif', 'jpg'],
 

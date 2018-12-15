@@ -16,40 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export type ItemType = 'cast' | 'location' | 'storyline';
+import type { AngularModule } from 'angular';
 
-export type ItemBaseData = {
-	id: number;
-	shortName: string;
-	name: string;
-	type: ItemType;
+export default function (app: AngularModule) {
+	app.directive('fileData', function () {
+		return {
+			restrict: 'A',
+			scope: {
+				fileData: '=',
+				fileInfo: '='
+			},
+			link: function (scope, element, attrs) {
+				element.bind('change', function (changeEvent) {
+					const fileReader = new FileReader();
+					fileReader.onload = function (loadEvent) {
+						scope.$apply(function () {
+							scope.fileInfo = changeEvent.target.files[0];
+							scope.fileData = loadEvent.target.result;
+						});
+					};
+					fileReader.readAsDataURL(changeEvent.target.files[0]);
+				});
+			}
+		};
+	});
 }
-
-export type ItemBaseDataWithColor = ItemBaseData & {
-	color: string;
-}
-
-export type ItemData = ItemBaseDataWithColor & {
-	first: number;
-	last: number;
-	appearances: number;
-	totalComics: number;
-	presence: number;
-	hasImage: boolean;
-};
-
-export type ItemRelationData = ItemBaseDataWithColor & {
-	count: number;
-	percentage: number;
-};
-
-export type DecoratedItemData = ItemData & {
-	highlightColor: string;
-	locations: ItemRelationData[];
-	friends: ItemRelationData[];
-};
-
-export type ItemImageData = {
-	id: number;
-	crC32CHash: number;
-};
