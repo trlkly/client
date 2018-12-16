@@ -264,7 +264,6 @@ export class ItemDetailsController {
 	uploadImage() {
 		if (this.imageFile && this.imageFileInfo.type == 'image/png') {
 			const imageBlob = convertDataUritoBlob(this.imageFile);
-			this.$log.debug(imageBlob, this.$http);
 
 			const formData = new FormData();
 			formData.append('ItemId', String(this.itemData.id));

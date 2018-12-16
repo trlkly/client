@@ -142,6 +142,11 @@
                 <a class="qc" ng-click="e.editComicData()" ng-class="{'disabled': e.isLoading}"><i class="fa fa-pencil-square"></i> Edit comic data</a>
             </td>
         </tr>
+        <tr ng-if="e.settings.editMode">
+            <td class="qcnav_name">
+                <a class="qc" ng-click="e.showEditLog()"><i class="fa fa-list-alt"></i> See edit log</a>
+            </td>
+        </tr>
         <tr>
             <td class="qcnav_space">
                 <button type="button" class="btn btn-default" ng-disabled="e.isLoading" ng-click="e.comicService.refreshComicData();">Refresh</button>

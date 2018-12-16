@@ -274,6 +274,10 @@ export class ExtraController extends ComicDataControllerBase<ExtraController> {
 		($('#editComicDataDialog'): any).modal('show');
 	}
 
+	showEditLog() {
+		($('#editLogDialog'): any).modal('show');
+	}
+
 	showDetailsFor(item: ItemData) {
 		$('#itemDetailsDialog').data('itemId', item.id);
 		($('#itemDetailsDialog'): any).modal('show');

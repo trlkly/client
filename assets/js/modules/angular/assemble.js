@@ -41,6 +41,7 @@ import qcComicDirective from './directives/qcComicDirective';
 import qcComicNavDirective from './directives/qcComicNavDirective';
 import qcDateDirective from './directives/qcDateDirective';
 import qcEditComicDataDirective from './directives/qcEditComicDataDirective';
+import qcEditLogDirective from './directives/qcEditLogDirective';
 import qcExtraDirective from './directives/qcExtraDirective';
 import qcExtraNavDirective from './directives/qcExtraNavDirective';
 import qcItemDetailsDirective from './directives/qcItemDetailsDirective';
@@ -76,6 +77,7 @@ export default function (app: AngularModule) {
 	qcComicNavDirective(app);
 	qcDateDirective(app);
 	qcEditComicDataDirective(app);
+	qcEditLogDirective(app);
 	qcExtraDirective(app);
 	qcExtraNavDirective(app);
 	qcItemDetailsDirective(app);

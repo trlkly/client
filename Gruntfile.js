@@ -137,6 +137,7 @@ module.exports = function (grunt) {
 					'assets/generated/extraNav.html': 'assets/templates/extraNav.html',
 					'assets/generated/settings.html': 'assets/templates/settings.html',
 					'assets/generated/editComicData.html': 'assets/templates/editComicData.html',
+					'assets/generated/editLog.html': 'assets/templates/editLog.html',
 					'assets/generated/addItem.html': 'assets/templates/addItem.html',
 					'assets/generated/setTitle.html': 'assets/templates/setTitle.html',
 					'assets/generated/setTagline.html': 'assets/templates/setTagline.html',

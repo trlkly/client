@@ -34,6 +34,7 @@ function getWebserviceBaseUrl() {
 
 const comicDataUrl = getWebserviceBaseUrl() + 'comicdata/';
 const itemDataUrl = getWebserviceBaseUrl() + 'itemdata/';
+const editLogUrl = getWebserviceBaseUrl() + 'log';
 
 const constants = {
 	settingsKey: 'settings',
@@ -42,6 +43,7 @@ const constants = {
 	siteUrl: getSiteUrl(),
 	comicDataUrl,
 	itemDataUrl,
+	editLogUrl,
 
 	// Comics after 3132 should have a tagline
 	taglineThreshold: 3132,
