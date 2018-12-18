@@ -278,6 +278,56 @@ export class ComicService {
 			.then(r => this._onSuccessRefreshElseErrorLog(r)).catch(r => this._onErrorLog(r));
 	}
 
+	setNoCast(value: boolean) {
+		const data = {
+			token: settings.values.editModeToken,
+			comic: this.comic,
+			value: value
+		};
+		return this.$http.post(constants.setNoCastUrl, data)
+			.then(r => this._onSuccessRefreshElseErrorLog(r)).catch(r => this._onErrorLog(r));
+	}
+
+	setNoLocation(value: boolean) {
+		const data = {
+			token: settings.values.editModeToken,
+			comic: this.comic,
+			value: value
+		};
+		return this.$http.post(constants.setNoLocationUrl, data)
+			.then(r => this._onSuccessRefreshElseErrorLog(r)).catch(r => this._onErrorLog(r));
+	}
+
+	setNoStoryline(value: boolean) {
+		const data = {
+			token: settings.values.editModeToken,
+			comic: this.comic,
+			value: value
+		};
+		return this.$http.post(constants.setNoStorylineUrl, data)
+			.then(r => this._onSuccessRefreshElseErrorLog(r)).catch(r => this._onErrorLog(r));
+	}
+
+	setNoTitle(value: boolean) {
+		const data = {
+			token: settings.values.editModeToken,
+			comic: this.comic,
+			value: value
+		};
+		return this.$http.post(constants.setNoTitleUrl, data)
+			.then(r => this._onSuccessRefreshElseErrorLog(r)).catch(r => this._onErrorLog(r));
+	}
+
+	setNoTagline(value: boolean) {
+		const data = {
+			token: settings.values.editModeToken,
+			comic: this.comic,
+			value: value
+		};
+		return this.$http.post(constants.setNoTaglineUrl, data)
+			.then(r => this._onSuccessRefreshElseErrorLog(r)).catch(r => this._onErrorLog(r));
+	}
+
 	gotoComic(comicNo: number) {
 		this.$location.url('/view.php?comic=' + comicNo);
 	}

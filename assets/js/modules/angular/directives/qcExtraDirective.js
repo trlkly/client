@@ -188,19 +188,19 @@ export class ExtraController extends ComicDataControllerBase<ExtraController> {
 			angular.forEach(comicData.allItems, processAllItem);
 		}
 
-		if (!hasCast) {
+		if (!hasCast && !comicData.hasNoCast) {
 			this.missingDataInfo.push('cast members');
 		}
-		if (!hasLocation) {
+		if (!hasLocation && !comicData.hasNoLocation) {
 			this.missingDataInfo.push('a location');
 		}
-		/* #if (!hasStoryline) {
+		/* #if (!hasStoryline && !comicData.hasNoStoryline) {
 			self.missingDataInfo.push('a storyline');
 		}*/
-		if (!comicData.title) {
+		if (!comicData.title && !comicData.hasNoTitle) {
 			this.missingDataInfo.push('a title');
 		}
-		if (!comicData.tagline &&
+		if (!comicData.tagline && !comicData.hasNoTagline && 
 			this.comicService.comic > constants.taglineThreshold) {
 			this.missingDataInfo.push('a tagline');
 		}

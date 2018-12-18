@@ -58,6 +58,11 @@ export type ComicData = {
 	tagline: ?string;
 	isGuestComic: ?boolean;
 	isNonCanon: ?boolean;
+	hasNoCast: ?boolean;
+	hasNoLocation: ?boolean;
+	hasNoStoryline: ?boolean;
+	hasNoTitle: ?boolean;
+	hasNoTagline: ?boolean;
 	news: ?string;
 	previous: ?number;
 	next: ?number;

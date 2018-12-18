@@ -55,6 +55,11 @@ const constants = {
 	setPublishDateUrl: comicDataUrl + 'setpublishdate',
 	setGuestComicUrl: comicDataUrl + 'setguest',
 	setNonCanonUrl: comicDataUrl + 'setnoncanon',
+	setNoCastUrl: comicDataUrl + 'setnocast',
+	setNoLocationUrl: comicDataUrl + 'setnolocation',
+	setNoStorylineUrl: comicDataUrl + 'setnostoryline',
+	setNoTitleUrl: comicDataUrl + 'setnotitle',
+	setNoTaglineUrl: comicDataUrl + 'setnotagline',
 
 	itemFriendDataUrl: itemDataUrl + 'friends/',
 	itemLocationDataUrl: itemDataUrl + 'locations/',

@@ -97,6 +97,31 @@ export class EditComicDataController extends ComicDataControllerBase<EditComicDa
 			this.editData.comicData.isNonCanon);
 	}
 
+	changeNoCast() {
+		this.comicService.setNoCast(
+			this.editData.comicData.hasNoCast);
+	}
+
+	changeNoLocation() {
+		this.comicService.setNoLocation(
+			this.editData.comicData.hasNoLocation);
+	}
+
+	changeNoStoryline() {
+		this.comicService.setNoStoryline(
+			this.editData.comicData.hasNoStoryline);
+	}
+
+	changeNoTitle() {
+		this.comicService.setNoTitle(
+			this.editData.comicData.hasNoTitle);
+	}
+
+	changeNoTagline() {
+		this.comicService.setNoTagline(
+			this.editData.comicData.hasNoTagline);
+	}
+
 	close() {
 		($('#editComicDataDialog'): any).modal('hide');
 	}
