@@ -79,12 +79,11 @@ export class EditComicDataController extends ComicDataControllerBase<EditComicDa
 		this.editData = editData;
 	}
 
-	remove(item: ComicItem) {
-		this.comicService.removeItem(item).then((response) => {
-			if (response.status === 200) {
-				this.eventService.itemsChangedEvent.publish();
-			}
-		});
+	async remove(item: ComicItem) {
+		const response = await this.comicService.removeItem(item);
+		if (response.status === 200) {
+			this.eventService.itemsChangedEvent.publish();
+		}
 	}
 
 	changeGuestComic() {

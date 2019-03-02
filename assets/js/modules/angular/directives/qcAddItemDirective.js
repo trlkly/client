@@ -27,7 +27,7 @@ import type { $DecoratedScope } from '../decorateScope';
 import type { ComicService } from '../services/comicService';
 import type { EventService } from '../services/eventService';
 import type { ItemBaseData, ItemData } from '../api/itemData';
-import type { ComicItem } from '../api/comicData';
+import type { ComicData, ComicItem } from '../api/comicData';
 
 const addCastTemplate = 'Add new cast member';
 const addCastItem: ItemBaseData = {
@@ -106,22 +106,21 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 		$log.debug('END AddItemController');
 	}
 
-	_loadItemData() {
-		this.$http.get(constants.itemDataUrl)
-			.then((response) => {
-				let itemData: ItemBaseData[] = [];
-				if (response.status === 200) {
-					itemData = response.data;
-				}
+	async _loadItemData() {
+		const response = await this.$http.get(constants.itemDataUrl);
 
-				itemData.push(addCastItem);
-				itemData.push(addStorylineItem);
-				itemData.push(addLocationItem);
+		let itemData: ItemBaseData[] = [];
+		if (response.status === 200) {
+			itemData = response.data;
+		}
 
-				this.$scope.safeApply(() => {
-					this.items = itemData;
-				});
-			});
+		itemData.push(addCastItem);
+		itemData.push(addStorylineItem);
+		itemData.push(addLocationItem);
+
+		this.$scope.safeApply(() => {
+			this.items = itemData;
+		});
 	}
 
 	_updateValue() {
@@ -130,6 +129,10 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 			this.itemFilter);
 		const chosenItem = filteredList[0];
 		this.addItem(chosenItem);
+	}
+
+	_comicDataLoaded(comicData: ComicData) {
+		this.itemFilterText = '';
 	}
 
 	_itemsChanged() {
@@ -214,20 +217,19 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 		}
 	}
 
-	addItem(item: ComicItem) {
-		this.comicService.addItem(item).then((response) => {
-			if (response.status === 200) {
-				this.eventService.itemsChangedEvent.publish();
-				this.$scope.safeApply(() => {
-					this.itemFilterText = '';
-				});
-			}
-		});
+	async addItem(item: ComicItem) {
+		const response = await this.comicService.addItem(item);
+		if (response.status === 200) {
+			this.eventService.itemsChangedEvent.publish();
+			this.$scope.safeApply(() => {
+				this.itemFilterText = '';
+			});
+		}
 	}
 }
 AddItemController.$inject = [
 	'$scope', '$log', 'comicService', 'eventService',
-	'$http', '$timeout'
+	'$http', '$timeout', '$filter'
 ];
 
 export default function (app: AngularModule) {

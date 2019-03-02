@@ -208,11 +208,22 @@ export class ComicService {
 	}
 
 	addItem(item: ComicItem) {
-		const data = {
+		const data: {
+			token: string,
+			comicId: number,
+			itemId: number,
+			newItemName?: string,
+			newItemType?: string
+		} = {
 			token: settings.values.editModeToken,
-			comic: this.comic,
-			item: item
+			comicId: this.comic,
+			itemId: item.id
 		};
+		if (item.id === -1) {
+			data.newItemName = item.name;
+			data.newItemType = item.type;
+		}
+
 		return this.$http.post(constants.addItemToComicUrl, data)
 			.then(r => this._onSuccessRefreshElseErrorLog(r)).catch(r => this._onErrorLog(r));
 	}
@@ -220,8 +231,8 @@ export class ComicService {
 	removeItem(item: ComicItem) {
 		const data = {
 			token: settings.values.editModeToken,
-			comic: this.comic,
-			item: item
+			comicId: this.comic,
+			itemId: item.id
 		};
 		return this.$http.post(constants.removeItemFromComicUrl, data)
 			.then(r => this._onSuccessRefreshElseErrorLog(r)).catch(r => this._onErrorLog(r));
@@ -230,7 +241,7 @@ export class ComicService {
 	setTitle(title: string) {
 		const data = {
 			token: settings.values.editModeToken,
-			comic: this.comic,
+			comicId: this.comic,
 			title: title
 		};
 		return this.$http.post(constants.setComicTitleUrl, data)
@@ -240,7 +251,7 @@ export class ComicService {
 	setTagline(tagline: string) {
 		const data = {
 			token: settings.values.editModeToken,
-			comic: this.comic,
+			comicId: this.comic,
 			tagline: tagline
 		};
 		return this.$http.post(constants.setComicTaglineUrl, data)
@@ -250,7 +261,7 @@ export class ComicService {
 	setPublishDate(publishDate: Date, isAccurate: boolean) {
 		const data = {
 			token: settings.values.editModeToken,
-			comic: this.comic,
+			comicId: this.comic,
 			publishDate: publishDate,
 			isAccuratePublishDate: isAccurate
 		};
@@ -261,7 +272,7 @@ export class ComicService {
 	setGuestComic(value: boolean) {
 		const data = {
 			token: settings.values.editModeToken,
-			comic: this.comic,
+			comicId: this.comic,
 			value: value
 		};
 		return this.$http.post(constants.setGuestComicUrl, data)
@@ -271,7 +282,7 @@ export class ComicService {
 	setNonCanon(value: boolean) {
 		const data = {
 			token: settings.values.editModeToken,
-			comic: this.comic,
+			comicId: this.comic,
 			value: value
 		};
 		return this.$http.post(constants.setNonCanonUrl, data)
@@ -281,7 +292,7 @@ export class ComicService {
 	setNoCast(value: boolean) {
 		const data = {
 			token: settings.values.editModeToken,
-			comic: this.comic,
+			comicId: this.comic,
 			value: value
 		};
 		return this.$http.post(constants.setNoCastUrl, data)
@@ -291,7 +302,7 @@ export class ComicService {
 	setNoLocation(value: boolean) {
 		const data = {
 			token: settings.values.editModeToken,
-			comic: this.comic,
+			comicId: this.comic,
 			value: value
 		};
 		return this.$http.post(constants.setNoLocationUrl, data)
@@ -301,7 +312,7 @@ export class ComicService {
 	setNoStoryline(value: boolean) {
 		const data = {
 			token: settings.values.editModeToken,
-			comic: this.comic,
+			comicId: this.comic,
 			value: value
 		};
 		return this.$http.post(constants.setNoStorylineUrl, data)
@@ -311,7 +322,7 @@ export class ComicService {
 	setNoTitle(value: boolean) {
 		const data = {
 			token: settings.values.editModeToken,
-			comic: this.comic,
+			comicId: this.comic,
 			value: value
 		};
 		return this.$http.post(constants.setNoTitleUrl, data)
@@ -321,7 +332,7 @@ export class ComicService {
 	setNoTagline(value: boolean) {
 		const data = {
 			token: settings.values.editModeToken,
-			comic: this.comic,
+			comicId: this.comic,
 			value: value
 		};
 		return this.$http.post(constants.setNoTaglineUrl, data)

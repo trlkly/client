@@ -54,12 +54,11 @@ export class ChangeLogController extends ComicDataControllerBase<ChangeLogContro
 		this.currentVersion = GM.info.script.version;
 		this.previousVersion = null;
 
-		$('#changeLogDialog').on('hide.bs.modal', () => {
+		$('#changeLogDialog').on('hide.bs.modal', async () => {
 			this.$log.debug('Saving settings...');
 			settings.values.version = this.currentVersion;
-			settings.saveSettings().then(() => {
-				this.$log.debug('Settings saved.');
-			});
+			await settings.saveSettings();
+			this.$log.debug('Settings saved.');
 		});
 
 		$log.debug('END ChangeLogController');

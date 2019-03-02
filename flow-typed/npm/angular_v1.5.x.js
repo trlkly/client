@@ -184,7 +184,7 @@ declare module angular {
     when: <T>(value: T) => AngularPromise<T>
   };
 
-  declare type AngularPromise<T> = {
+  declare type AngularPromise<T> = Promise<T> & {
     then: <U>(a: (resolve: U) => T) => AngularPromise<*>,
     catch: <U>(a: (e: Error) => U) => AngularPromise<*>,
     finally: <U>(a: (result: U | typeof Error) => T) => AngularPromise<*>

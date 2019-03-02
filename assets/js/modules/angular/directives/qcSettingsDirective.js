@@ -50,11 +50,10 @@ export class SettingsController {
 			this.comicService.refreshComicData();
 		});
 
-		$('#settingsDialog').on('hide.bs.modal', () => {
+		$('#settingsDialog').on('hide.bs.modal', async () => {
 			$log.debug('Saving settings...');
-			this.settings.saveSettings().then(() => {
-				$log.debug('Settings saved.');
-			});
+			await this.settings.saveSettings();
+			$log.debug('Settings saved.');
 		});
 
 		$log.debug('END SettingsController');

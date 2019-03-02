@@ -87,7 +87,7 @@ export class ItemDetailsController {
 		$log.debug('END ItemDetailsController');
 	}
 
-	_getItemDetails() {
+	async _getItemDetails() {
 		const self = this;
 		const itemId = $('#itemDetailsDialog').data('itemId');
 		this.$log.debug('ItemDetailsController::showModal() - item id:',
@@ -138,51 +138,6 @@ export class ItemDetailsController {
 			}
 		}
 
-		function handleItemData(response) {
-			if (response.status === 200) {
-				const itemData = (response.data: DecoratedItemData);
-
-				itemData.highlightColor = self.colorService
-					.createTintOrShade(itemData.color);
-
-				self.$log.debug('qcItemDetails::showModal() - ' +
-					'item data:', itemData);
-
-				self.isLoading += 2;
-				self.$http.get(constants.itemFriendDataUrl + itemId)
-					.then(handleItemFriendsData);
-				self.$http.get(constants.itemLocationDataUrl + itemId)
-					.then(handleItemLocationsData);
-				if (itemData.hasImage) {
-					self.isLoading++;
-					self.$http.get(constants.itemDataUrl + itemId + '/images')
-						.then(handleItemImageData);
-				}
-
-				// If the color changes, also update the
-				// highlight color
-				self.$scope.safeApply(() => {
-					self.itemData = itemData;
-					self.isLoading--;
-
-					self.$scope.$watch(() => {
-						return self.itemData.color;
-					}, function () {
-						self.itemData.highlightColor =
-							self.colorService
-								.createTintOrShade(
-									itemData.color);
-					});
-				});
-			} else {
-				self.$scope.safeApply(() => {
-					self.isLoading--;
-				});
-				self.messageReportingService.reportError(
-					response.data);
-			}
-		}
-
 		this.itemData = (({}: any): DecoratedItemData);
 		this.isLoading = 1;
 
@@ -192,8 +147,51 @@ export class ItemDetailsController {
 		this.imageFile = null;
 		this.imageFileInfo = null;
 
-		this.$http.get(constants.itemDataUrl + itemId)
-			.then(response => handleItemData(response));
+		const itemDataResponse = await this.$http.get(constants.itemDataUrl + itemId);
+		if (itemDataResponse.status === 200) {
+			const itemData = (itemDataResponse.data: DecoratedItemData);
+
+			itemData.highlightColor = this.colorService
+				.createTintOrShade(itemData.color);
+
+			this.$log.debug('qcItemDetails::showModal() - ' +
+				'item data:', itemData);
+
+			this.isLoading += 2;
+			const friendDataRequest = this.$http.get(constants.itemFriendDataUrl + itemId);
+			const locationDataRequest = this.$http.get(constants.itemLocationDataUrl + itemId);
+			this.$http.get(constants.itemFriendDataUrl + itemId)
+				.then(handleItemFriendsData);
+			this.$http.get(constants.itemLocationDataUrl + itemId)
+				.then(handleItemLocationsData);
+			if (itemData.hasImage) {
+				this.isLoading++;
+				this.$http.get(constants.itemDataUrl + itemId + '/images')
+					.then(handleItemImageData);
+			}
+
+			// If the color changes, also update the
+			// highlight color
+			this.$scope.safeApply(() => {
+				this.itemData = itemData;
+				this.isLoading--;
+
+				this.$scope.$watch(() => {
+					return this.itemData.color;
+				}, () => {
+					this.itemData.highlightColor =
+						this.colorService
+							.createTintOrShade(
+								itemData.color);
+				});
+			});
+		} else {
+			this.$scope.safeApply(() => {
+				this.isLoading--;
+			});
+			this.messageReportingService.reportError(
+				itemDataResponse.data);
+		}
 	}
 
 	_onErrorLog(response: any) {
@@ -270,7 +268,7 @@ export class ItemDetailsController {
 			formData.append('Image', imageBlob, this.imageFileInfo.name);
 			formData.append('Token', settings.values.editModeToken);
 
-			this.$http.post(constants.itemDataUrl + 'image/upload', formData, {contentType: undefined, dataTransform: (d) => d})
+			this.$http.post(constants.itemDataUrl + 'image/upload', formData, { contentType: undefined, dataTransform: (d) => d })
 				.then(() => {
 					this._getItemDetails();
 				}).catch((error) => {

@@ -90,6 +90,17 @@
 				<div ng-if="idvm.settings.editMode" class="row form-horizontal">
 					<div class="col-xs-12">
 						<div class="form-group">
+							<label class="col-xs-3 control-label" for="edit_{{idvm.itemData.id}}_name">Name:</label>
+							<div class="col-xs-9">
+								<div class="input-group">
+									<input id="edit_{{idvm.itemData.id}}_name" type="text" ng-keypress="idvm.keyPress($event, 'name')" ng-model="idvm.itemData.name" class="form-control" aria-label="Name">
+									<span class="input-group-btn"><button ng-click="idvm.update('name')" type="button" class="btn btn-default">Update</button></span>
+								</div><!-- /input-group -->
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="form-group">
 							<label class="col-xs-3 control-label" for="edit_{{idvm.itemData.id}}_shortName">Short name:</label>
 							<div class="col-xs-9">
 								<div class="input-group">

@@ -60,14 +60,13 @@ export class EditLogController {
 		$log.debug('END EditLogController');
 	}
 
-	_loadLogs() {
-		this.$http.get(`${constants.editLogUrl}?page=${this.currentPage}&token=${settings.values.editModeToken}`).then((response) => {
-			if (response.status === 200) {
-				this.$scope.safeApply(() => {
-					this.logEntryData =  (response.data: LogEntryData);
-				});
-			}
-		});
+	async _loadLogs() {
+		const response = await this.$http.get(`${constants.editLogUrl}?page=${this.currentPage}&token=${settings.values.editModeToken}`);
+		if (response.status === 200) {
+			this.$scope.safeApply(() => {
+				this.logEntryData =  (response.data: LogEntryData);
+			});
+		}
 	}
 
 	previousPage() {
