@@ -48,6 +48,7 @@ const constants = {
 	// Comics after 3132 should have a tagline
 	taglineThreshold: 3132,
 
+	excludedComicsUrl: comicDataUrl + 'excluded',
 	addItemToComicUrl: comicDataUrl + 'additem',
 	removeItemFromComicUrl: comicDataUrl + 'removeitem',
 	setComicTitleUrl: comicDataUrl + 'settitle',

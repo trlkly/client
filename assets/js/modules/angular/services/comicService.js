@@ -369,6 +369,44 @@ export class ComicService {
 	last() {
 		this.gotoComic(this.latestComic);
 	};
+
+	nextRandomComic() {
+		let randomComic = this.comic;
+		while (randomComic == this.comic) {
+			randomComic = Math.floor(Math.random() *
+				(parseInt(this.latestComic) + 1));
+		}
+		return randomComic;
+	}
+
+	async nextFilteredRandomComic() {
+		if (!settings.values.skipGuest && !settings.values.skipNonCanon) {
+			return this.nextRandomComic();
+		}
+
+		const urlParameters = {};
+		if (settings.values.skipGuest) {
+			urlParameters.exclusion = 'guest';
+		} else if (settings.values.skipNonCanon) {
+			urlParameters.exclusion = 'non-canon';
+		}
+		const urlQuery = $.param(urlParameters);
+		const excludedComicsUrl = constants.excludedComicsUrl + '?' + urlQuery;
+
+		const exclusionResponse = await this.$http.get(excludedComicsUrl);
+		const excludedComics = exclusionResponse.data.map(c => c.comic);
+		if (exclusionResponse.status !== 200) {
+			return this.nextRandomComic();
+		}
+
+		this.$log.debug('comicService::nextFilteredRandomComic() excluded comics', excludedComics);
+
+		let nextRandomComic = this.comic;
+		while (nextRandomComic == this.comic || excludedComics.includes(nextRandomComic)) {
+			nextRandomComic = this.nextRandomComic();
+		}
+		return nextRandomComic;
+	}
 }
 
 export default function (app: AngularModule) {

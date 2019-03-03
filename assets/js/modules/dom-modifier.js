@@ -120,8 +120,8 @@ export default class DomModifier {
 
 		angularApp.constant('latestComic', latestComic);
 
-		$('body #comicnav')
-			.replaceWith('<qc-nav random-comic="randomComic"></qc-nav>');
+		$($('body #comicnav').get(0)).replaceWith('<qc-nav random-comic="randomComic" main-directive="true"></qc-nav>');
+		$('body #comicnav').replaceWith('<qc-nav random-comic="randomComic" main-directive="false"></qc-nav>');
 
 		if ($('#news, #newspost').prev().prop('tagName') === 'QC-NAV') {
 			// There's no date section: Insert our own
