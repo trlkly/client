@@ -27,6 +27,7 @@ import variables from '../../../../generated/variables.pass2';
 import type { $DecoratedScope } from '../decorateScope';
 import type { ComicService } from '../services/comicService';
 import type { EventService } from '../services/eventService';
+import type { MessageReportingService } from '../services/messageReportingService';
 import type { ComicData, ComicItem } from '../api/comicData';
 import type { LogEntryData } from '../api/logEntryData';
 
@@ -36,6 +37,7 @@ export class EditLogController {
 	$scope: $DecoratedScope<EditLogController>;
 	$log: $Log;
 	$http: $Http;
+	messageReportingService: MessageReportingService;
 
 	currentPage: number;
 	logEntryData: LogEntryData;
@@ -43,13 +45,15 @@ export class EditLogController {
 	constructor(
 		$scope: $DecoratedScope<EditLogController>,
 		$log: $Log,
-		$http: $Http
+		$http: $Http,
+		messageReportingService: MessageReportingService
 	) {
 		$log.debug('START EditLogController');
 
 		this.$scope = $scope;
 		this.$log = $log;
 		this.$http = $http;
+		this.messageReportingService = messageReportingService;
 
 		this.currentPage = 1;
 
@@ -66,6 +70,13 @@ export class EditLogController {
 			this.$scope.safeApply(() => {
 				this.logEntryData =  (response.data: LogEntryData);
 			});
+		} else {
+			if (response.status === 503) {
+				this.messageReportingService.reportError(constants.messages.maintenance);
+				this.close();
+			} else {
+				this.messageReportingService.reportError(response.data);
+			}
 		}
 	}
 
@@ -89,7 +100,7 @@ export class EditLogController {
 		($('#editLogDialog'): any).modal('hide');
 	}
 }
-EditLogController.$inject = ['$scope', '$log', '$http'];
+EditLogController.$inject = ['$scope', '$log', '$http', 'messageReportingService'];
 
 export default function (app: AngularModule) {
 	app.directive('qcEditLog', function () {

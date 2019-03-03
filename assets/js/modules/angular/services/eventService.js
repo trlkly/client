@@ -22,6 +22,7 @@ import constants from '../../../constants';
 
 import type { Event, EventFactory } from './eventFactory';
 import type { ComicData } from '../api/comicData';
+import type { ItemBaseData } from '../api/itemData';
 
 export class EventService {
 	$log: $Log;
@@ -29,6 +30,11 @@ export class EventService {
 	comicDataLoadingEvent: Event<number>;
 	comicDataLoadedEvent: Event<ComicData>;
 	comicDataErrorEvent: Event<any>;
+	
+	itemDataLoadingEvent: Event<number>;
+	itemDataLoadedEvent: Event<ItemBaseData[]>;
+	itemDataErrorEvent: Event<any>;
+
 	itemsChangedEvent: Event<any>;
 
 	constructor($log: $Log, eventFactory: EventFactory) {
@@ -37,6 +43,11 @@ export class EventService {
 		this.comicDataLoadingEvent = eventFactory<number>(constants.comicdataLoadingEvent);
 		this.comicDataLoadedEvent = eventFactory<ComicData>(constants.comicdataLoadedEvent);
 		this.comicDataErrorEvent = eventFactory<any>(constants.comicdataErrorEvent); // TODO: Figure out this type
+
+		this.itemDataLoadingEvent = eventFactory<any>(constants.itemdataLoadingEvent);
+		this.itemDataLoadedEvent = eventFactory<ItemBaseData[]>(constants.itemdataLoadedEvent);
+		this.itemDataErrorEvent = eventFactory<any>(constants.itemdataErrorEvent); // TODO: Figure out this type
+
 		this.itemsChangedEvent = eventFactory<any>(constants.itemsChangedEvent);
 	}
 }

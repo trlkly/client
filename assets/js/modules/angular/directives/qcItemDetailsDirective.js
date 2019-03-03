@@ -189,8 +189,13 @@ export class ItemDetailsController {
 			this.$scope.safeApply(() => {
 				this.isLoading--;
 			});
-			this.messageReportingService.reportError(
-				itemDataResponse.data);
+			if (itemDataResponse.status !== 503) {
+				this.messageReportingService.reportError(itemDataResponse.data);
+			} else {
+				this.messageReportingService.reportError(
+					constants.messages.maintenance);
+				this.close();
+			}
 		}
 	}
 

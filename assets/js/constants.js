@@ -70,6 +70,11 @@ const constants = {
 	comicdataLoadingEvent: 'comicdata-loading',
 	comicdataLoadedEvent: 'comicdata-loaded',
 	comicdataErrorEvent: 'comicdata-error',
+
+	itemdataLoadingEvent: 'itemdata-loading',
+	itemdataLoadedEvent: 'itemdata-loaded',
+	itemdataErrorEvent: 'itemdata-error',
+
 	itemsChangedEvent: 'items-changed',
 
 	messages: {

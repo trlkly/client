@@ -26,6 +26,7 @@ import { SetValueControllerBase } from '../controllers/ControllerBases';
 import type { $DecoratedScope } from '../decorateScope';
 import type { ComicService } from '../services/comicService';
 import type { EventService } from '../services/eventService';
+import type { MessageReportingService } from '../services/messageReportingService';
 import type { ItemBaseData, ItemData } from '../api/itemData';
 import type { ComicData, ComicItem } from '../api/comicData';
 
@@ -50,6 +51,18 @@ const addLocationItem: ItemBaseData = {
 	shortName: `${addLocationTemplate} ''`,
 	name: ''
 };
+const maintenanceItem: ItemBaseData = {
+	id: -2,
+	type: 'cast',
+	shortName: 'Maintenance ongoing. Choose this to attempt refresh.',
+	name: ''
+};
+const errorItem: ItemBaseData = {
+	id: -3,
+	type: 'cast',
+	shortName: 'Error loading item list. Choose this to attempt refresh.',
+	name: ''
+};
 
 function escapeRegExp(s) {
 	return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
@@ -66,6 +79,7 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 	$http: $Http;
 	$timeout: $Timeout;
 	$filter: $Filter;
+	messageReportingService: MessageReportingService;
 
 	searchFieldId: string;
 	dropdownId: string;
@@ -81,7 +95,8 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 		eventService: EventService,
 		$http: $Http,
 		$timeout: $Timeout,
-		$filter: $Filter
+		$filter: $Filter,
+		messageReportingService: MessageReportingService
 	) {
 		$log.debug('START AddItemController');
 
@@ -91,6 +106,7 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 		this.$http = $http;
 		this.$timeout = $timeout;
 		this.$filter = $filter;
+		this.messageReportingService = messageReportingService;
 
 		this.searchFieldId = `#addItem_${this.unique}_search`;
 		this.dropdownId = `#addItem_${this.unique}_dropdown`;
@@ -107,16 +123,27 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 	}
 
 	async _loadItemData() {
+		this.eventService.itemDataLoadingEvent.publish();
 		const response = await this.$http.get(constants.itemDataUrl);
 
 		let itemData: ItemBaseData[] = [];
 		if (response.status === 200) {
 			itemData = response.data;
-		}
 
-		itemData.push(addCastItem);
-		itemData.push(addStorylineItem);
-		itemData.push(addLocationItem);
+			this.eventService.itemDataLoadedEvent.publish(itemData);
+
+			itemData.push(addCastItem);
+			itemData.push(addStorylineItem);
+			itemData.push(addLocationItem);
+		} else {
+			if (response.status === 503) {
+				itemData.push(maintenanceItem);
+			} else {
+				this.eventService.itemDataErrorEvent.publish(response);
+				this.messageReportingService.reportError(response.data);
+				itemData.push(errorItem);
+			}
+		}
 
 		this.$scope.safeApply(() => {
 			this.items = itemData;
@@ -218,6 +245,11 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 	}
 
 	async addItem(item: ComicItem) {
+		if (item.id < -1) {
+			this._loadItemData();
+			return;
+		}
+
 		const response = await this.comicService.addItem(item);
 		if (response.status === 200) {
 			this.eventService.itemsChangedEvent.publish();
@@ -229,7 +261,7 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 }
 AddItemController.$inject = [
 	'$scope', '$log', 'comicService', 'eventService',
-	'$http', '$timeout', '$filter'
+	'$http', '$timeout', '$filter', 'messageReportingService'
 ];
 
 export default function (app: AngularModule) {

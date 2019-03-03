@@ -63,6 +63,9 @@ export class SettingsController {
 		($('#settingsDialog'): any).modal('hide');
 	}
 }
+SettingsController.$inject = [
+	'$scope', '$log', 'comicService'
+];
 
 export default function (app: AngularModule) {
 	app.directive('qcSettings', function () {
