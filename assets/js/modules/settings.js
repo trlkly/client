@@ -39,6 +39,7 @@ export type SettingValues = {
 	showIndicatorRibbon: boolean,
 	showSmallRibbonByDefault: boolean,
 	useCorrectTimeFormat: boolean,
+	comicLoadingIndicatorDelay: number,
 
 	version: ?string
 };
@@ -90,6 +91,7 @@ export class Settings {
 			showIndicatorRibbon: true,
 			showSmallRibbonByDefault: false,
 			useCorrectTimeFormat: true,
+			comicLoadingIndicatorDelay: 2000,
 
 			version: null
 		};

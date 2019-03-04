@@ -79,24 +79,6 @@ export default class DomModifier {
 			comicAnchor = comicImg.parent('a');
 		}
 
-		$('body').append($('<div ui-view></div>'));
-
-		// To avoid triggering a flash of the comic "reloading", do in-place DOM
-		// manipulation instead of replacing the whole thing with a template.
-		// Fixes issue #13
-		const comicDirective = $('<qc-comic></qc-comic>');
-		comicAnchor.before(comicDirective);
-		comicAnchor.detach().appendTo(comicDirective);
-		comicAnchor.attr('ng-href', 'view.php?comic={{c.comicService.nextComic}}');
-		comicImg.attr('ng-src', '//questionablecontent.net/comics/' +
-			'{{c.comicService.comic}}.{{c.comicService.comicExtension}}');
-		comicImg.attr('ng-click', 'c.next($event)');
-		comicImg.attr('on-error', 'c.comicService.canFallback() ' +
-			'&& c.comicService.tryFallback()');
-
-		// #comicDirective.attr('id', 'comic-anchor');
-		comicDirective.append($('<qc-ribbon></qc-ribbon>'));
-
 		const comicImage = comicImg.get(0);
 		let comicLinkUrl = comicImage.src;
 
@@ -104,6 +86,11 @@ export default class DomModifier {
 		const comic = parseInt(comicLinkUrl[comicLinkUrl.length - 1].split('.')[0]);
 
 		angularApp.constant('startComic', comic);
+
+		$('body').append($('<div ui-view></div>'));
+
+		const comicDirective = $('<qc-comic></qc-comic>');
+		comicAnchor.before(comicDirective);
 
 		// Figure out what the latest comic # is based on the URL in the
 		// "Latest/Last" navigation button.

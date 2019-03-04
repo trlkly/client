@@ -51,6 +51,7 @@ export type ComicItem = {
 
 export type ComicData = {
 	comic: number;
+	imageType: "unknown" | "png" | "gif" | "jpeg",
 	hasData: boolean;
 	publishDate: ?string;
 	isAccuratePublishDate: ?boolean;
