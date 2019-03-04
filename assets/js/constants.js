@@ -21,8 +21,8 @@
 const developmentMode = false;
 
 function getSiteUrl() {
-		return 'https://questionablextensions.net/';
-	}
+	return 'https://questionablextensions.net/';
+}
 
 function getWebserviceBaseUrl() {
 	if (developmentMode) {
