@@ -39,6 +39,8 @@ export class EditLogController {
 	$http: $Http;
 	messageReportingService: MessageReportingService;
 
+	isLoading: boolean;
+
 	currentPage: number;
 	logEntryData: LogEntryData;
 
@@ -65,10 +67,16 @@ export class EditLogController {
 	}
 
 	async _loadLogs() {
+		this.$scope.safeApply(() => {
+			this.isLoading = true;
+		});
 		const response = await this.$http.get(`${constants.editLogUrl}?page=${this.currentPage}&token=${settings.values.editModeToken}`);
+		this.$scope.safeApply(() => {
+			this.isLoading = false;
+		});
 		if (response.status === 200) {
 			this.$scope.safeApply(() => {
-				this.logEntryData =  (response.data: LogEntryData);
+				this.logEntryData = (response.data: LogEntryData);
 			});
 		} else {
 			if (response.status === 503) {
