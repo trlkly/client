@@ -62,10 +62,15 @@ export class SetTitleController extends SetValueControllerBase<SetTitleControlle
 		this.setTitle();
 	}
 
-	setTitle() {
+	async setTitle() {
 		this.$scope.isUpdating = true;
-		this.comicService.setTitle(this.title ? this.title : '');
-	};
+		const response = await this.comicService.setTitle(this.title ? this.title : '');
+		if (response.status !== 200) {
+			this.$scope.safeApply(() => {
+				this.$scope.isUpdating = false;
+			});
+		}
+	}
 }
 SetTitleController.$inject = ['$scope', '$log', 'comicService', 'eventService'];
 

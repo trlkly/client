@@ -250,6 +250,10 @@ export class ItemDetailsController {
 					this.styleService.removeItemStyle(
 						this.itemData.id);
 				}
+			} else {
+				this.$scope.safeApply(() => {
+					this.isUpdating = false;
+				});
 			}
 			return this._onSuccessRefreshElseErrorLog(response);
 		}

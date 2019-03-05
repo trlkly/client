@@ -88,6 +88,17 @@ export class EditComicDataController extends ComicDataControllerBase<EditComicDa
 		this.isUpdating = false;
 	}
 
+	_handleUpdateResponse(response: any, resetValueKey: ?string) {
+		if (response.status !== 200) {
+			this.$scope.safeApply(() => {
+				if (resetValueKey) {
+					this.editData.comicData[resetValueKey] = !this.editData.comicData[resetValueKey];
+				}
+				this.isUpdating = false;
+			});
+		}
+	}
+
 	async remove(item: ComicItem) {
 		this.$scope.safeApply(() => {
 			this.isUpdating = true;
@@ -95,49 +106,58 @@ export class EditComicDataController extends ComicDataControllerBase<EditComicDa
 		const response = await this.comicService.removeItem(item);
 		if (response.status === 200) {
 			this.eventService.itemsChangedEvent.publish();
+		} else {
+			this._handleUpdateResponse(response);
 		}
 	}
 
 	changeGuestComic() {
 		this.isUpdating = true;
 		this.comicService.setGuestComic(
-			this.editData.comicData.isGuestComic);
+			this.editData.comicData.isGuestComic)
+			.then(r => this._handleUpdateResponse(r, 'isGuestComic'));
 	}
 
 	changeNonCanon() {
 		this.isUpdating = true;
 		this.comicService.setNonCanon(
-			this.editData.comicData.isNonCanon);
+			this.editData.comicData.isNonCanon)
+			.then(r => this._handleUpdateResponse(r, 'isNonCanon'));
 	}
 
 	changeNoCast() {
 		this.isUpdating = true;
 		this.comicService.setNoCast(
-			this.editData.comicData.hasNoCast);
+			this.editData.comicData.hasNoCast)
+			.then(r => this._handleUpdateResponse(r, 'hasNoCast'));
 	}
 
 	changeNoLocation() {
 		this.isUpdating = true;
 		this.comicService.setNoLocation(
-			this.editData.comicData.hasNoLocation);
+			this.editData.comicData.hasNoLocation)
+			.then(r => this._handleUpdateResponse(r, 'hasNoLocation'));
 	}
 
 	changeNoStoryline() {
 		this.isUpdating = true;
 		this.comicService.setNoStoryline(
-			this.editData.comicData.hasNoStoryline);
+			this.editData.comicData.hasNoStoryline)
+			.then(r => this._handleUpdateResponse(r, 'hasNoStoryline'));
 	}
 
 	changeNoTitle() {
 		this.isUpdating = true;
 		this.comicService.setNoTitle(
-			this.editData.comicData.hasNoTitle);
+			this.editData.comicData.hasNoTitle)
+			.then(r => this._handleUpdateResponse(r, 'hasNoTitle'));
 	}
 
 	changeNoTagline() {
 		this.isUpdating = true;
 		this.comicService.setNoTagline(
-			this.editData.comicData.hasNoTagline);
+			this.editData.comicData.hasNoTagline)
+			.then(r => this._handleUpdateResponse(r, 'hasNoTagline'));
 	}
 
 	close() {

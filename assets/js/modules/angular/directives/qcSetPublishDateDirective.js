@@ -72,19 +72,32 @@ export class SetPublishDateController extends SetValueControllerBase<SetPublishD
 	}
 
 	_updateValue() {
-		this.setPublishDate();
+		this.setPublishDate(false);
 	}
 
-	setPublishDate() {
+	setAccuratePublishDate() {
+		this.setPublishDate(true);
+	}
+
+	async setPublishDate(setAccurate: boolean) {
 		if (this.publishDate == null) {
 			// Error
 			this.messageReportingService.reportWarning(
 				'The date entered is not valid!');
 			return;
 		}
+
 		this.$scope.isUpdating = true;
-		this.comicService.setPublishDate(this.publishDate,
+		const response = await this.comicService.setPublishDate(this.publishDate,
 			this.isAccuratePublishDate != null ? this.isAccuratePublishDate : false);
+		if (response.status !== 200) {
+			this.$scope.safeApply(() => {
+				this.$scope.isUpdating = false;
+				if (setAccurate) {
+					this.isAccuratePublishDate = !this.isAccuratePublishDate;
+				}
+			});
+		}
 	}
 }
 SetPublishDateController.$inject = ['$scope', '$log', 'comicService', 'eventService', 'messageReportingService'];

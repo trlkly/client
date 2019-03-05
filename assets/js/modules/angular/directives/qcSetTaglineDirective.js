@@ -62,9 +62,14 @@ export class SetTaglineController extends SetValueControllerBase<SetTaglineContr
 		this.setTagline();
 	}
 
-	setTagline() {
+	async setTagline() {
 		this.$scope.isUpdating = true;
-		this.comicService.setTagline(this.tagline ? this.tagline : '');
+		const response = await this.comicService.setTagline(this.tagline ? this.tagline : '');
+		if (response.status !== 200) {
+			this.$scope.safeApply(() => {
+				this.$scope.isUpdating = false;
+			});
+		}
 	}
 }
 SetTaglineController.$inject = ['$scope', '$log', 'comicService', 'eventService'];

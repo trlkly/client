@@ -260,6 +260,10 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 			this.$scope.safeApply(() => {
 				this.itemFilterText = '';
 			});
+		} else {
+			this.$scope.safeApply(() => {
+				this.$scope.isUpdating = false;
+			});
 		}
 	}
 }
