@@ -45,6 +45,7 @@ export class ItemDetailsController {
 	styleService: StyleService;
 
 	isLoading: number;
+	isUpdating: boolean;
 	settings: Settings;
 	itemData: DecoratedItemData;
 
@@ -74,6 +75,7 @@ export class ItemDetailsController {
 		this.styleService = styleService;
 
 		this.isLoading = 1;
+		this.isUpdating = false;
 		this.settings = settings;
 
 		this.imagePaths = [];
@@ -225,28 +227,38 @@ export class ItemDetailsController {
 		}
 	}
 
-	update(property: string) {
-		const self = this;
-		function updateItemColor(response) {
-			if (response.status === 200) {
-				if (property === 'color') {
-					self.$log.debug('ItemDetailsController::update() - ' +
-						'update item color');
-					self.styleService.removeItemStyle(
-						self.itemData.id);
-				}
-			}
-			return self._onSuccessRefreshElseErrorLog(response);
-		}
-
+	async update(property: string) {
+		this.$scope.safeApply(() => {
+			this.isUpdating = true;
+		});
 		const data = {
 			token: settings.values.editModeToken,
 			item: this.itemData.id,
 			property: property,
 			value: this.itemData[property]
 		};
-		this.$http.post(constants.setItemDataPropertyUrl, data)
-			.then(r => updateItemColor(r)).catch(r => this._onErrorLog(r));
+		try {
+			const response = await this.$http.post(constants.setItemDataPropertyUrl, data);
+			this.$scope.safeApply(() => {
+				this.isUpdating = false;
+			});
+
+			if (response.status === 200) {
+				if (property === 'color') {
+					this.$log.debug('ItemDetailsController::update() - ' +
+						'update item color');
+					this.styleService.removeItemStyle(
+						this.itemData.id);
+				}
+			}
+			return this._onSuccessRefreshElseErrorLog(response);
+		}
+		catch (r) {
+			this.$scope.safeApply(() => {
+				this.isUpdating = false;
+			});
+			return this._onErrorLog(r);
+		}
 	}
 
 	goToComic(comic: number) {
