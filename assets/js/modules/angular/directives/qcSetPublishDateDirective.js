@@ -40,6 +40,8 @@ export class SetPublishDateController extends SetValueControllerBase<SetPublishD
 	publishDate: ?Date;
 	isAccuratePublishDate: ?boolean;
 
+	isUpdating: boolean;
+
 	constructor(
 		$scope: $DecoratedScope<SetPublishDateController>,
 		$log: $Log,
@@ -66,6 +68,7 @@ export class SetPublishDateController extends SetValueControllerBase<SetPublishD
 		}
 		this.isAccuratePublishDate =
 			comicData.isAccuratePublishDate;
+		this.$scope.isUpdating = false;
 	}
 
 	_updateValue() {
@@ -79,6 +82,7 @@ export class SetPublishDateController extends SetValueControllerBase<SetPublishD
 				'The date entered is not valid!');
 			return;
 		}
+		this.$scope.isUpdating = true;
 		this.comicService.setPublishDate(this.publishDate,
 			this.isAccuratePublishDate != null ? this.isAccuratePublishDate : false);
 	}
@@ -90,7 +94,7 @@ export default function (app: AngularModule) {
 		return {
 			restrict: 'E',
 			replace: true,
-			scope: {},
+			scope: { isUpdating: '=' },
 			controller: SetPublishDateController,
 			controllerAs: 's',
 			template: variables.html.setPublishDate

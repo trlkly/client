@@ -37,6 +37,8 @@ export class EditComicDataController extends ComicDataControllerBase<EditComicDa
 	$log: $Log;
 	comicService: ComicService;
 
+	isUpdating: boolean;
+
 	editData: any; // TODO: Make properly strongly typed
 
 	constructor(
@@ -52,11 +54,17 @@ export class EditComicDataController extends ComicDataControllerBase<EditComicDa
 		this.$log = $log;
 		this.comicService = comicService;
 
+		this.isUpdating = true;
+
 		$('#editComicDataDialog').on('show.bs.modal', () => {
 			// If something needs to be done, do it here.
 		});
 
 		$log.debug('END EditComicDataController');
+	}
+
+	_comicDataLoading(comic: number) {
+		this.isUpdating = true;
 	}
 
 	_comicDataLoaded(comicData: ComicData) {
@@ -77,9 +85,13 @@ export class EditComicDataController extends ComicDataControllerBase<EditComicDa
 		}
 
 		this.editData = editData;
+		this.isUpdating = false;
 	}
 
 	async remove(item: ComicItem) {
+		this.$scope.safeApply(() => {
+			this.isUpdating = true;
+		});
 		const response = await this.comicService.removeItem(item);
 		if (response.status === 200) {
 			this.eventService.itemsChangedEvent.publish();
@@ -87,36 +99,43 @@ export class EditComicDataController extends ComicDataControllerBase<EditComicDa
 	}
 
 	changeGuestComic() {
+		this.isUpdating = true;
 		this.comicService.setGuestComic(
 			this.editData.comicData.isGuestComic);
 	}
 
 	changeNonCanon() {
+		this.isUpdating = true;
 		this.comicService.setNonCanon(
 			this.editData.comicData.isNonCanon);
 	}
 
 	changeNoCast() {
+		this.isUpdating = true;
 		this.comicService.setNoCast(
 			this.editData.comicData.hasNoCast);
 	}
 
 	changeNoLocation() {
+		this.isUpdating = true;
 		this.comicService.setNoLocation(
 			this.editData.comicData.hasNoLocation);
 	}
 
 	changeNoStoryline() {
+		this.isUpdating = true;
 		this.comicService.setNoStoryline(
 			this.editData.comicData.hasNoStoryline);
 	}
 
 	changeNoTitle() {
+		this.isUpdating = true;
 		this.comicService.setNoTitle(
 			this.editData.comicData.hasNoTitle);
 	}
 
 	changeNoTagline() {
+		this.isUpdating = true;
 		this.comicService.setNoTagline(
 			this.editData.comicData.hasNoTagline);
 	}

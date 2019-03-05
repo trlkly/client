@@ -160,17 +160,17 @@
         </tr>
         <tr ng-if="e.settings.editMode">
             <td>
-                <qc-add-item></qc-add-item>
+                <qc-add-item is-updating="e.isUpdating"></qc-add-item>
             </td>
         </tr>
         <tr ng-show="e.settings.editMode">
             <td>
-                <qc-set-title></qc-set-title>
+                <qc-set-title is-updating="e.isUpdating"></qc-set-title>
             </td>
         </tr>
         <tr ng-show="e.settings.editMode">
             <td>
-                <qc-set-tagline></qc-set-tagline>
+                <qc-set-tagline is-updating="e.isUpdating"></qc-set-tagline>
             </td>
         </tr>
         <tr ng-repeat="(type, typeItems) in e.allItems">

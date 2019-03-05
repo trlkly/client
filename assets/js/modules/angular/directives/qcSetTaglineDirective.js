@@ -35,6 +35,8 @@ export class SetTaglineController extends SetValueControllerBase<SetTaglineContr
 
 	tagline: ?string;
 
+	isUpdating: boolean;
+
 	constructor(
 		$scope: $DecoratedScope<SetTaglineController>,
 		$log: $Log,
@@ -53,6 +55,7 @@ export class SetTaglineController extends SetValueControllerBase<SetTaglineContr
 
 	_comicDataLoaded(comicData: ComicData) {
 		this.tagline = comicData.tagline;
+		this.$scope.isUpdating = false;
 	}
 
 	_updateValue() {
@@ -60,6 +63,7 @@ export class SetTaglineController extends SetValueControllerBase<SetTaglineContr
 	}
 
 	setTagline() {
+		this.$scope.isUpdating = true;
 		this.comicService.setTagline(this.tagline ? this.tagline : '');
 	}
 }
@@ -70,7 +74,7 @@ export default function (app: AngularModule) {
 		return {
 			restrict: 'E',
 			replace: true,
-			scope: {},
+			scope: { isUpdating: '=' },
 			controller: SetTaglineController,
 			controllerAs: 's',
 			template: variables.html.setTagline

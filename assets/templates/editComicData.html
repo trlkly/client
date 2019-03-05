@@ -16,7 +16,7 @@
 -->
 <div class="modal fade" tabindex="-1" role="dialog" id="editComicDataDialog" style="display: none;">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content" style="position: relative;">
             <div class="modal-header">
                 <h3 class="modal-title">Edit Comic Data for #{{ecdvm.editData.comicData.comic}}</h3>
             </div>
@@ -107,7 +107,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <qc-add-item></qc-add-item>
+                    <qc-add-item is-updating="ecdvm.isUpdating"></qc-add-item>
                 </div>
                 <div class="row">
                     <div class="panel panel-default" style="margin-top: 20px;">
@@ -115,7 +115,7 @@
                             <h3 class="panel-title">Publish date</h3>
                         </div>
                         <div class="panel-body">
-                            <qc-set-publish-date></qc-set-publish-date>
+                            <qc-set-publish-date is-updating="ecdvm.isUpdating"></qc-set-publish-date>
                         </div>
                     </div>
                 </div>
@@ -123,6 +123,13 @@
             <div class="modal-footer">
                 <button class="btn btn-primary" type="button" ng-click="ecdvm.close()">Close</button>
             </div>
+			<div ng-show="ecdvm.isUpdating"
+				style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: rgba(0,0,0, 0.5); z-index: 10000;">
+				<div style="position: absolute; top: 50%; left: 50%;transform:translate(-50%, -50%);">
+					<div class="lds-dual-ring"></div>
+					<p style="text-align: center;font-weight: bold; color: white;">Updating...</p>
+				</div>
+			</div>
         </div>
     </div>
 </div>

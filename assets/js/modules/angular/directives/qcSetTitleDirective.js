@@ -35,6 +35,8 @@ export class SetTitleController extends SetValueControllerBase<SetTitleControlle
 
 	title: ?string;
 
+	isUpdating: boolean;
+
 	constructor(
 		$scope: $DecoratedScope<SetTitleController>,
 		$log: $Log,
@@ -53,6 +55,7 @@ export class SetTitleController extends SetValueControllerBase<SetTitleControlle
 
 	_comicDataLoaded(comicData: ComicData) {
 		this.title = comicData.title;
+		this.$scope.isUpdating = false;
 	}
 
 	_updateValue() {
@@ -60,6 +63,7 @@ export class SetTitleController extends SetValueControllerBase<SetTitleControlle
 	}
 
 	setTitle() {
+		this.$scope.isUpdating = true;
 		this.comicService.setTitle(this.title ? this.title : '');
 	};
 }
@@ -70,7 +74,7 @@ export default function (app: AngularModule) {
 		return {
 			restrict: 'E',
 			replace: true,
-			scope: {},
+			scope: { isUpdating: '=' },
 			controller: SetTitleController,
 			controllerAs: 's',
 			template: variables.html.setTitle

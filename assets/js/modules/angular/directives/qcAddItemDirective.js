@@ -88,6 +88,8 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 	itemFilterText: string;
 	items: ItemBaseData[];
 
+	isUpdating: boolean;
+
 	constructor(
 		$scope: $DecoratedScope<AddItemController>,
 		$log: $Log,
@@ -160,6 +162,7 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 
 	_comicDataLoaded(comicData: ComicData) {
 		this.itemFilterText = '';
+		this.$scope.isUpdating = false;
 	}
 
 	_itemsChanged() {
@@ -250,6 +253,7 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 			return;
 		}
 
+		this.$scope.isUpdating = true;
 		const response = await this.comicService.addItem(item);
 		if (response.status === 200) {
 			this.eventService.itemsChangedEvent.publish();
@@ -269,7 +273,7 @@ export default function (app: AngularModule) {
 		return {
 			restrict: 'E',
 			replace: true,
-			scope: {},
+			scope: { isUpdating: '=' },
 			controller: AddItemController,
 			controllerAs: 'a',
 			template: variables.html.addItem

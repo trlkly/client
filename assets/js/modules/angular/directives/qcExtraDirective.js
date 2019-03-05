@@ -51,6 +51,7 @@ export class ExtraController extends ComicDataControllerBase<ExtraController> {
 	showWelcomeMessage: boolean;
 	showUpdateMessage: boolean;
 	isLoading: boolean;
+	isUpdating: boolean;
 	hasError: boolean;
 	hasWarning: boolean;
 
@@ -200,7 +201,7 @@ export class ExtraController extends ComicDataControllerBase<ExtraController> {
 		if (!comicData.title && !comicData.hasNoTitle) {
 			this.missingDataInfo.push('a title');
 		}
-		if (!comicData.tagline && !comicData.hasNoTagline && 
+		if (!comicData.tagline && !comicData.hasNoTagline &&
 			this.comicService.comic > constants.taglineThreshold) {
 			this.missingDataInfo.push('a tagline');
 		}
@@ -230,6 +231,7 @@ export class ExtraController extends ComicDataControllerBase<ExtraController> {
 
 	_reset() {
 		this.isLoading = false;
+		this.isUpdating = false;
 		this.items = {};
 		this.allItems = {};
 		this.editorData = (({}: any): ComicEditorData);
@@ -242,6 +244,7 @@ export class ExtraController extends ComicDataControllerBase<ExtraController> {
 	_loading() {
 		this._reset();
 		this.isLoading = true;
+		this.isUpdating = true;
 		this.messages.push('Loading...');
 	}
 
