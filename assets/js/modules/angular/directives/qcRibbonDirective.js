@@ -22,13 +22,13 @@ import constants from '../../../constants';
 import settings, { Settings } from '../../settings';
 import variables from '../../../../generated/variables.pass2';
 
-import { ComicDataControllerBase } from '../controllers/ControllerBases';
+import { EventHandlingControllerBase } from '../controllers/ControllerBases';
 
 import type { $DecoratedScope } from '../decorateScope';
 import type { EventService } from '../services/eventService';
 import type { ComicData } from '../api/comicData';
 
-export class RibbonController extends ComicDataControllerBase<RibbonController> {
+export class RibbonController extends EventHandlingControllerBase<RibbonController> {
 	static $inject: string[];
 
 	settings: Settings;

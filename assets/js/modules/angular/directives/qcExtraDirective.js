@@ -25,7 +25,7 @@ import constants from '../../../constants';
 import settings, { Settings } from '../../settings';
 import variables from '../../../../generated/variables.pass2';
 
-import { ComicDataControllerBase } from '../controllers/ControllerBases';
+import { EventHandlingControllerBase } from '../controllers/ControllerBases';
 
 import type { $DecoratedScope } from '../decorateScope';
 import type { ColorService } from '../services/colorService';
@@ -36,7 +36,7 @@ import type { StyleService } from '../services/styleService';
 import type { ItemData } from '../api/itemData';
 import type { ComicItemRepository, ComicData, ComicEditorData, ComicItem } from '../api/comicData';
 
-export class ExtraController extends ComicDataControllerBase<ExtraController> {
+export class ExtraController extends EventHandlingControllerBase<ExtraController> {
 	static $inject: string[];
 
 	$log: $Log;

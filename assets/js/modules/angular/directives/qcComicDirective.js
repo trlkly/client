@@ -22,7 +22,7 @@ import variables from '../../../../generated/variables.pass2';
 import constants from '../../../constants';
 import settings from '../../settings';
 
-import { ComicDataControllerBase } from '../controllers/ControllerBases';
+import { EventHandlingControllerBase } from '../controllers/ControllerBases';
 
 import type { $DecoratedScope } from '../decorateScope';
 import type { EventService } from '../services/eventService';
@@ -32,7 +32,7 @@ import type { MessageReportingService } from '../services/messageReportingServic
 import type { ComicData } from '../api/comicData';
 
 // TODO: once the directive has been set up and the image loaded, remove the original.
-export class ComicController extends ComicDataControllerBase<ComicController> {
+export class ComicController extends EventHandlingControllerBase<ComicController> {
 	static $inject: string[];
 
 	$scope: $DecoratedScope<ComicController>;

@@ -22,7 +22,7 @@ import type { EventService } from '../services/eventService';
 import type { ComicData } from '../api/comicData';
 import type { ItemBaseData } from '../api/itemData';
 
-export class ComicDataControllerBase<TScope: Object> {
+export class EventHandlingControllerBase<TScope: Object> {
 	$scope: $DecoratedScope<TScope>;
 	eventService: EventService;
 
@@ -116,7 +116,7 @@ export class ComicDataControllerBase<TScope: Object> {
 	}
 }
 
-export class SetValueControllerBase<TScope: Object> extends ComicDataControllerBase<TScope> {
+export class SetValueControllerBase<TScope: Object> extends EventHandlingControllerBase<TScope> {
 	comicService: ComicService;
 
 	unique: string;

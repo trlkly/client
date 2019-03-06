@@ -23,7 +23,7 @@ import angular from 'angular';
 import constants from '../../../constants';
 import variables from '../../../../generated/variables.pass2';
 
-import { ComicDataControllerBase } from '../controllers/ControllerBases';
+import { EventHandlingControllerBase } from '../controllers/ControllerBases';
 
 import type { $DecoratedScope } from '../decorateScope';
 import type { ComicService } from '../services/comicService';
@@ -31,7 +31,7 @@ import type { EventService } from '../services/eventService';
 import type { ComicData, ComicItem } from '../api/comicData';
 import type { ItemType } from '../api/itemData';
 
-export class EditComicDataController extends ComicDataControllerBase<EditComicDataController> {
+export class EditComicDataController extends EventHandlingControllerBase<EditComicDataController> {
 	static $inject: string[];
 
 	$log: $Log;

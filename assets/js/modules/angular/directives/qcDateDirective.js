@@ -22,13 +22,13 @@ import constants from '../../../constants';
 import settings, { Settings } from '../../settings';
 import variables from '../../../../generated/variables.pass2';
 
-import { ComicDataControllerBase } from '../controllers/ControllerBases';
+import { EventHandlingControllerBase } from '../controllers/ControllerBases';
 
 import type { $DecoratedScope } from '../decorateScope';
 import type { EventService } from '../services/eventService';
 import type { ComicData } from '../api/comicData';
 
-export class DateController extends ComicDataControllerBase<DateController> {
+export class DateController extends EventHandlingControllerBase<DateController> {
 	static $inject: string[];
 
 	$log: $Log;

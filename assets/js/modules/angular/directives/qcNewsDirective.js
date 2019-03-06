@@ -21,13 +21,13 @@ import type { AngularModule, $Log, $Sce } from 'angular';
 import constants from '../../../constants';
 import { nl2br, angularizeLinks } from '../util';
 
-import { ComicDataControllerBase } from '../controllers/ControllerBases';
+import { EventHandlingControllerBase } from '../controllers/ControllerBases';
 
 import type { $DecoratedScope } from '../decorateScope';
 import type { EventService } from '../services/eventService';
 import type { ComicData } from '../api/comicData';
 
-export class NewsController extends ComicDataControllerBase<NewsController> {
+export class NewsController extends EventHandlingControllerBase<NewsController> {
 	static $inject: string[];
 
 	$sce: $Sce;
