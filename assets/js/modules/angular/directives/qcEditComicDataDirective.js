@@ -104,11 +104,7 @@ export class EditComicDataController extends ComicDataControllerBase<EditComicDa
 			this.isUpdating = true;
 		});
 		const response = await this.comicService.removeItem(item);
-		if (response.status === 200) {
-			this.eventService.itemsChangedEvent.publish();
-		} else {
-			this._handleUpdateResponse(response);
-		}
+		this._handleUpdateResponse(response);
 	}
 
 	changeGuestComic() {

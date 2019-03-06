@@ -207,7 +207,7 @@ export class ComicService {
 			});
 	}
 
-	addItem(item: ComicItem) {
+	addItemToComic(item: ComicItem) {
 		const data: {
 			token: string,
 			comicId: number,

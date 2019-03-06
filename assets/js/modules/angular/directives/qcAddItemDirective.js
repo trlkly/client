@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import type { AngularModule, $Log, $Timeout, $Http, $Filter } from 'angular';
+import type { AngularModule, $Log, $Timeout, $Filter } from 'angular';
 
 import constants from '../../../constants';
 import variables from '../../../../generated/variables.pass2';
@@ -25,40 +25,45 @@ import { SetValueControllerBase } from '../controllers/ControllerBases';
 
 import type { $DecoratedScope } from '../decorateScope';
 import type { ComicService } from '../services/comicService';
+import type { ItemService } from '../services/itemService';
 import type { EventService } from '../services/eventService';
 import type { MessageReportingService } from '../services/messageReportingService';
 import type { ItemBaseData, ItemData } from '../api/itemData';
 import type { ComicData, ComicItem } from '../api/comicData';
 
+const newItemId = -1;
+const maintenanceId = -2;
+const errorId = -3;
+
 const addCastTemplate = 'Add new cast member';
 const addCastItem: ItemBaseData = {
-	id: -1,
+	id: newItemId,
 	type: 'cast',
 	shortName: `${addCastTemplate} ''`,
 	name: ''
 };
 const addStorylineTemplate = 'Add new storyline';
 const addStorylineItem: ItemBaseData = {
-	id: -1,
+	id: newItemId,
 	type: 'storyline',
 	shortName: `${addStorylineTemplate} ''`,
 	name: ''
 };
 const addLocationTemplate = 'Add new location';
 const addLocationItem: ItemBaseData = {
-	id: -1,
+	id: newItemId,
 	type: 'location',
 	shortName: `${addLocationTemplate} ''`,
 	name: ''
 };
 const maintenanceItem: ItemBaseData = {
-	id: -2,
+	id: maintenanceId,
 	type: 'cast',
 	shortName: 'Maintenance ongoing. Choose this to attempt refresh.',
 	name: ''
 };
 const errorItem: ItemBaseData = {
-	id: -3,
+	id: errorId,
 	type: 'cast',
 	shortName: 'Error loading item list. Choose this to attempt refresh.',
 	name: ''
@@ -76,9 +81,10 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 	static $inject: string[];
 
 	$log: $Log;
-	$http: $Http;
 	$timeout: $Timeout;
 	$filter: $Filter;
+
+	itemService: ItemService;
 	messageReportingService: MessageReportingService;
 
 	searchFieldId: string;
@@ -95,7 +101,7 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 		$log: $Log,
 		comicService: ComicService,
 		eventService: EventService,
-		$http: $Http,
+		itemService: ItemService,
 		$timeout: $Timeout,
 		$filter: $Filter,
 		messageReportingService: MessageReportingService
@@ -105,50 +111,47 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 		super($scope, comicService, eventService);
 
 		this.$log = $log;
-		this.$http = $http;
 		this.$timeout = $timeout;
 		this.$filter = $filter;
+
+		this.itemService = itemService;
 		this.messageReportingService = messageReportingService;
 
 		this.searchFieldId = `#addItem_${this.unique}_search`;
 		this.dropdownId = `#addItem_${this.unique}_dropdown`;
 		this.dropdownButtonId = `#addItem_${this.unique}_dropdownButton`;
-		
+
 		this.items = [];
 		this.itemFilterText = '';
 
 		(this: any).itemFilter = this.itemFilter.bind(this);
 
-		this._loadItemData();
-
 		$log.debug('END AddItemController');
 	}
 
-	async _loadItemData() {
-		this.eventService.itemDataLoadingEvent.publish();
-		const response = await this.$http.get(constants.itemDataUrl);
+	_itemDataLoaded(itemData: ItemBaseData[]) {
+		itemData = itemData.slice(0);
 
-		let itemData: ItemBaseData[] = [];
-		if (response.status === 200) {
-			itemData = response.data;
-
-			this.eventService.itemDataLoadedEvent.publish(itemData);
-
-			itemData.push(addCastItem);
-			itemData.push(addStorylineItem);
-			itemData.push(addLocationItem);
-		} else {
-			if (response.status === 503) {
-				itemData.push(maintenanceItem);
-			} else {
-				this.eventService.itemDataErrorEvent.publish(response);
-				this.messageReportingService.reportError(response.data);
-				itemData.push(errorItem);
-			}
-		}
+		itemData.push(addCastItem);
+		itemData.push(addStorylineItem);
+		itemData.push(addLocationItem);
 
 		this.$scope.safeApply(() => {
 			this.items = itemData;
+		});
+	}
+
+	_itemDataError(error: any) {
+		this.$scope.safeApply(() => {
+			this.items.length = 0;
+			this.items.push(errorItem);
+		});
+	}
+
+	_maintenance() {
+		this.$scope.safeApply(() => {
+			this.items.length = 0;
+			this.items.push(maintenanceItem);
 		});
 	}
 
@@ -163,10 +166,6 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 	_comicDataLoaded(comicData: ComicData) {
 		this.itemFilterText = '';
 		this.$scope.isUpdating = false;
-	}
-
-	_itemsChanged() {
-		this._loadItemData();
 	}
 
 	searchChanged() {
@@ -248,15 +247,18 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 	}
 
 	async addItem(item: ComicItem) {
-		if (item.id < -1) {
-			this._loadItemData();
+		if (item.id == maintenanceId || item.id == errorId) {
+			this.itemService.refreshItemData();
 			return;
 		}
 
 		this.$scope.isUpdating = true;
-		const response = await this.comicService.addItem(item);
+		const response = await this.comicService.addItemToComic(item);
 		if (response.status === 200) {
-			this.eventService.itemsChangedEvent.publish();
+			// TODO: Maybe move this new item event logic to comicService.addItemToComic?
+			if (item.id == newItemId) {
+				this.eventService.itemsChangedEvent.publish();
+			}
 			this.$scope.safeApply(() => {
 				this.itemFilterText = '';
 			});
@@ -269,7 +271,7 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 }
 AddItemController.$inject = [
 	'$scope', '$log', 'comicService', 'eventService',
-	'$http', '$timeout', '$filter', 'messageReportingService'
+	'itemService', '$timeout', '$filter', 'messageReportingService'
 ];
 
 export default function (app: AngularModule) {

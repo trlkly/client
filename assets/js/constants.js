@@ -78,6 +78,8 @@ const constants = {
 
 	itemsChangedEvent: 'items-changed',
 
+	maintenanceEvent: 'maintenance',
+
 	messages: {
 		maintenance: 'The Questionable Extensions' +
 			' server is currently undergoing maintenance.' +

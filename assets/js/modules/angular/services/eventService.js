@@ -37,6 +37,8 @@ export class EventService {
 
 	itemsChangedEvent: Event<any>;
 
+	maintenanceEvent: Event<any>;
+
 	constructor($log: $Log, eventFactory: EventFactory) {
 		this.$log = $log;
 
@@ -49,6 +51,8 @@ export class EventService {
 		this.itemDataErrorEvent = eventFactory<any>(constants.itemdataErrorEvent); // TODO: Figure out this type
 
 		this.itemsChangedEvent = eventFactory<any>(constants.itemsChangedEvent);
+
+		this.maintenanceEvent = eventFactory<any>(constants.maintenanceEvent);
 	}
 }
 

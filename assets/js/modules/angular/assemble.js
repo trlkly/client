@@ -27,6 +27,7 @@ import titleController from './controllers/titleController';
 
 import colorService from './services/colorService';
 import comicService from './services/comicService';
+import itemService from './services/itemService';
 import eventFactory from './services/eventFactory';
 import eventService from './services/eventService';
 import messageReportingService from './services/messageReportingService';
@@ -63,6 +64,7 @@ export default function (app: AngularModule) {
 
 	colorService(app);
 	comicService(app);
+	itemService(app);
 	eventFactory(app);
 	eventService(app);
 	messageReportingService(app);

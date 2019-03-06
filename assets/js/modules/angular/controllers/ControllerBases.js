@@ -20,6 +20,7 @@ import type { $DecoratedScope } from '../decorateScope';
 import type { ComicService } from '../services/comicService';
 import type { EventService } from '../services/eventService';
 import type { ComicData } from '../api/comicData';
+import type { ItemBaseData } from '../api/itemData';
 
 export class ComicDataControllerBase<TScope: Object> {
 	$scope: $DecoratedScope<TScope>;
@@ -59,6 +60,34 @@ export class ComicDataControllerBase<TScope: Object> {
 					this._itemsChanged();
 				});
 			});
+
+		eventService.itemDataLoadingEvent.subscribe($scope,
+			(event, data) => {
+				$scope.safeApply(() => {
+					this._itemDataLoading();
+				});
+			});
+
+		eventService.itemDataLoadedEvent.subscribe($scope,
+			(event, itemData) => {
+				$scope.safeApply(() => {
+					this._itemDataLoaded(itemData);
+				});
+			});
+
+		eventService.itemDataErrorEvent.subscribe($scope,
+			(event, error) => {
+				$scope.safeApply(() => {
+					this._itemDataError(error);
+				});
+			});
+
+		eventService.maintenanceEvent.subscribe($scope,
+			(event, error) => {
+				$scope.safeApply(() => {
+					this._maintenance();
+				});
+			});
 	}
 
 	_comicDataLoading(comic: number) {
@@ -71,6 +100,19 @@ export class ComicDataControllerBase<TScope: Object> {
 	}
 
 	_itemsChanged() {
+	}
+
+	_itemDataLoading() {
+	}
+
+	_itemDataLoaded(itemData: ItemBaseData[]) {
+	}
+
+	_itemDataError(error: any) {
+	}
+
+	_maintenance() {
+
 	}
 }
 
