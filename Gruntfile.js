@@ -196,16 +196,18 @@ module.exports = function (grunt) {
 	require('load-grunt-tasks')(grunt);
 
 	// Register the tasks.
-	grunt.registerTask('default', ['build']);
+	grunt.registerTask('default', ['check', 'build', 'uglify']);
 	grunt.registerTask('build', [
 		'compass',            // Compile CSS
 		'htmlmin',            // Minify HTML templates
 		'filesToJavascript',  // Convert HTML templates to JS variables
 		'concat:variables',   // Create finished variable.pass2.js file
-		'flow',               // Type-checking
 		'rollup:main',        // Rollup all the javascript files into one
 		'concat:source',      // Add banner to rollup result
-		'uglify',             // Minify the javascript
+	]);
+
+	grunt.registerTask('check', [
+		'flow',               // Type-checking
 		'eslint',             // Check for lint
 	]);
 };
