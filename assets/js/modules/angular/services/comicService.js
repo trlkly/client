@@ -273,7 +273,7 @@ export class ComicService {
 		const data = {
 			token: settings.values.editModeToken,
 			comicId: this.comic,
-			value: value
+			flagValue: value
 		};
 		return this.$http.post(constants.setGuestComicUrl, data)
 			.then(r => this._onSuccessRefreshElseErrorLog(r)).catch(r => this._onErrorLog(r));
@@ -283,7 +283,7 @@ export class ComicService {
 		const data = {
 			token: settings.values.editModeToken,
 			comicId: this.comic,
-			value: value
+			flagValue: value
 		};
 		return this.$http.post(constants.setNonCanonUrl, data)
 			.then(r => this._onSuccessRefreshElseErrorLog(r)).catch(r => this._onErrorLog(r));
@@ -293,7 +293,7 @@ export class ComicService {
 		const data = {
 			token: settings.values.editModeToken,
 			comicId: this.comic,
-			value: value
+			flagValue: value
 		};
 		return this.$http.post(constants.setNoCastUrl, data)
 			.then(r => this._onSuccessRefreshElseErrorLog(r)).catch(r => this._onErrorLog(r));
@@ -303,7 +303,7 @@ export class ComicService {
 		const data = {
 			token: settings.values.editModeToken,
 			comicId: this.comic,
-			value: value
+			flagValue: value
 		};
 		return this.$http.post(constants.setNoLocationUrl, data)
 			.then(r => this._onSuccessRefreshElseErrorLog(r)).catch(r => this._onErrorLog(r));
@@ -313,7 +313,7 @@ export class ComicService {
 		const data = {
 			token: settings.values.editModeToken,
 			comicId: this.comic,
-			value: value
+			flagValue: value
 		};
 		return this.$http.post(constants.setNoStorylineUrl, data)
 			.then(r => this._onSuccessRefreshElseErrorLog(r)).catch(r => this._onErrorLog(r));
@@ -323,7 +323,7 @@ export class ComicService {
 		const data = {
 			token: settings.values.editModeToken,
 			comicId: this.comic,
-			value: value
+			flagValue: value
 		};
 		return this.$http.post(constants.setNoTitleUrl, data)
 			.then(r => this._onSuccessRefreshElseErrorLog(r)).catch(r => this._onErrorLog(r));
@@ -333,7 +333,7 @@ export class ComicService {
 		const data = {
 			token: settings.values.editModeToken,
 			comicId: this.comic,
-			value: value
+			flagValue: value
 		};
 		return this.$http.post(constants.setNoTaglineUrl, data)
 			.then(r => this._onSuccessRefreshElseErrorLog(r)).catch(r => this._onErrorLog(r));
