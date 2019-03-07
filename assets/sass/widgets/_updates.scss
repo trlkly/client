@@ -15,9 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import "corner-ribbon";
-@import "dual-ring-loader";
-@import "message-seat";
-@import "nav";
-@import "radial-progress";
-@import "updates";
+.update-overlay {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0,0,0, 0.5);
+	z-index: 10000;
+
+	&-white {
+		background-color: rgba(255,255,255,0.5);
+	}
+}
+
+.update-text {
+	text-align: center;
+	font-weight: bold;
+	color: white;
+
+	.update-overlay-white & {
+		color: black;
+	}
+}

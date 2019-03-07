@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import "corner-ribbon";
-@import "dual-ring-loader";
-@import "message-seat";
-@import "nav";
-@import "radial-progress";
-@import "updates";
+.dropdown-add-item {
+	max-height: 250px;
+	overflow-y: auto;
+	word-break: break-all;
+	word-wrap: break-word;
+}

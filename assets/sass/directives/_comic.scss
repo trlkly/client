@@ -15,9 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import "corner-ribbon";
-@import "dual-ring-loader";
-@import "message-seat";
-@import "nav";
-@import "radial-progress";
-@import "updates";
+ .comic-loading-overlay {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0,0,0, 0.5);
+	margin-left: -15px;
+	margin-right: 15px;
+	text-align: center;
+	padding-top: 50px;
+
+	p {
+		font-weight: bold; color: white;
+	}
+ }

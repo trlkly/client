@@ -2,8 +2,8 @@
 	<img id="strip" ng-src="{{c.comicImage}}">
 </a>
 <div ng-class="{'hidden': c.isInitializing || !c.isLoading}"
-	style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: rgba(0,0,0, 0.5); margin-left: -15px; margin-right: 15px; text-align: center; padding-top: 50px;">
+	class="comic-loading-overlay">
 		<div class="lds-dual-ring"></div>
-		<p style="font-weight: bold; color: white;">Loading comic {{c.comicService.comic}}...</p>
+		<p>Loading comic {{c.comicService.comic}}...</p>
 </div>
 <qc-ribbon></qc-ribbon>

@@ -134,7 +134,7 @@
         </tr>
         <tr ng-if="e.settings.editMode && e.missingDataInfo.length > 0">
             <td>
-                <p style="color: red;">This comic is missing <span ng-repeat="mdi in e.missingDataInfo">{{mdi}}<span ng-if="!$last">,&nbsp;</span></span></p>
+                <p class="qc-error-text">This comic is missing <span ng-repeat="mdi in e.missingDataInfo">{{mdi}}<span ng-if="!$last">,&nbsp;</span></span></p>
             </td>
         </tr>
         <tr ng-if="e.settings.editMode">

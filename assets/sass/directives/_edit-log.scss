@@ -15,9 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import "corner-ribbon";
-@import "dual-ring-loader";
-@import "message-seat";
-@import "nav";
-@import "radial-progress";
-@import "updates";
+.edit-log-pager {
+	text-align: center;
+	color: white;
+	background-color: rgb(78, 93, 108);
+}

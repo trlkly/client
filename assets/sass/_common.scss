@@ -49,3 +49,38 @@ input {
 a {
 	cursor: pointer;
 }
+
+.p-l-10px {
+	padding-left: 10px;
+}
+
+.p-r-10px {
+	padding-right: 10px;
+}
+
+.m-t-3px {
+	margin-top: 3px;
+}
+
+.m-t-20px {
+	margin-top: 20px;
+}
+
+.pos-rel {
+	position: relative;
+}
+
+.no-border {
+	border: none;
+}
+
+.absolute-dead-center {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform:translate(-50%, -50%);
+}
+
+.qc-error-text {
+	color: red;
+}

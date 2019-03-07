@@ -15,9 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import "corner-ribbon";
-@import "dual-ring-loader";
-@import "message-seat";
-@import "nav";
-@import "radial-progress";
-@import "updates";
+.settings-input {
+	width: 100%;
+	margin-bottom: 5px;
+}

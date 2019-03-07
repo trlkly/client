@@ -15,12 +15,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div class="modal fade" tabindex="-1" role="dialog" id="changeLogDialog" style="display: none;">
-    <div class="modal-dialog" style="overflow-y: initial !important;">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">Change Log</h3>
             </div>
-            <div class="modal-body" style="max-height: 73.5vh; overflow-y: auto;">
+            <div class="modal-body">
                 <div ng-if="clvm.previousVersion">
                     <h4>Script updated!</h4>
                     <p>Your Questionable Content Extensions has been updated from v{{ clvm.previousVersion || 'none'}} to v{{ clvm.currentVersion }}!</p>

@@ -16,7 +16,7 @@
 -->
 <div class="modal fade" tabindex="-1" role="dialog" id="itemDetailsDialog" style="display: none;">
 	<div class="modal-dialog">
-		<div class="modal-content" style="position: relative;">
+		<div class="modal-content" class="pos-rel">
 			<div class="modal-header">
 				<h3 class="modal-title">
 					<span ng-if="idvm.isLoading > 0">Loading...</span>
@@ -28,28 +28,25 @@
 			</div>
 			<div class="modal-body" ng-if="idvm.isLoading == 0">
 				<div class="clearfix">
-					<div style="width: 128px; height: 128px; text-align: center; position: relative; border: 1px solid #485563; box-sizing: content-box; float: left; margin-right: 15px; margin-bottom: 24px;">
-						<i ng-if="!idvm.isImagePreview && !idvm.itemData.hasImage" class="fa fa-camera" style="position: absolute; left: 50%; top: 42%; transform: translate(-50%,-50%); color: #485563; font-size: 64px;"></i>
-						<div ng-if="!idvm.isImagePreview && !idvm.itemData.hasImage" style="position: absolute; top: 76%; transform: translateY(-50%); width: 100%; font-size: 20px; color: #485563; font-weight: bold;">No
-							image</div>
-						<img ng-if="!idvm.isImagePreview && idvm.itemData.hasImage" ng-src="{{idvm.imagePaths[idvm.currentImagePath]}}" style="position: absolute; top: 50%; transform: translate(-50%,-50%); left: 50%; max-width: 128px; max-height: 128px;"
-						 alt="{{idvm.itemData.shortName}}">
-						<img ng-if="idvm.isImagePreview" ng-src="{{idvm.imageFile}}" style="position: absolute; top: 50%; transform: translate(-50%,-50%); left: 50%; max-width: 128px; max-height: 128px;"
-						alt="{{idvm.itemData.shortName}}">
+					<div class="item-details-image">
+						<i ng-if="!idvm.isImagePreview && !idvm.itemData.hasImage" class="fa fa-camera no-image-icon"></i>
+						<div ng-if="!idvm.isImagePreview && !idvm.itemData.hasImage" class="no-image-text">No image</div>
+						<img ng-if="!idvm.isImagePreview && idvm.itemData.hasImage" ng-src="{{idvm.imagePaths[idvm.currentImagePath]}}" alt="{{idvm.itemData.shortName}}">
+						<img ng-if="idvm.isImagePreview" ng-src="{{idvm.imageFile}}" alt="{{idvm.itemData.shortName}}">
 
-						 <i ng-if="!idvm.isImagePreview && idvm.imagePaths.length > 1" class="fa fa-caret-left" style="position: absolute; left: 5%; top: 100%; color: inherit; font-size: 24px;" ng-click="idvm.previousImage()"></i>
-						 <p ng-if="!idvm.isImagePreview && idvm.imagePaths.length > 1" style="position: absolute; left: 50%; top: 100%; color: inherit; font-size: 16px;transform: translateX(-50%);">{{idvm.currentImagePath + 1}} / {{idvm.imagePaths.length}}</p>
-						 <p ng-if="idvm.isImagePreview" style="position: absolute; left: 50%; top: 100%; color: inherit; font-size: 16px;transform: translateX(-50%); cursor: pointer;" ng-click="idvm.isImagePreview = false" title="Click to stop the preview">Preview</p>
-						 <i ng-if="!idvm.isImagePreview && idvm.imagePaths.length > 1" class="fa fa-caret-right" style="position: absolute; right: 5%; top: 100%; color: inherit; font-size: 24px;" ng-click="idvm.nextImage()"></i>
+						 <i ng-if="!idvm.isImagePreview && idvm.imagePaths.length > 1" class="fa fa-caret-left left-arrow" ng-click="idvm.previousImage()"></i>
+						 <p ng-if="!idvm.isImagePreview && idvm.imagePaths.length > 1" class="item-details-pager">{{idvm.currentImagePath + 1}} / {{idvm.imagePaths.length}}</p>
+						 <p ng-if="idvm.isImagePreview" class="item-details-pager point" ng-click="idvm.isImagePreview = false" title="Click to stop the preview">Preview</p>
+						 <i ng-if="!idvm.isImagePreview && idvm.imagePaths.length > 1" class="fa fa-caret-right right-arrow" ng-click="idvm.nextImage()"></i>
 					</div>
-					<div style="float: right; margin-left: 15px; margin-bottom: 15px; position: relative;">
+					<div class="item-details-presence">
 						<donut ng-if="idvm.settings.useColors" size="128" color="#{{idvm.itemData.color}}" highlight-color="{{idvm.itemData.highlightColor}}"
 						 percent="{{idvm.itemData.presence}}" border-size="30" inner-color="#4e5d6c"></donut>
 						<donut ng-if="!idvm.settings.useColors" size="128" color="black" highlight-color="white" percent="{{idvm.itemData.presence}}"
 						 border-size="30" inner-color="#4e5d6c"></donut>
-						<div style="position: absolute; top: 50%; transform: translate(-50%,-50%); left:50%; font-size: 20px; text-align: center;"
-						 title="{{idvm.itemData.shortName}} has appeared in {{idvm.itemData.appearances}} out of the {{idvm.itemData.totalComics}} comics ({{idvm.itemData.presence|number:2}}%)">{{idvm.itemData.presence|number:2}}%<br><span
-							 style="font-size: 12px;">({{idvm.itemData.appearances}}/{{idvm.itemData.totalComics}})</span></div>
+						<div class="presence-text" title="{{idvm.itemData.shortName}} has appeared in {{idvm.itemData.appearances}} out of the {{idvm.itemData.totalComics}} comics ({{idvm.itemData.presence|number:2}}%)">{{idvm.itemData.presence|number:2}}%<br>
+							<span>({{idvm.itemData.appearances}}/{{idvm.itemData.totalComics}})</span>
+						</div>
 					</div>
 					<div ng-switch="idvm.itemData.type">
 						<p ng-switch-default>
@@ -65,7 +62,7 @@
 						</p>
 					</div>
 				</div>
-				<hr style="margin-top: 0; margin-bottom: 10px;">
+				<hr class="item-details-hr">
 				<div class="row">
 					<div class="col-xs-6" ng-show="idvm.itemData.locations">
 						<p ng-switch="idvm.itemData.type">Most often <span ng-switch-when="cast">spotted at</span><span ng-switch-when="location">visited
@@ -86,7 +83,7 @@
 						</ul>
 					</div>
 				</div>
-				<hr ng-if="idvm.settings.editMode" style="margin-top: 0; margin-bottom: 10px;">
+				<hr ng-if="idvm.settings.editMode" class="item-details-hr">
 				<div ng-if="idvm.settings.editMode" class="row form-horizontal">
 					<div class="col-xs-12">
 						<div class="form-group">
@@ -140,11 +137,10 @@
 			<div class="modal-footer">
 				<button class="btn btn-primary" type="button" ng-click="idvm.close()">Close</button>
 			</div>
-			<div ng-show="idvm.isUpdating"
-				style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: rgba(0,0,0, 0.5); z-index: 10000;">
-				<div style="position: absolute; top: 50%; left: 50%;transform:translate(-50%, -50%);">
+			<div ng-show="idvm.isUpdating" class="update-overlay">
+				<div class="absolute-dead-center">
 					<div class="lds-dual-ring"></div>
-					<p style="text-align: center;font-weight: bold; color: white;">Updating...</p>
+					<p class="update-text">Updating...</p>
 				</div>
 			</div>
 		</div>
