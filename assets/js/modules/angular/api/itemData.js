@@ -47,6 +47,7 @@ export type DecoratedItemData = ItemData & {
 	highlightColor: string;
 	locations: ItemRelationData[];
 	friends: ItemRelationData[];
+	imageUrls: string[];
 };
 
 export type ItemImageData = {

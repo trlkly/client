@@ -39,7 +39,7 @@
 
 						 <i ng-if="!idvm.isImagePreview && idvm.imagePaths.length > 1" class="fa fa-caret-left" style="position: absolute; left: 5%; top: 100%; color: inherit; font-size: 24px;" ng-click="idvm.previousImage()"></i>
 						 <p ng-if="!idvm.isImagePreview && idvm.imagePaths.length > 1" style="position: absolute; left: 50%; top: 100%; color: inherit; font-size: 16px;transform: translateX(-50%);">{{idvm.currentImagePath + 1}} / {{idvm.imagePaths.length}}</p>
-						 <p ng-if="idvm.isImagePreview" style="position: absolute; left: 50%; top: 100%; color: inherit; font-size: 16px;transform: translateX(-50%);" ng-click="idvm.isImagePreview = false">Preview</p>
+						 <p ng-if="idvm.isImagePreview" style="position: absolute; left: 50%; top: 100%; color: inherit; font-size: 16px;transform: translateX(-50%); cursor: pointer;" ng-click="idvm.isImagePreview = false" title="Click to stop the preview">Preview</p>
 						 <i ng-if="!idvm.isImagePreview && idvm.imagePaths.length > 1" class="fa fa-caret-right" style="position: absolute; right: 5%; top: 100%; color: inherit; font-size: 24px;" ng-click="idvm.nextImage()"></i>
 					</div>
 					<div style="float: right; margin-left: 15px; margin-bottom: 15px; position: relative;">

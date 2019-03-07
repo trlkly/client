@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import type { AngularModule, $Log, $Http, $Sce } from 'angular';
+import type { AngularModule, $Log, $Sce } from 'angular';
 
 import GM from 'greasemonkey';
 import angular from 'angular';

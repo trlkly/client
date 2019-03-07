@@ -62,6 +62,7 @@ const constants = {
 	setNoTitleUrl: comicDataUrl + 'setnotitle',
 	setNoTaglineUrl: comicDataUrl + 'setnotagline',
 
+	itemImageUrl: itemDataUrl + 'image/',
 	itemFriendDataUrl: itemDataUrl + 'friends/',
 	itemLocationDataUrl: itemDataUrl + 'locations/',
 	setItemDataPropertyUrl: itemDataUrl + 'setproperty',
