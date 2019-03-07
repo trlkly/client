@@ -20,7 +20,7 @@
 const resolve = require('rollup-plugin-node-resolve');
 const commonJs = require('rollup-plugin-commonjs');
 const virtual = require('rollup-plugin-virtual');
-const babel  = require('rollup-plugin-babel');
+const babel = require('rollup-plugin-babel');
 
 const licenseBanner = require('./licenseBanner');
 const userScriptBanner = require('./userScriptBanner');
@@ -196,7 +196,7 @@ module.exports = function (grunt) {
 	require('load-grunt-tasks')(grunt);
 
 	// Register the tasks.
-	grunt.registerTask('default', ['check', 'build', 'uglify']);
+	grunt.registerTask('default', ['build', 'check', 'uglify']);
 	grunt.registerTask('build', [
 		'compass',            // Compile CSS
 		'htmlmin',            // Minify HTML templates
