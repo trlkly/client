@@ -15,11 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import "variables";
-@import "common";
-@import "widgets/widgets";
+#messageSeat {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	pointer-events: none;
+	z-index: 10000;
 
-qc-comic {
-    display: inline-block;
-    position: relative;
+	& > * {
+		pointer-events: all;
+	}
+
+	.alert {
+		margin-bottom: 1px;
+		font-size: 15px;
+	}
 }

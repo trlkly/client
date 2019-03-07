@@ -15,11 +15,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import "variables";
-@import "common";
-@import "widgets/widgets";
-
-qc-comic {
-    display: inline-block;
-    position: relative;
+.lds-dual-ring {
+	display: inline-block;
+	width: 46px;
+	height: 64px;
+}
+.lds-dual-ring:after {
+	content: " ";
+	display: block;
+	width: 46px;
+	height: 46px;
+	margin: 1px;
+	border-radius: 50%;
+	border: 5px solid #fff;
+	border-color: #fff transparent #fff transparent;
+	animation: lds-dual-ring 1.2s linear infinite;
+}
+.lds-dual-ring.black:after{
+	border: 5px solid #000;
+	border-color: #000 transparent #000 transparent;
+}
+@keyframes lds-dual-ring {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }

@@ -15,11 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import "variables";
-@import "common";
-@import "widgets/widgets";
+.radial-progress {
+	border-radius: 50%;
+	.circle {
+		.mask, .fill, .inset {
+			position: absolute;
+			border-radius: 50%;
+		}
 
-qc-comic {
-    display: inline-block;
-    position: relative;
+		.mask, .fill {
+			-webkit-backface-visibility: hidden;
+			backface-visibility: hidden;
+			
+			transition: -webkit-transform 1s;
+			transition: -ms-transform 1s;
+			transition: transform 1s;
+		}
+	}
 }
