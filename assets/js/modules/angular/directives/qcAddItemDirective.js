@@ -142,17 +142,13 @@ export class AddItemController extends SetValueControllerBase<AddItemController>
 	}
 
 	_itemDataError(error: any) {
-		this.$scope.safeApply(() => {
-			this.items.length = 0;
-			this.items.push(errorItem);
-		});
+		this.items.length = 0;
+		this.items.push(errorItem);
 	}
 
 	_maintenance() {
-		this.$scope.safeApply(() => {
-			this.items.length = 0;
-			this.items.push(maintenanceItem);
-		});
+		this.items.length = 0;
+		this.items.push(maintenanceItem);
 	}
 
 	_updateValue() {

@@ -98,8 +98,7 @@ export class ComicService {
 		if (response.status !== 503) {
 			this.messageReportingService.reportError(response.data);
 		} else {
-			this.messageReportingService.reportError(
-				constants.messages.maintenance);
+			this.eventService.maintenanceEvent.publish();
 		}
 		return response;
 	}
@@ -159,7 +158,7 @@ export class ComicService {
 		this.$http.get(comicDataUrl)
 			.then((response) => {
 				if (response.status === 503) {
-					this.eventService.comicDataErrorEvent.publish(response);
+					this.eventService.maintenanceEvent.publish(response);
 					return;
 				}
 				if (response.status !== 200) {

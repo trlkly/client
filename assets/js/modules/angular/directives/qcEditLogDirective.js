@@ -24,6 +24,8 @@ import constants from '../../../constants';
 import settings from '../../settings';
 import variables from '../../../../generated/variables.pass2';
 
+import { EventHandlingControllerBase } from '../controllers/ControllerBases';
+
 import type { $DecoratedScope } from '../decorateScope';
 import type { ComicService } from '../services/comicService';
 import type { EventService } from '../services/eventService';
@@ -31,7 +33,7 @@ import type { MessageReportingService } from '../services/messageReportingServic
 import type { ComicData, ComicItem } from '../api/comicData';
 import type { LogEntryData } from '../api/logEntryData';
 
-export class EditLogController {
+export class EditLogController extends EventHandlingControllerBase<EditLogController> {
 	static $inject: string[];
 
 	$scope: $DecoratedScope<EditLogController>;
@@ -48,11 +50,13 @@ export class EditLogController {
 		$scope: $DecoratedScope<EditLogController>,
 		$log: $Log,
 		$http: $Http,
-		messageReportingService: MessageReportingService
+		messageReportingService: MessageReportingService,
+		eventService: EventService
 	) {
 		$log.debug('START EditLogController');
 
-		this.$scope = $scope;
+		super($scope, eventService);
+
 		this.$log = $log;
 		this.$http = $http;
 		this.messageReportingService = messageReportingService;
@@ -60,10 +64,15 @@ export class EditLogController {
 		this.currentPage = 1;
 
 		$('#editLogDialog').on('show.bs.modal', () => {
+			this.currentPage = 1;
 			this._loadLogs();
 		});
 
 		$log.debug('END EditLogController');
+	}
+
+	_maintenance() {
+		this.close();
 	}
 
 	async _loadLogs() {
@@ -80,8 +89,7 @@ export class EditLogController {
 			});
 		} else {
 			if (response.status === 503) {
-				this.messageReportingService.reportError(constants.messages.maintenance);
-				this.close();
+				this.eventService.maintenanceEvent.publish();
 			} else {
 				this.messageReportingService.reportError(response.data);
 			}
@@ -108,7 +116,7 @@ export class EditLogController {
 		($('#editLogDialog'): any).modal('hide');
 	}
 }
-EditLogController.$inject = ['$scope', '$log', '$http', 'messageReportingService'];
+EditLogController.$inject = ['$scope', '$log', '$http', 'messageReportingService', 'eventService'];
 
 export default function (app: AngularModule) {
 	app.directive('qcEditLog', function () {

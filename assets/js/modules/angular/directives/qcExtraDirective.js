@@ -42,6 +42,7 @@ export class ExtraController extends EventHandlingControllerBase<ExtraController
 	$log: $Log;
 	$sce: $Sce;
 	comicService: ComicService;
+	messageReportingService: MessageReportingService;
 
 	settings: Settings;
 	constants: *;
@@ -66,6 +67,7 @@ export class ExtraController extends EventHandlingControllerBase<ExtraController
 		$sce: $Sce,
 		comicService: ComicService,
 		eventService: EventService,
+		messageReportingService: MessageReportingService,
 		latestComic: number
 	) {
 		$log.debug('START ExtraController');
@@ -75,6 +77,7 @@ export class ExtraController extends EventHandlingControllerBase<ExtraController
 		this.$log = $log;
 		this.$sce = $sce;
 		this.comicService = comicService;
+		this.messageReportingService = messageReportingService;
 
 		this.settings = settings;
 		this.constants = constants;
@@ -85,6 +88,13 @@ export class ExtraController extends EventHandlingControllerBase<ExtraController
 		this.missingDataInfo = [];
 
 		$log.debug('END ExtraController');
+	}
+
+	_maintenance() {
+		this._reset();
+		this.messages.push(constants.messages.maintenance);
+		this.messageReportingService.reportError(constants.messages.maintenance);
+		this.hasWarning = true;
 	}
 
 	_comicDataLoading(comic: number) {
@@ -225,7 +235,7 @@ export class ExtraController extends EventHandlingControllerBase<ExtraController
 			this.messages.push('Error communicating with server');
 			this.hasError = true;
 		} else {
-			this.messages.push(constants.messages.maintenance);
+			this.eventService.maintenanceEvent.publish();
 		}
 	}
 
@@ -292,7 +302,7 @@ export class ExtraController extends EventHandlingControllerBase<ExtraController
 		($('#changeLogDialog'): any).modal('show');
 	}
 }
-ExtraController.$inject = ['$scope', '$log', '$sce', 'comicService', 'eventService', 'latestComic'];
+ExtraController.$inject = ['$scope', '$log', '$sce', 'comicService', 'eventService', 'messageReportingService', 'latestComic'];
 
 export default function (app: AngularModule) {
 	app.directive('qcExtra', function () {
