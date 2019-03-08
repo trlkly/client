@@ -62,6 +62,11 @@ export class SettingsController {
 	close() {
 		($('#settingsDialog'): any).modal('hide');
 	}
+
+	showChangeLog() {
+		this.close();
+		($('#changeLogDialog'): any).modal('show');
+	}
 }
 SettingsController.$inject = [
 	'$scope', '$log', 'comicService'

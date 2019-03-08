@@ -27,3 +27,18 @@
 		}
 	}
 }
+
+.change-log-entry {
+	padding-left: 2em;
+	border-left: 1px dashed #8E979F;
+
+	p.developer-message {
+		border-left: 5px solid #8E979F;
+		padding: 20px;
+		background-color: #697683;
+
+		a {
+			color: #8E979F;
+		}
+	}
+}
