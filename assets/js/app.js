@@ -26,6 +26,10 @@ import DomModifier from './modules/dom-modifier';
 import { setup as setupAngular } from './modules/angular-app';
 
 (async () => {
+	if (location.search != "") {
+		document.querySelector('#container > div > div.small-12.medium-expand.column')
+			.insertAdjacentHTML('afterend','<div class="small-2 medium-expand column"></div>')
+	}
 	await settings.loadSettings();
 
 	const domModifier = new DomModifier();
