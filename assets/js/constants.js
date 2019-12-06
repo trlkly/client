@@ -1,5 +1,6 @@
+// @flow
 /*
- * Copyright (C) 2016, 2017 Alexander Krivács Schrøder <alexschrod@gmail.com>
+ * Copyright (C) 2016-2019 Alexander Krivács Schrøder <alexschrod@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,56 +16,77 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var constants;
+// Set this to true when working against your local test server.
+// NEVER CHECK THIS FILE IN WITH developmentMode = true!
+const developmentMode = false;
 
-(function(constants) {
-	'use strict';
+function getSiteUrl() {
+	return 'https://questionablextensions.net/';
+}
 
-	constants.settingsKey = 'settings';
-	
-	// Comics after 3132 should have a tagline
-	constants.taglineThreshold = 3132;
-
-	// Set this to true when working against your local test server.
-	// NEVER CHECK THIS FILE IN WITH developmentMode = true!
-	constants.developmentMode = false;
-	if (constants.developmentMode) {
-		constants.baseUrl =
-			'http://localhost/questionablecontentextensions/web/';
-		constants.webServiceBaseUrl = constants.baseUrl + 'app_dev.php/';
+function getWebserviceBaseUrl() {
+	if (developmentMode) {
+		return 'http://localhost:3000/api/';
 	} else {
-		constants.baseUrl = 'https://questionablextensions.net/';
-		constants.webServiceBaseUrl = constants.baseUrl;
+		return 'https://questionablecontent.herokuapp.com/api/';
 	}
+}
 
-	constants.comicDataUrl = constants.webServiceBaseUrl + 'comicdata/';
-	constants.addItemToComicUrl = constants.comicDataUrl + 'additem';
-	constants.removeItemFromComicUrl = constants.comicDataUrl + 'removeitem';
-	constants.setComicTitleUrl = constants.comicDataUrl + 'settitle';
-	constants.setComicTaglineUrl = constants.comicDataUrl + 'settagline';
-	constants.setPublishDateUrl = constants.comicDataUrl + 'setpublishdate';
-	constants.setGuestComicUrl = constants.comicDataUrl + 'setguest';
-	constants.setNonCanonUrl = constants.comicDataUrl + 'setnoncanon';
-	
-	constants.itemDataUrl = constants.webServiceBaseUrl + 'itemdata/';
-	constants.itemFriendDataUrl = constants.itemDataUrl + 'friends/';
-	constants.itemLocationDataUrl = constants.itemDataUrl + 'locations/';
-	constants.setItemDataPropertyUrl = constants.itemDataUrl + 'setproperty';
-	
-	constants.characterImageBaseUrl = constants.baseUrl + 'images/characters/';
-	constants.characterImageExtension = 'png';
+const comicDataUrl = getWebserviceBaseUrl() + 'comicdata/';
+const itemDataUrl = getWebserviceBaseUrl() + 'itemdata/';
+const editLogUrl = getWebserviceBaseUrl() + 'log';
 
-	constants.comicExtensions = ['png', 'gif', 'jpg'];
+const constants = {
+	settingsKey: 'settings',
 
-	constants.comicdataLoadingEvent = 'comicdata-loading';
-	constants.comicdataLoadedEvent = 'comicdata-loaded';
-	constants.comicdataErrorEvent = 'comicdata-error';
-	constants.itemsChangedEvent = 'items-changed';
-	
-	constants.messages = {
+	developmentMode,
+	siteUrl: getSiteUrl(),
+	comicDataUrl,
+	itemDataUrl,
+	editLogUrl,
+
+	// Comics after 3132 should have a tagline
+	taglineThreshold: 3132,
+
+	excludedComicsUrl: comicDataUrl + 'excluded',
+	addItemToComicUrl: comicDataUrl + 'additem',
+	removeItemFromComicUrl: comicDataUrl + 'removeitem',
+	setComicTitleUrl: comicDataUrl + 'settitle',
+	setComicTaglineUrl: comicDataUrl + 'settagline',
+	setPublishDateUrl: comicDataUrl + 'setpublishdate',
+	setGuestComicUrl: comicDataUrl + 'setguest',
+	setNonCanonUrl: comicDataUrl + 'setnoncanon',
+	setNoCastUrl: comicDataUrl + 'setnocast',
+	setNoLocationUrl: comicDataUrl + 'setnolocation',
+	setNoStorylineUrl: comicDataUrl + 'setnostoryline',
+	setNoTitleUrl: comicDataUrl + 'setnotitle',
+	setNoTaglineUrl: comicDataUrl + 'setnotagline',
+
+	itemImageUrl: itemDataUrl + 'image/',
+	itemFriendDataUrl: itemDataUrl + 'friends/',
+	itemLocationDataUrl: itemDataUrl + 'locations/',
+	setItemDataPropertyUrl: itemDataUrl + 'setproperty',
+
+	comicExtensions: ['png', 'gif', 'jpg'],
+
+	comicdataLoadingEvent: 'comicdata-loading',
+	comicdataLoadedEvent: 'comicdata-loaded',
+	comicdataErrorEvent: 'comicdata-error',
+
+	itemdataLoadingEvent: 'itemdata-loading',
+	itemdataLoadedEvent: 'itemdata-loaded',
+	itemdataErrorEvent: 'itemdata-error',
+
+	itemsChangedEvent: 'items-changed',
+
+	maintenanceEvent: 'maintenance',
+
+	messages: {
 		maintenance: 'The Questionable Extensions' +
 			' server is currently undergoing maintenance.' +
 			' Normal operation should resume within a' +
 			' few minutes.'
-	};
-})(constants || (constants = {}));
+	}
+};
+
+export default constants;
